@@ -1,0 +1,805 @@
+/* ============================================================ */
+/*   ОБЪЕДИНЕННЫЙ CSS ФАЙЛ SPORTAPP                             */
+/*   Только используемые стили                                  */
+/* ============================================================ */
+
+/* ============================================================ */
+/* БЛОК 1: RESET И ОСНОВНЫЕ СТИЛИ                               */
+/* ============================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f8fafc;
+    color: #0f172a;
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* ============================================================ */
+/* БЛОК 2: ПЕРЕМЕННЫЕ (ЦВЕТА)                                   */
+/* ============================================================ */
+
+:root {
+    --crimson: #DC143C;
+    --crimson-rgb: 220, 20, 60;
+    --crimson-dark: #B01030;
+    --crimson-light: #FFE8EC;
+    --dark: #0F172A;
+    --slate: #64748B;
+    --light: #F8FAFC;
+    --white: #FFFFFF;
+    --green: #22C55E;
+    --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    --card-shadow-hover: 0 4px 20px rgba(220, 20, 60, 0.08);
+}
+
+/* ============================================================ */
+/* БЛОК 3: ОБЩИЕ КОНТЕЙНЕРЫ                                     */
+/* ============================================================ */
+
+.main-content {
+    padding-top: 1.5rem;
+    padding-bottom: 100px;
+}
+
+.dashboard-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 1.5rem 1.2rem 100px;
+}
+
+/* ============================================================ */
+/* БЛОК 4: КНОПКИ                                               */
+/* ============================================================ */
+
+.btn-primary {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    background: var(--crimson);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-primary:hover {
+    background: var(--crimson-dark);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-primary-center {
+    display: block;
+    margin: 1.5rem auto 0;
+    width: fit-content;
+    padding: 0.8rem 2rem;
+    background: var(--crimson);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-primary-center:hover {
+    background: var(--crimson-dark);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    border: 2px solid var(--crimson);
+    border-radius: 10px;
+    color: var(--crimson);
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    background: transparent;
+    text-align: center;
+}
+
+.btn-secondary:hover {
+    background: var(--crimson);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+.btn-sm {
+    padding: 0.4rem 1rem;
+    font-size: 0.85rem;
+    border-radius: 8px;
+}
+
+/* ============================================================ */
+/* БЛОК 5: ФОРМЫ                                                */
+/* ============================================================ */
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+    color: var(--dark);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.85rem 1.2rem;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.25s;
+    background: #FAFCFF;
+    color: #0F172A;
+    font-family: inherit;
+}
+
+.form-group input::placeholder {
+    color: #94A3B8;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--crimson);
+    box-shadow: 0 0 0 4px rgba(220, 20, 60, 0.08);
+    background: #FFFFFF;
+}
+
+/* ============================================================ */
+/* БЛОК 6: КАТАЛОГ КАТЕГОРИЙ (ГЛАВНАЯ)                        */
+/* ============================================================ */
+
+.catalog-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.category-card {
+    display: flex;
+    align-items: center;
+    background: var(--white);
+    border-radius: 16px;
+    padding: 0.8rem 1.2rem;
+    box-shadow: var(--card-shadow);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    gap: 1rem;
+}
+
+.category-card:hover {
+    transform: translateX(8px);
+    border-color: var(--crimson);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.category-card:active {
+    transform: scale(0.98);
+}
+
+.category-card .category-icon {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    border-radius: 14px;
+    background: var(--crimson-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.category-card .category-icon img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    display: block;
+}
+
+.category-card .category-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.category-card .category-info h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 0;
+    letter-spacing: 0.3px;
+}
+
+.category-card .category-info p {
+    font-size: 0.8rem;
+    color: var(--slate);
+    margin: 0;
+    margin-top: 0.1rem;
+}
+
+/* ============================================================ */
+/* БЛОК 7: УПРАЖНЕНИЯ (workout-detail)                         */
+/* ============================================================ */
+
+.workout-levels {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+}
+
+.level-card {
+    display: flex;
+    align-items: center;
+    background: var(--white);
+    border-radius: 16px;
+    padding: 0.8rem 1.2rem;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    gap: 1rem;
+}
+
+.level-card:hover {
+    transform: translateX(6px);
+    border-color: var(--crimson);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.level-card .level-icon {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    border-radius: 14px;
+    background: var(--crimson-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--crimson);
+}
+
+.level-card .level-info {
+    flex: 1;
+}
+
+.level-card .level-info h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin: 0;
+}
+
+.level-card .level-info p {
+    font-size: 0.8rem;
+    color: var(--slate);
+    margin: 0;
+    margin-top: 0.1rem;
+}
+
+/* ============================================================ */
+/* БЛОК 8: СТАТИСТИКА                                           */
+/* ============================================================ */
+
+.stats-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-big-card {
+    background: var(--white);
+    padding: 1.2rem 0.8rem;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: var(--card-shadow);
+    border-top: 4px solid var(--crimson);
+    transition: all 0.3s ease;
+}
+
+.stat-big-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.stat-big-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--crimson);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
+
+.stat-big-number {
+    display: block;
+    font-size: 2.2rem;
+    font-weight: 400;
+    color: var(--dark);
+}
+
+.stats-muscles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.stat-muscle-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: var(--white);
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+}
+
+.stat-muscle-item:hover {
+    transform: translateX(4px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.muscle-name {
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--dark);
+    min-width: 50px;
+}
+
+.muscle-bar {
+    flex: 1;
+    height: 6px;
+    background: #E2E8F0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.muscle-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--crimson-light), var(--crimson));
+    border-radius: 4px;
+    transition: width 0.6s ease;
+}
+
+.muscle-count {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--dark);
+    min-width: 30px;
+    text-align: right;
+}
+
+/* ============================================================ */
+/* БЛОК 9: КАЛЕНДАРЬ                                            */
+/* ============================================================ */
+
+.calendar-container {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 1.2rem 1rem;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+}
+
+.calendar-container:hover {
+    box-shadow: var(--card-shadow-hover);
+}
+
+.calendar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.btn-calendar-nav {
+    background: transparent;
+    border: none;
+    color: var(--slate);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-calendar-nav:hover {
+    background: var(--crimson-light);
+    color: var(--crimson);
+}
+
+#currentMonthYear {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--dark);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.calendar-weekday {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--slate);
+    padding: 0.4rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#calendarDays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    grid-column: 1 / -1;
+}
+
+.calendar-day {
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--dark);
+    padding: 0.5rem 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.calendar-day:hover {
+    background: var(--crimson-light);
+}
+
+.calendar-day.has-workout {
+    background: var(--crimson);
+    color: var(--white);
+}
+
+.calendar-day.has-workout:hover {
+    background: var(--crimson-dark);
+}
+
+.calendar-day.today {
+    border: 2px solid var(--crimson);
+}
+
+.calendar-empty {
+    visibility: hidden;
+}
+
+/* ============================================================ */
+/* БЛОК 10: ПРОФИЛЬ                                             */
+/* ============================================================ */
+
+.profile-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 0 1.2rem;
+}
+
+.profile-container:first-child {
+    padding-top: 0.5rem;
+}
+
+.profile-block {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 1.5rem 1.2rem;
+    box-shadow: var(--card-shadow);
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--crimson), var(--crimson-dark));
+    color: var(--white);
+    font-size: 2.2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.8rem;
+    box-shadow: 0 4px 20px rgba(220, 20, 60, 0.25);
+}
+
+.profile-block h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 0.1rem;
+}
+
+.profile-block > p {
+    text-align: center;
+    color: var(--slate);
+    margin-bottom: 1rem;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: var(--slate);
+    font-size: 0.9rem;
+    padding: 0.6rem;
+    background: var(--light);
+    border-radius: 10px;
+}
+
+.profile-info i {
+    color: var(--crimson);
+}
+
+.profile-info strong {
+    font-weight: 400;
+    color: var(--dark);
+}
+
+/* ============================================================ */
+/* БЛОК 11: ИСТОРИЯ ТРЕНИРОВОК                                  */
+/* ============================================================ */
+
+#workoutHistory > div {
+    background: var(--white);
+    padding: 1rem;
+    border-radius: 12px;
+    border-left: 4px solid var(--crimson);
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+}
+
+#workoutHistory > div:hover {
+    transform: translateX(4px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+/* ============================================================ */
+/* БЛОК 12: ПУСТОЕ СОСТОЯНИЕ                                    */
+/* ============================================================ */
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+}
+
+.empty-state span {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: var(--slate);
+    margin-bottom: 1rem;
+}
+
+/* ============================================================ */
+/* БЛОК 13: НИЖНЯЯ НАВИГАЦИЯ                                    */
+/* ============================================================ */
+
+.bottom-nav {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 280px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: 1px solid rgba(255,255,255,0.3);
+    z-index: 1000;
+}
+
+.nav-items {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 44px;
+}
+
+.nav-item {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: #94A3B8;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.3s ease;
+}
+
+.nav-item.active {
+    color: var(--crimson);
+}
+
+.nav-item:hover {
+    color: var(--crimson);
+}
+
+.nav-item i {
+    font-size: 22px;
+}
+
+/* ============================================================ */
+/* БЛОК 14: ХЕДЕР                                               */
+/* ============================================================ */
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 1.8rem;
+}
+
+.dashboard-header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin: 0;
+    color: var(--dark);
+}
+
+/* ============================================================ */
+/* БЛОК 15: ТАЙМЕР                                              */
+/* ============================================================ */
+
+#timerDisplay {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--crimson);
+}
+
+/* ============================================================ */
+/* БЛОК 16: АДАПТАЦИЯ (Media Queries)                          */
+/* ============================================================ */
+
+@media (max-width: 480px) {
+    .dashboard-container {
+        padding: 1rem 1rem 90px;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .category-card {
+        padding: 0.6rem 1rem;
+        border-radius: 14px;
+    }
+    
+    .category-card .category-icon {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        border-radius: 12px;
+    }
+    
+    .category-card .category-info h3 {
+        font-size: 0.95rem;
+    }
+    
+    .category-card .category-info p {
+        font-size: 0.7rem;
+    }
+    
+    .stats-summary {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 0.5rem;
+    }
+    
+    .stat-big-card {
+        padding: 0.8rem 0.5rem;
+    }
+    
+    .stat-big-label {
+        font-size: 0.7rem;
+    }
+    
+    .stat-big-number {
+        font-size: 1.6rem;
+    }
+    
+    .calendar-day {
+        font-size: 0.8rem;
+        padding: 0.4rem 0;
+    }
+    
+    .bottom-nav {
+        width: 240px;
+        padding: 6px 10px;
+        bottom: 16px;
+    }
+    
+    .nav-item i {
+        font-size: 18px;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    
+    .profile-block {
+        padding: 1.2rem 1rem;
+    }
+    
+    .profile-avatar {
+        width: 64px;
+        height: 64px;
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .category-card {
+        padding: 0.5rem 0.8rem;
+        border-radius: 12px;
+    }
+    
+    .category-card .category-icon {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        border-radius: 10px;
+    }
+    
+    .category-card .category-info h3 {
+        font-size: 0.85rem;
+    }
+    
+    .category-card .category-info p {
+        font-size: 0.65rem;
+    }
+}

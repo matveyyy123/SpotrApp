@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SportApp — Профиль</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="main-content">
+    <div class="profile-container">
+      <div class="profile-block">
+        <div class="profile-avatar"><span id="profileInitials">А</span></div>
+        <h2 id="profileName">Пользователь</h2>
+        <p id="profileEmail">email@mail.ru</p>
+        <div class="profile-info">
+          <i class="fa-regular fa-calendar"></i>
+          <span>Дата регистрации: <strong id="profileDate">—</strong></span>
+        </div>
+        <button class="btn-primary-center" id="editProfileBtn">
+          <i class="fa-regular fa-pen-to-square"></i> Редактировать профиль
+        </button>
+        <div id="editForm" style="display:none;margin-top:1.5rem;text-align:left;">
+          <div class="form-group"><label>Имя</label><input type="text" id="editName" /></div>
+          <div class="form-group"><label>Почта</label><input type="email" id="editEmail" /></div>
+          <button class="btn-primary" id="saveProfileBtn">Сохранить</button>
+          <button class="btn-secondary" id="cancelEditBtn">Отмена</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <div class="nav-items">
+      <button class="nav-item" onclick="window.location.href='stats.html'">
+        <i class="fa-solid fa-chart-bar"></i>
+      </button>
+      <button class="nav-item" onclick="window.location.href='index.html'">
+        <i class="fa-solid fa-dumbbell"></i>
+      </button>
+      <button class="nav-item active" onclick="window.location.href='profile.html'">
+        <i class="fa-solid fa-user"></i>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    function getUserProfile() {
+      return {
+        name: localStorage.getItem('userName') || 'Пользователь',
+        email: localStorage.getItem('userEmail') || 'user@example.com',
+        createdAt: localStorage.getItem('userCreatedAt') || new Date().toISOString()
+      };
+    }
+
+    function saveUserProfile(name, email) {
+      localStorage.setItem('userName', name);
+      localStorage.setItem('userEmail', email);
+      if (!localStorage.getItem('userCreatedAt')) {
+        localStorage.setItem('userCreatedAt', new Date().toISOString());
+      }
+    }
+
+    function loadProfile() {
+      const user = getUserProfile();
+      document.getElementById('profileName').textContent = user.name;
+      document.getElementById('profileEmail').textContent = user.email;
+      document.getElementById('profileInitials').textContent = user.name.charAt(0).toUpperCase();
+      if (user.createdAt) {
+        const date = new Date(user.createdAt);
+        document.getElementById('profileDate').textContent = date.toLocaleDateString('ru-RU', {
+          day: '2-digit', month: 'long', year: 'numeric'
+        });
+      }
+      document.getElementById('editName').value = user.name;
+      document.getElementById('editEmail').value = user.email;
+    }
+
+    const editBtn = document.getElementById('editProfileBtn');
+    const editForm = document.getElementById('editForm');
+    const cancelBtn = document.getElementById('cancelEditBtn');
+
+    editBtn?.addEventListener('click', () => {
+      editForm.style.display = 'block';
+      editBtn.style.display = 'none';
+    });
+    cancelBtn?.addEventListener('click', () => {
+      editForm.style.display = 'none';
+      editBtn.style.display = '';
+    });
+
+    document.getElementById('saveProfileBtn')?.addEventListener('click', () => {
+      const name = document.getElementById('editName').value.trim();
+      const email = document.getElementById('editEmail').value.trim();
+      if (!name || !email) { 
+        alert('Заполните все поля');
+        return; 
+      }
+      saveUserProfile(name, email);
+      loadProfile();
+      editForm.style.display = 'none';
+      editBtn.style.display = '';
+    });
+
+    loadProfile();
+  </script>
+</body>
+</html>

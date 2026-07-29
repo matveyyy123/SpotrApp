@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SportApp — Тренировка</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="dashboard-container">
+    <header class="dashboard-header">
+      <h1 id="workoutTitle">ТРЕНИРОВКА - РУКИ</h1>
+    </header>
+
+    <div class="workout-levels" id="exercisesContainer"></div>
+
+    <div id="timerDisplay" style="text-align:center; margin-top:1.5rem; font-size:2rem; font-weight:700; color:var(--crimson);">00:00</div>
+
+    <button class="btn-primary" id="actionButton" style="width:100%; margin-top:1.5rem; padding:1rem; font-size:1.2rem;">
+      Начать тренировку
+    </button>
+  </main>
+
+  <nav class="bottom-nav">
+    <div class="nav-items">
+      <button class="nav-item" onclick="window.location.href='stats.html'">
+        <i class="fa-solid fa-chart-bar"></i>
+      </button>
+      <button class="nav-item active" onclick="window.location.href='index.html'">
+        <i class="fa-solid fa-dumbbell"></i>
+      </button>
+      <button class="nav-item" onclick="window.location.href='profile.html'">
+        <i class="fa-solid fa-user"></i>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    const exercisesData = {
+      'Руки': [
+        { name: 'Жим гантелей над плечами вверх', reps: '12', sets: '3' },
+        { name: 'Махи в стороны с гантелями', reps: '12', sets: '3' },
+        { name: 'Французский жим с гантелью', reps: '12', sets: '3' },
+        { name: 'Подъем гантелей на бицепс', reps: '12', sets: '3' },
+        { name: 'Обратные отжимания от стула', reps: '12', sets: '3' },
+        { name: 'Жим гантелей от плеч лежа', reps: '12', sets: '3' },
+        { name: 'Жим гантелей от груди лежа', reps: '12', sets: '3' }
+      ],
+      'Пресс': [
+        { name: 'Скручивания', reps: '12', sets: '1' },
+        { name: 'Скручивания с вытянутыми руками', reps: '12', sets: '2' },
+        { name: 'Ножницы ногами лежа', reps: '24', sets: '1' },
+        { name: 'Скручивания с вытянутыми руками и поднятыми ногами', reps: '12', sets: '2' },
+        { name: 'Сгибания поднятых ног к прессу', reps: '12', sets: '2' },
+        { name: 'Планка', reps: '60 сек', sets: '1' },
+        { name: 'Подъем прямых ног лежа', reps: '12', sets: '2' },
+        { name: 'Широкая планка', reps: '60 сек', sets: '1' },
+        { name: 'Лодочка', reps: '12', sets: '2' },
+        { name: 'Твист сидя', reps: '24', sets: '1' },
+        { name: 'Боковая планка на левую сторону', reps: '60 сек', sets: '1' },
+        { name: 'Боковая планка на правую сторону', reps: '60 сек', sets: '1' },
+        { name: 'Разносторонний подъем рук и ног лежа', reps: '12', sets: '2' },
+        { name: 'Планка альпинист', reps: '24', sets: '1' }
+      ],
+      'Грудь': [
+        { name: 'Отжимания от коленей', reps: '12', sets: '1' },
+        { name: 'Отжимания с упором спереди', reps: '10', sets: '3' },
+        { name: 'Отжимания от пола', reps: '8', sets: '3' },
+        { name: 'Обратные отжимания от стула', reps: '12', sets: '3' },
+        { name: 'Широкие отжимания', reps: '6', sets: '3' },
+        { name: 'Лежа поднятие гантелей от груди наверх', reps: '12', sets: '3' },
+        { name: 'Отжимания с упором сзади', reps: '4', sets: '3' },
+        { name: 'Лежа поднятие гантелей от сторон наверх', reps: '12', sets: '3' },
+        { name: 'Отжимания со сведенными ладонями', reps: '2', sets: '3' },
+        { name: 'Отжимания от коленей', reps: '12', sets: '1' }
+      ],
+      'Спина': [
+        { name: 'Подтягивания', reps: '8', sets: '4' },
+        { name: 'Тяга штанги в наклоне', reps: '10', sets: '4' },
+        { name: 'Тяга вертикального блока', reps: '12', sets: '3' },
+        { name: 'Тяга горизонтального блока', reps: '12', sets: '3' },
+        { name: 'Гиперэкстензия', reps: '15', sets: '3' },
+        { name: 'Тяга гантели одной рукой', reps: '12', sets: '3' }
+      ],
+      'Ноги': [
+        { name: 'Приседания со штангой', reps: '10', sets: '4' },
+        { name: 'Румынская тяга', reps: '12', sets: '4' },
+        { name: 'Жим ногами', reps: '15', sets: '3' },
+        { name: 'Выпады с гантелями', reps: '12', sets: '3' },
+        { name: 'Сгибание ног лежа', reps: '15', sets: '3' },
+        { name: 'Разгибание ног сидя', reps: '15', sets: '3' }
+      ]
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const category = urlParams.get('category') || 'Руки';
+    document.getElementById('workoutTitle').textContent = 'ТРЕНИРОВКА - ' + category.toUpperCase();
+
+    const exercises = exercisesData[category] || exercisesData['Руки'];
+
+    const container = document.getElementById('exercisesContainer');
+    container.innerHTML = exercises.map((ex, index) => `
+      <div class="level-card" style="cursor:default;">
+        <div class="level-icon" style="background:var(--crimson-light); color:var(--crimson); font-weight:700; font-size:1.2rem;">
+          ${index + 1}
+        </div>
+        <div class="level-info">
+          <h3>${ex.name}</h3>
+          <p>${ex.sets} подходов × ${ex.reps} повторений</p>
+        </div>
+      </div>
+    `).join('');
+
+    let timerInterval = null;
+    let seconds = 0;
+    let isWorkoutActive = false;
+
+    const timerDisplay = document.getElementById('timerDisplay');
+    const actionButton = document.getElementById('actionButton');
+
+    function formatTime(sec) {
+      const m = String(Math.floor(sec / 60)).padStart(2, '0');
+      const s = String(sec % 60).padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function startTimer() {
+      if (timerInterval) return;
+      isWorkoutActive = true;
+      timerInterval = setInterval(() => {
+        seconds++;
+        timerDisplay.textContent = formatTime(seconds);
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      isWorkoutActive = false;
+      return seconds;
+    }
+
+    function finishWorkout() {
+      const durationMinutes = Math.ceil(stopTimer() / 60);
+      const title = category;
+      const date = new Date().toISOString();
+      
+      const newWorkout = {
+        _id: Date.now().toString(),
+        title,
+        notes: '',
+        duration: durationMinutes > 0 ? durationMinutes : 1,
+        date: date,
+        exercises: exercises.map((ex, i) => ({
+          name: ex.name,
+          sets: parseInt(ex.sets) || 3,
+          reps: parseInt(ex.reps) || 10,
+          weight: 0,
+          order: i
+        }))
+      };
+
+      const workouts = JSON.parse(localStorage.getItem('myWorkouts')) || [];
+      workouts.push(newWorkout);
+      localStorage.setItem('myWorkouts', JSON.stringify(workouts));
+
+      actionButton.textContent = 'Начать тренировку';
+      timerDisplay.textContent = '00:00';
+      seconds = 0;
+      
+      window.location.href = 'stats.html';
+    }
+
+    actionButton.addEventListener('click', function() {
+      if (!isWorkoutActive) {
+        startTimer();
+        this.textContent = 'Завершить тренировку';
+      } else {
+        finishWorkout();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SportApp — Тренировки</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="dashboard-container">
+    <header class="dashboard-header">
+      <h1>ТРЕНИРОВКИ</h1>
+    </header>
+
+    <div class="catalog-grid" id="catalogGrid">
+      <div class="category-card" data-category="Руки">
+        <div class="category-icon"><img src="../images/bodybuilding.png" style="width:50px;height:50px;"></div>
+        <div class="category-info"><h3>Руки</h3><p>7 упражнений</p></div>
+      </div>
+      <div class="category-card" data-category="Пресс">
+        <div class="category-icon"><img src="../images/press.png" style="width:50px;height:50px;"></div>
+        <div class="category-info"><h3>Пресс</h3><p>15 упражнений</p></div>
+      </div>
+      <div class="category-card" data-category="Грудь">
+        <div class="category-icon"><img src="../images/breast.png" style="width:50px;height:50px;"></div>
+        <div class="category-info"><h3>Грудь</h3><p>10 упражнений</p></div>
+      </div>
+      <div class="category-card" data-category="Спина">
+        <div class="category-icon"><img src="../images/back.png" style="width:50px;height:50px;"></div>
+        <div class="category-info"><h3>Спина</h3><p>6 упражнений</p></div>
+      </div>
+      <div class="category-card" data-category="Ноги">
+        <div class="category-icon"><img src="../images/legs.png" style="width:50px;height:50px;"></div>
+        <div class="category-info"><h3>Ноги</h3><p>6 упражнений</p></div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <div class="nav-items">
+      <button class="nav-item" onclick="window.location.href='stats.html'">
+        <i class="fa-solid fa-chart-bar"></i>
+      </button>
+      <button class="nav-item active" onclick="window.location.href='index.html'">
+        <i class="fa-solid fa-dumbbell"></i>
+      </button>
+      <button class="nav-item" onclick="window.location.href='profile.html'">
+        <i class="fa-solid fa-user"></i>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    document.querySelectorAll('.category-card').forEach(card => {
+      card.addEventListener('click', function() {
+        const name = this.querySelector('.category-info h3')?.textContent;
+        if (name) {
+          window.location.href = 'workout-detail.html?category=' + encodeURIComponent(name);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
