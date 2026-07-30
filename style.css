@@ -47,37 +47,37 @@ body {
 .theme-gray { --accent: #607D8B; --accent-dark: #455A64; --accent-light: #ECEFF1; }
 
 /* ============================================================ */
-/* ФИКС ДЛЯ ЧЕЛКИ IPHONE - принудительный отступ              */
-/* ============================================================ */
-body {
-    padding-top: 44px !important;
-}
-
-.dashboard-header {
-    padding-top: 10px !important;
-}
-
-.page {
-    padding-top: 0 !important;
-}
-
-/* ============================================================ */
 /* СТРАНИЦЫ                                                      */
 /* ============================================================ */
 .page { display: none; }
 .page.active { display: block; }
 
 /* ============================================================ */
-/* КОНТЕЙНЕРЫ                                                    */
+/* КОНТЕЙНЕРЫ - ОДИНАКОВЫЙ PADDING ДЛЯ ВСЕХ СТРАНИЦ           */
 /* ============================================================ */
-.main-content {
-    padding-top: 1.5rem;
-    padding-bottom: 100px;
-}
-.dashboard-container {
+.main-content,
+.dashboard-container,
+.profile-container {
     max-width: 500px;
     margin: 0 auto;
     padding: 1.5rem 1.2rem 100px;
+}
+
+/* Убираем лишние отступы у main-content если он внутри profile-container */
+.main-content {
+    padding: 0;
+    max-width: none;
+}
+
+/* ============================================================ */
+/* ФИКС ДЛЯ ЧЕЛКИ IPHONE                                        */
+/* ============================================================ */
+body {
+    padding-top: env(safe-area-inset-top, 0px);
+}
+
+.dashboard-header {
+    padding-top: 10px;
 }
 
 /* ============================================================ */
@@ -423,7 +423,6 @@ body {
     flex-direction: column;
     gap: 0.6rem;
     padding-right: 0.3rem;
-
 }
 
 #workoutHistory > div {
@@ -558,11 +557,6 @@ body {
 /* ============================================================ */
 /* ПРОФИЛЬ                                                       */
 /* ============================================================ */
-.profile-container {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 0 1.2rem;
-}
 .profile-block {
     background: var(--white);
     border-radius: 16px;
@@ -882,9 +876,12 @@ body {
 /* АДАПТАЦИЯ                                                     */
 /* ============================================================ */
 @media (max-width: 480px) {
-    .dashboard-container {
+    .main-content,
+    .dashboard-container,
+    .profile-container {
         padding: 1rem 1rem 90px;
     }
+
     .dashboard-header h1 {
         font-size: 1.5rem;
     }
