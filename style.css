@@ -47,6 +47,21 @@ body {
 .theme-gray { --accent: #607D8B; --accent-dark: #455A64; --accent-light: #ECEFF1; }
 
 /* ============================================================ */
+/* SAFE AREA ДЛЯ IPHONE                                         */
+/* ============================================================ */
+.dashboard-container {
+    padding-top: calc(1.5rem + env(safe-area-inset-top, 20px));
+}
+
+.profile-container {
+    padding-top: calc(0.5rem + env(safe-area-inset-top, 20px));
+}
+
+.main-content {
+    padding-top: calc(1.5rem + env(safe-area-inset-top, 20px));
+}
+
+/* ============================================================ */
 /* СТРАНИЦЫ                                                      */
 /* ============================================================ */
 .page { display: none; }
