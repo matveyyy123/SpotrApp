@@ -1353,7 +1353,9 @@ async function loadProfile() {
     }
     
     document.getElementById('editName').value = profile.displayName || '';
+    document.getElementById('editEmail').value = profile.email || user.email || ''; // ← добавляем
     document.getElementById('editNameError').textContent = '';
+    document.getElementById('editEmailError').textContent = ''; // ← очищаем ошибку
     
     document.getElementById('levelLvl').textContent = currentLevel.id + ' LVL';
     document.getElementById('levelTitle').textContent = currentLevel.name;
@@ -1394,21 +1396,45 @@ if (cancelProfileBtn) {
 if (saveProfileBtn) {
     saveProfileBtn.addEventListener('click', async () => {
         const nameEl = document.getElementById('editName');
+        const emailEl = document.getElementById('editEmail');
         const nameError = document.getElementById('editNameError');
+        const emailError = document.getElementById('editEmailError');
         const name = nameEl ? nameEl.value.trim() : '';
+        const email = emailEl ? emailEl.value.trim() : '';
         
+        let hasError = false;
         if (!name) {
             nameError.textContent = 'Введите имя и фамилию';
             nameEl.classList.add('error');
-            return;
+            hasError = true;
         } else {
             nameError.textContent = '';
             nameEl.classList.remove('error');
         }
         
+        if (!email) {
+            emailError.textContent = 'Введите почту';
+            emailEl.classList.add('error');
+            hasError = true;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            emailError.textContent = 'Неверный формат почты';
+            emailEl.classList.add('error');
+            hasError = true;
+        } else {
+            emailError.textContent = '';
+            emailEl.classList.remove('error');
+        }
+        
+        if (hasError) return;
+        
         const user = await getFirebaseUser();
         if (user) {
-            await updateUserProfile(user.uid, { displayName: name });
+            await updateUserProfile(user.uid, { 
+                displayName: name,
+                email: email
+            });
+            // Обновляем отображение почты на странице
+            document.getElementById('profileEmailDisplay').textContent = email;
             loadProfile();
         }
         

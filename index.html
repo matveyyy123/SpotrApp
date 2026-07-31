@@ -221,13 +221,19 @@
                     </button>
                 </div>
 
-                <!-- ПРИ РЕДАКТИРОВАНИИ: ПОЯВЛЯЕТСЯ ЭТОТ БЛОК -->
                 <div id="profileEdit" style="display:none;">
                     <!-- Поле для изменения имени -->
                     <div class="form-group">
                         <label>Имя Фамилия</label>
                         <input type="text" id="editName" maxlength="30" />
                         <span class="error-message" id="editNameError" style="color:#EF4444; font-size:0.8rem; display:block; min-height:1.2rem;"></span>
+                    </div>
+
+                    <!-- НОВОЕ ПОЛЕ ДЛЯ ПОЧТЫ -->
+                    <div class="form-group">
+                        <label>Почта</label>
+                        <input type="email" id="editEmail" maxlength="50" />
+                        <span class="error-message" id="editEmailError" style="color:#EF4444; font-size:0.8rem; display:block; min-height:1.2rem;"></span>
                     </div>
 
                     <!-- Акцентный цвет -->
