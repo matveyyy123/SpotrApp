@@ -207,8 +207,8 @@ body {
     min-width: 0;
 }
 .category-card .category-info h3 {
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 600;
     color: var(--dark);
     margin: 0;
     word-break: break-word;
@@ -268,6 +268,23 @@ body {
     margin: 0;
     margin-top: 0.1rem;
     word-break: break-word;
+}
+
+.level-icon {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    border-radius: 14px;
+    background: var(--accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.level-icon img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
 }
 
 /* СТАТУС УПРАЖНЕНИЙ - большой фон с маленьким квадратиком */
@@ -1009,6 +1026,31 @@ body {
 #friendsList,
 #searchResults {
     margin-top: 0.8rem;
+}
+
+/* ============================================================ */
+/* КНОПКА УДАЛЕНИЯ ДРУГА                                        */
+/* ============================================================ */
+.friend-delete-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--slate);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: none;
+}
+.friend-delete-btn:active {
+    opacity: 0.6;
+}
+.friend-delete-btn:hover {
+    color: #EF4444;
 }
 
 /* ============================================================ */

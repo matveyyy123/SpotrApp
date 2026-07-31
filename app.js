@@ -1,64 +1,178 @@
 // ============================================================
-// ДАННЫЕ УПРАЖНЕНИЙ (ГОТОВЫЕ ТРЕНИРОВКИ)
+// ДАННЫЕ УПРАЖНЕНИЙ (ГОТОВЫЕ ТРЕНИРОВКИ С УРОВНЯМИ)
 // ============================================================
 const exercisesData = {
-    'Руки': [
-        { name: 'Жим гантелей над плечами вверх', reps: '12', sets: '3' },
-        { name: 'Махи в стороны с гантелями', reps: '12', sets: '3' },
-        { name: 'Французский жим с гантелью', reps: '12', sets: '3' },
-        { name: 'Подъем гантелей на бицепс', reps: '12', sets: '3' },
-        { name: 'Обратные отжимания от стула', reps: '12', sets: '3' },
-        { name: 'Жим гантелей от плеч лежа', reps: '12', sets: '3' },
-        { name: 'Жим гантелей от груди лежа', reps: '12', sets: '3' }
-    ],
-    'Пресс': [
-        { name: 'Скручивания', reps: '12', sets: '1' },
-        { name: 'Скручивания с вытянутыми руками', reps: '12', sets: '2' },
-        { name: 'Ножницы ногами лежа', reps: '24', sets: '1' },
-        { name: 'Скручивания с вытянутыми руками и поднятыми ногами', reps: '12', sets: '2' },
-        { name: 'Сгибания поднятых ног к прессу', reps: '12', sets: '2' },
-        { name: 'Планка', reps: '60 сек', sets: '1' },
-        { name: 'Подъем прямых ног лежа', reps: '12', sets: '2' },
-        { name: 'Широкая планка', reps: '60 сек', sets: '1' },
-        { name: 'Лодочка', reps: '12', sets: '2' },
-        { name: 'Твист сидя', reps: '24', sets: '1' },
-        { name: 'Боковая планка на левую сторону', reps: '60 сек', sets: '1' },
-        { name: 'Боковая планка на правую сторону', reps: '60 сек', sets: '1' },
-        { name: 'Разносторонний подъем рук и ног лежа', reps: '12', sets: '2' },
-        { name: 'Планка альпинист', reps: '24', sets: '1' }
-    ],
-    'Грудь': [
-        { name: 'Отжимания от коленей', reps: '12', sets: '1' },
-        { name: 'Отжимания с упором спереди', reps: '10', sets: '3' },
-        { name: 'Отжимания от пола', reps: '8', sets: '3' },
-        { name: 'Обратные отжимания от стула', reps: '12', sets: '3' },
-        { name: 'Широкие отжимания', reps: '6', sets: '3' },
-        { name: 'Лежа поднятие гантелей от груди наверх', reps: '12', sets: '3' },
-        { name: 'Отжимания с упором сзади', reps: '4', sets: '3' },
-        { name: 'Лежа поднятие гантелей от сторон наверх', reps: '12', sets: '3' },
-        { name: 'Отжимания со сведенными ладонями', reps: '2', sets: '3' },
-        { name: 'Отжимания от коленей', reps: '12', sets: '1' }
-    ],
-    'Спина': [
-        { name: 'Подтягивания', reps: '8', sets: '4' },
-        { name: 'Тяга штанги в наклоне', reps: '10', sets: '4' },
-        { name: 'Тяга вертикального блока', reps: '12', sets: '3' },
-        { name: 'Тяга горизонтального блока', reps: '12', sets: '3' },
-        { name: 'Гиперэкстензия', reps: '15', sets: '3' },
-        { name: 'Тяга гантели одной рукой', reps: '12', sets: '3' }
-    ],
-    'Ноги': [
-        { name: 'Приседания с гантелями', reps: '12', sets: '3' },
-        { name: 'Выпады вперед с гантелями', reps: '12', sets: '3' },
-        { name: 'Ягодичный мостик с гантелью', reps: '12', sets: '3' },
-        { name: 'Болгарские сплит-приседания', reps: '12', sets: '3' },
-        { name: 'Подъем на носки с гантелями', reps: '12', sets: '3' },
-        { name: 'Приседания с гантелью снизу', reps: '12', sets: '3' },
-        { name: 'Выпады вправо с гантелями', reps: '12', sets: '2' },
-        { name: 'Выпады влево с гантелями', reps: '12', sets: '2' },
-        { name: 'Приседания с паузой снизу', reps: '12', sets: '1' }
-    ]
+    'Руки': {
+        '1 LVL': [
+            { name: 'Отжимания от стены', reps: '12', sets: '2' },
+            { name: 'Сгибание рук с резинкой', reps: '15', sets: '2' },
+            { name: 'Разгибание рук с резинкой', reps: '15', sets: '2' },
+            { name: 'Планка на вытянутых руках', reps: '20 сек', sets: '2' },
+            { name: 'Отжимания от коленей', reps: '10', sets: '2' }
+        ],
+        '2 LVL': [
+            { name: 'Отжимания от пола узким хватом', reps: '10', sets: '3' },
+            { name: 'Отжимания от пола широким хватом', reps: '10', sets: '3' },
+            { name: 'Алмазные отжимания', reps: '8', sets: '3' },
+            { name: 'Сгибание рук с гантелями (бицепс)', reps: '12', sets: '3' },
+            { name: 'Французский жим с гантелью стоя', reps: '12', sets: '3' },
+            { name: 'Обратные отжимания от стула', reps: '10', sets: '3' },
+            { name: 'Планка на локтях', reps: '30 сек', sets: '3' }
+        ],
+        '3 LVL': [
+            { name: 'Отжимания на одной руке', reps: '5', sets: '3' },
+            { name: 'Отжимания с хлопком', reps: '8', sets: '3' },
+            { name: 'Отжимания с узкой постановкой рук', reps: '12', sets: '4' },
+            { name: 'Сгибание рук с гантелями (бицепс)', reps: '15', sets: '4' },
+            { name: 'Молотковые сгибания', reps: '12', sets: '4' },
+            { name: 'Французский жим с гантелью стоя', reps: '12', sets: '4' },
+            { name: 'Обратные отжимания от стула с весом', reps: '12', sets: '4' },
+            { name: 'Планка на одной руке', reps: '30 сек', sets: '3' }
+        ]
+    },
+    'Пресс': {
+        '1 LVL': [
+            { name: 'Скручивания лёжа', reps: '12', sets: '2' },
+            { name: 'Подъем ног лёжа', reps: '10', sets: '2' },
+            { name: 'Планка на коленях', reps: '20 сек', sets: '2' },
+            { name: 'Боковая планка на коленях', reps: '15 сек', sets: '2' },
+            { name: 'Лодочка', reps: '10', sets: '2' }
+        ],
+        '2 LVL': [
+            { name: 'Скручивания с вытянутыми руками', reps: '15', sets: '3' },
+            { name: 'Подъем ног в висе (на турнике)', reps: '10', sets: '3' },
+            { name: 'Ножницы ногами лёжа', reps: '20', sets: '3' },
+            { name: 'Планка на локтях', reps: '40 сек', sets: '3' },
+            { name: 'Боковая планка', reps: '25 сек', sets: '3' },
+            { name: 'Лодочка с задержкой', reps: '15', sets: '3' },
+            { name: 'Твист сидя', reps: '20', sets: '3' }
+        ],
+        '3 LVL': [
+            { name: 'Скручивания с весом', reps: '20', sets: '4' },
+            { name: 'Подъем ног в висе (на турнике)', reps: '15', sets: '4' },
+            { name: 'Ножницы ногами лёжа', reps: '30', sets: '4' },
+            { name: 'Планка на локтях с подъемом ног', reps: '45 сек', sets: '4' },
+            { name: 'Боковая планка с подъемом ног', reps: '30 сек', sets: '4' },
+            { name: 'Лодочка с задержкой', reps: '20', sets: '4' },
+            { name: 'Твист сидя с весом', reps: '25', sets: '4' },
+            { name: 'Подъем ног лёжа под углом 45°', reps: '15', sets: '4' }
+        ]
+    },
+    'Грудь': {
+        '1 LVL': [
+            { name: 'Отжимания от коленей', reps: '12', sets: '2' },
+            { name: 'Отжимания от стены', reps: '15', sets: '2' },
+            { name: 'Разводка рук с резинкой', reps: '15', sets: '2' },
+            { name: 'Планка на вытянутых руках', reps: '20 сек', sets: '2' },
+            { name: 'Отжимания с упором спереди', reps: '8', sets: '2' }
+        ],
+        '2 LVL': [
+            { name: 'Отжимания от пола', reps: '12', sets: '3' },
+            { name: 'Широкие отжимания', reps: '10', sets: '3' },
+            { name: 'Отжимания с узкой постановкой рук', reps: '10', sets: '3' },
+            { name: 'Отжимания с ногами на возвышении', reps: '10', sets: '3' },
+            { name: 'Разводка рук с гантелями лёжа', reps: '12', sets: '3' },
+            { name: 'Планка с переходом', reps: '30 сек', sets: '3' }
+        ],
+        '3 LVL': [
+            { name: 'Отжимания с хлопком', reps: '10', sets: '4' },
+            { name: 'Отжимания на одной руке', reps: '5', sets: '4' },
+            { name: 'Отжимания с ногами на возвышении', reps: '15', sets: '4' },
+            { name: 'Отжимания в алмаз', reps: '12', sets: '4' },
+            { name: 'Жим гантелей лёжа', reps: '12', sets: '4' },
+            { name: 'Разводка гантелей лёжа', reps: '15', sets: '4' },
+            { name: 'Отжимания с паузой внизу', reps: '10', sets: '4' },
+            { name: 'Планка на одной руке', reps: '30 сек', sets: '3' }
+        ]
+    },
+    'Ноги': {
+        '1 LVL': [
+            { name: 'Приседания без веса', reps: '15', sets: '2' },
+            { name: 'Выпады на месте', reps: '10', sets: '2' },
+            { name: 'Подъем на носки стоя', reps: '15', sets: '2' },
+            { name: 'Ягодичный мостик', reps: '15', sets: '2' },
+            { name: 'Приседания у стены', reps: '20 сек', sets: '2' }
+        ],
+        '2 LVL': [
+            { name: 'Приседания с гантелями', reps: '15', sets: '3' },
+            { name: 'Выпады вперед с гантелями', reps: '12', sets: '3' },
+            { name: 'Болгарские сплит-приседания', reps: '10', sets: '3' },
+            { name: 'Подъем на носки с гантелями', reps: '15', sets: '3' },
+            { name: 'Ягодичный мостик с гантелью', reps: '15', sets: '3' },
+            { name: 'Приседания с паузой внизу', reps: '10', sets: '3' }
+        ],
+        '3 LVL': [
+            { name: 'Приседания с гантелями (глубокие)', reps: '20', sets: '4' },
+            { name: 'Выпады вперед с гантелями', reps: '15', sets: '4' },
+            { name: 'Болгарские сплит-приседания', reps: '12', sets: '4' },
+            { name: 'Румынская тяга с гантелями', reps: '15', sets: '4' },
+            { name: 'Подъем на носки с гантелями', reps: '20', sets: '4' },
+            { name: 'Ягодичный мостик с гантелью', reps: '20', sets: '4' },
+            { name: 'Приседания с паузой внизу', reps: '15', sets: '4' },
+            { name: 'Выпады в стороны', reps: '12', sets: '4' }
+        ]
+    },
+    'Спина': {
+        '1 LVL': [
+            { name: 'Тяга резинки к груди', reps: '15', sets: '2' },
+            { name: 'Гиперэкстензия лёжа', reps: '12', sets: '2' },
+            { name: 'Лодочка', reps: '10', sets: '2' },
+            { name: 'Тяга резинки к поясу', reps: '12', sets: '2' },
+            { name: 'Планка на вытянутых руках', reps: '20 сек', sets: '2' }
+        ],
+        '2 LVL': [
+            { name: 'Подтягивания (с резинкой)', reps: '8', sets: '3' },
+            { name: 'Тяга гантели к поясу', reps: '12', sets: '3' },
+            { name: 'Гиперэкстензия', reps: '15', sets: '3' },
+            { name: 'Лодочка с задержкой', reps: '12', sets: '3' },
+            { name: 'Тяга резинки к груди', reps: '15', sets: '3' },
+            { name: 'Планка на локтях', reps: '30 сек', sets: '3' }
+        ],
+        '3 LVL': [
+            { name: 'Подтягивания', reps: '10', sets: '4' },
+            { name: 'Тяга гантели к поясу', reps: '15', sets: '4' },
+            { name: 'Гиперэкстензия с весом', reps: '20', sets: '4' },
+            { name: 'Лодочка с задержкой', reps: '15', sets: '4' },
+            { name: 'Тяга резинки к груди', reps: '20', sets: '4' },
+            { name: 'Планка на локтях с подъемом рук', reps: '40 сек', sets: '4' },
+            { name: 'Подтягивания широким хватом', reps: '8', sets: '4' },
+            { name: 'Тяга гантели к груди', reps: '12', sets: '4' }
+        ]
+    }
 };
+
+// Сохраняем исходные данные для сброса
+const exercisesDataDefault = JSON.parse(JSON.stringify(exercisesData));
+
+// Ключ для localStorage
+const STORAGE_KEY = 'sportapp_exercisesData';
+
+function loadExercisesData() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            for (const category in parsed) {
+                if (exercisesData[category]) {
+                    for (const level in parsed[category]) {
+                        exercisesData[category][level] = parsed[category][level];
+                    }
+                } else {
+                    exercisesData[category] = parsed[category];
+                }
+            }
+        } catch (e) {
+            console.warn('Ошибка загрузки данных тренировок:', e);
+        }
+    }
+}
+
+function saveExercisesData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(exercisesData));
+}
+
+// Загружаем сохранённые данные при старте
+loadExercisesData();
 
 // ============================================================
 // НОВЫЕ УРОВНИ (8 уровней, без округления)
@@ -298,11 +412,14 @@ window.navigateTo = function(page, params) {
     if (page === 'profile') {
         loadProfile();
     }
+    if (page === 'level-select' && params) {
+        loadLevelSelect(params.category);
+    }
     if (page === 'workout-detail' && params) {
-        loadWorkoutDetail(params.category, params.isCustom, params.id);
+        loadWorkoutDetail(params.category, params.level, params.isCustom, params.id);
     }
     if (page === 'workout-edit' && params) {
-        loadEditPage(params.category, params.isCustom, params.id);
+        loadEditPage(params.category, params.isCustom, params.id, params.level);
     }
     if (page === 'workouts') {
         renderMyWorkouts();
@@ -340,110 +457,55 @@ document.querySelectorAll('.category-card').forEach(card => {
     card.addEventListener('click', function() {
         const name = this.querySelector('.category-info h3')?.textContent;
         if (name) {
-            window.navigateTo('workout-detail', { category: name, isCustom: false });
+            window.navigateTo('level-select', { category: name });
         }
     });
 });
 
 // ============================================================
-// ОБНОВЛЕНИЕ КОЛИЧЕСТВА УПРАЖНЕНИЙ НА ГЛАВНОЙ СТРАНИЦЕ
+// СТРАНИЦА ВЫБОРА УРОВНЯ
 // ============================================================
-function updateCategoryCount(category, count) {
-    const cards = document.querySelectorAll('.category-card');
-    cards.forEach(card => {
-        const nameEl = card.querySelector('.category-info h3');
-        if (nameEl && nameEl.textContent === category) {
-            const pEl = card.querySelector('.category-info p');
-            if (pEl) {
-                pEl.textContent = count + ' упражнений';
-            }
-        }
-    });
-}
-
-// ============================================================
-// МОИ ТРЕНИРОВКИ (localStorage)
-// ============================================================
-function getMyWorkouts() {
-    return JSON.parse(localStorage.getItem('myCustomWorkouts')) || [];
-}
-
-function saveMyWorkouts(workouts) {
-    localStorage.setItem('myCustomWorkouts', JSON.stringify(workouts));
-}
-
-function getWorkoutById(id) {
-    const all = getMyWorkouts();
-    return all.find(w => w._id === id);
-}
-
-function updateWorkout(id, data) {
-    const all = getMyWorkouts();
-    const index = all.findIndex(w => w._id === id);
-    if (index !== -1) {
-        all[index] = { ...all[index], ...data };
-        saveMyWorkouts(all);
-        return true;
+function loadLevelSelect(category) {
+    const titleEl = document.getElementById('levelSelectTitle');
+    if (titleEl) {
+        titleEl.textContent = 'ТРЕНИРОВКА - ' + category.toUpperCase();
     }
-    return false;
-}
 
-function deleteWorkout(id) {
-    const all = getMyWorkouts();
-    const filtered = all.filter(w => w._id !== id);
-    saveMyWorkouts(filtered);
-}
-
-function renderMyWorkouts() {
-    const container = document.getElementById('myWorkoutsList');
-    const workouts = getMyWorkouts();
+    const levels = ['1 LVL', '2 LVL', '3 LVL'];
+    const levelDescs = ['Начинающий', 'Любитель', 'Профессионал'];
     
-    if (workouts.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <span>📋</span>
-                <h3>Нет своих тренировок</h3>
-                <p>Создайте свою первую тренировку!</p>
+    const icons = {
+        'Руки': 'bodybuilding',
+        'Пресс': 'press',
+        'Грудь': 'breast',
+        'Спина': 'back',
+        'Ноги': 'legs'
+    };
+    const icon = icons[category] || 'bodybuilding';
+
+    const container = document.getElementById('levelsContainer');
+    container.innerHTML = levels.map((level, index) => {
+        const exercises = exercisesData[category]?.[level] || [];
+        const count = exercises.length;
+        return `
+            <div class="level-card" onclick="window.navigateTo('workout-detail', { category: '${category}', level: '${level}' })">
+                <div class="level-icon">
+                    <img src="images/${icon}.png">
+                </div>
+                <div class="level-info">
+                    <h3>${category} ${level}</h3>
+                    <p>${levelDescs[index]} · ${count} упражнений</p>
+                </div>
             </div>
         `;
-        return;
-    }
-    
-    container.innerHTML = workouts.map(w => `
-        <div class="category-card" onclick="window.navigateTo('workout-detail', { category: w.title, isCustom: true, id: w._id })">
-            <div class="category-icon">
-                <img src="images/${w.icon || 'bodybuilding'}.png">
-            </div>
-            <div class="category-info">
-                <h3>${w.title}</h3>
-                <p>${w.exercises?.length || 0} упражнений</p>
-            </div>
-            <button class="workout-delete" onclick="event.stopPropagation(); deleteCustomWorkout('${w._id}')">
-                <i class="fa-regular fa-trash-can"></i>
-            </button>
-        </div>
-    `).join('');
+    }).join('');
 }
-
-window.deleteCustomWorkout = function(id) {
-    if (confirm('Удалить эту тренировку?')) {
-        deleteWorkout(id);
-        renderMyWorkouts();
-    }
-};
-
-window.createNewWorkout = function() {
-    window.navigateTo('workout-edit', { 
-        category: 'Новая тренировка', 
-        isCustom: true, 
-        id: 'new' 
-    });
-};
 
 // ============================================================
 // СТРАНИЦА ДЕТАЛЕЙ ТРЕНИРОВКИ
 // ============================================================
 let currentCategory = '';
+let currentLevel = '1 LVL';
 let currentIsCustom = false;
 let currentWorkoutId = null;
 let timerInterval = null;
@@ -455,10 +517,11 @@ const timerDisplay = document.getElementById('timerDisplay');
 const actionButton = document.getElementById('actionButton');
 const editWorkoutBtn = document.getElementById('editWorkoutBtn');
 
-function loadWorkoutDetail(category, isCustom, id) {
+function loadWorkoutDetail(category, level, isCustom, id) {
     currentCategory = category;
-    currentIsCustom = isCustom;
-    currentWorkoutId = id;
+    currentLevel = level || '1 LVL';
+    currentIsCustom = isCustom || false;
+    currentWorkoutId = id || null;
     completedExercises = new Set();
     
     let exercises = [];
@@ -469,12 +532,12 @@ function loadWorkoutDetail(category, isCustom, id) {
             currentCategory = workout.title;
         }
     } else {
-        exercises = exercisesData[category] || exercisesData['Руки'];
+        exercises = exercisesData[category]?.[currentLevel] || exercisesData[category]?.['1 LVL'] || [];
     }
     
     const titleEl = document.getElementById('workoutDetailTitle');
     if (titleEl) {
-        titleEl.textContent = 'ТРЕНИРОВКА - ' + currentCategory.toUpperCase();
+        titleEl.textContent = 'ТРЕНИРОВКА - ' + currentCategory.toUpperCase() + ' ' + (level || '1 LVL');
     }
     
     const container = document.getElementById('exercisesContainer');
@@ -502,7 +565,11 @@ function loadWorkoutDetail(category, isCustom, id) {
     if (editWorkoutBtn) {
         editWorkoutBtn.style.display = 'block';
         editWorkoutBtn.onclick = function() {
-            window.navigateTo('workout-edit', { category: currentCategory, isCustom: currentIsCustom, id: currentWorkoutId });
+            const params = { category: currentCategory, isCustom: currentIsCustom, id: currentWorkoutId };
+            if (!currentIsCustom && currentLevel) {
+                params.level = currentLevel;
+            }
+            window.navigateTo('workout-edit', params);
         };
     }
     
@@ -641,7 +708,7 @@ async function finishWorkout() {
             exercises = workout.exercises || [];
         }
     } else {
-        exercises = exercisesData[currentCategory] || exercisesData['Руки'];
+        exercises = exercisesData[currentCategory]?.[currentLevel] || [];
     }
     
     const total = exercises.length;
@@ -664,7 +731,7 @@ async function finishWorkout() {
     
     if (user) {
         const result = await saveWorkoutToFirestore(user.uid, {
-            title: currentCategory,
+            title: currentCategory + ' ' + currentLevel,
             date: date,
             durationSeconds: totalTime,
             exercises: exercises.map((ex, i) => ({
@@ -722,19 +789,26 @@ let editWorkoutId = null;
 let editIsCustom = false;
 let editCategory = '';
 let editingExerciseIndex = null;
+let editLevel = '1 LVL';
 
-function loadEditPage(category, isCustom, id) {
+function loadEditPage(category, isCustom, id, level) {
     editCategory = category;
     editIsCustom = isCustom;
     editWorkoutId = id;
+    editLevel = level || '1 LVL';
     
     const titleEl = document.getElementById('editTitle');
     if (titleEl) {
         if (id === 'new') {
             titleEl.textContent = 'СОЗДАНИЕ ТРЕНИРОВКИ';
         } else {
-            titleEl.textContent = 'РЕДАКТИРОВАТЬ - ' + category.toUpperCase();
+            titleEl.textContent = 'РЕДАКТИРОВАТЬ - ' + category.toUpperCase() + ' ' + editLevel;
         }
+    }
+       // Показываем кнопку сброса только для готовых тренировок (не личных)
+    const resetBtn = document.getElementById('resetWorkoutBtn');
+    if (resetBtn) {
+        resetBtn.style.display = (isCustom || id === 'new') ? 'none' : 'block';
     }
     
     const nameInput = document.getElementById('editWorkoutName');
@@ -745,7 +819,7 @@ function loadEditPage(category, isCustom, id) {
                 nameInput.value = workout.title || category;
             }
         } else if (!isCustom) {
-            nameInput.value = category;
+            nameInput.value = category + ' ' + editLevel;
         } else {
             const workouts = getMyWorkouts();
             const count = workouts.length + 1;
@@ -765,7 +839,9 @@ function loadEditPage(category, isCustom, id) {
             editExercises = [];
         }
     } else if (!isCustom) {
-        editExercises = exercisesData[category] ? JSON.parse(JSON.stringify(exercisesData[category])) : [];
+        // ЗАГРУЖАЕМ УПРАЖНЕНИЯ КОНКРЕТНОГО УРОВНЯ
+        const targetLevel = editLevel || '1 LVL';
+        editExercises = exercisesData[category]?.[targetLevel] ? JSON.parse(JSON.stringify(exercisesData[category][targetLevel])) : [];
         const defaultIcon = category === 'Руки' ? 'bodybuilding' :
                            category === 'Пресс' ? 'press' :
                            category === 'Грудь' ? 'breast' :
@@ -902,22 +978,15 @@ window.openExerciseModal = function(index) {
     const ex = editExercises[index];
     if (!ex) return;
     
-    // Очищаем поля перед заполнением
     document.getElementById('modalExerciseName').value = '';
     document.getElementById('modalExerciseSets').value = '';
     document.getElementById('modalExerciseReps').value = '';
     
-    // Заполняем
     document.getElementById('modalExerciseName').value = ex.name || '';
     document.getElementById('modalExerciseSets').value = ex.sets || 3;
     document.getElementById('modalExerciseReps').value = ex.reps || 12;
     document.getElementById('exerciseModal').style.display = 'flex';
 };
-
-// ============================================================
-// ОГРАНИЧЕНИЕ ВВОДА ТОЛЬКО ЦИФР (уже не нужно, т.к. type=number)
-// ============================================================
-// Оставляем для совместимости, но теперь поля type="number"
 
 // ============================================================
 // МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ УПРАЖНЕНИЯ
@@ -975,6 +1044,7 @@ document.getElementById('saveEditBtn')?.addEventListener('click', function() {
     }
     
     if (editWorkoutId === 'new') {
+        // Создание личной тренировки
         const newWorkout = {
             _id: Date.now().toString(),
             title: title,
@@ -986,6 +1056,7 @@ document.getElementById('saveEditBtn')?.addEventListener('click', function() {
         saveMyWorkouts(workouts);
         alert('Тренировка создана!');
     } else if (editIsCustom) {
+        // Обновление личной тренировки
         updateWorkout(editWorkoutId, { 
             title: title, 
             icon: icon,
@@ -995,8 +1066,9 @@ document.getElementById('saveEditBtn')?.addEventListener('click', function() {
     } else {
         const category = editCategory;
         if (exercisesData[category]) {
-            exercisesData[category] = JSON.parse(JSON.stringify(editExercises));
-            updateCategoryCount(category, editExercises.length);
+            const targetLevel = editLevel || '1 LVL';
+            exercisesData[category][targetLevel] = JSON.parse(JSON.stringify(editExercises));
+            saveExercisesData(); // ← сохраняем в localStorage
             alert('Тренировка обновлена!');
         }
     }
@@ -1007,6 +1079,89 @@ document.getElementById('saveEditBtn')?.addEventListener('click', function() {
 document.getElementById('cancelEditBtn')?.addEventListener('click', function() {
     window.navigateTo('workouts');
 });
+
+// ============================================================
+// МОИ ТРЕНИРОВКИ (localStorage)
+// ============================================================
+function getMyWorkouts() {
+    return JSON.parse(localStorage.getItem('myCustomWorkouts')) || [];
+}
+
+function saveMyWorkouts(workouts) {
+    localStorage.setItem('myCustomWorkouts', JSON.stringify(workouts));
+}
+
+function getWorkoutById(id) {
+    const all = getMyWorkouts();
+    return all.find(w => w._id === id);
+}
+
+function updateWorkout(id, data) {
+    const all = getMyWorkouts();
+    const index = all.findIndex(w => w._id === id);
+    if (index !== -1) {
+        all[index] = { ...all[index], ...data };
+        saveMyWorkouts(all);
+        return true;
+    }
+    return false;
+}
+
+function deleteWorkout(id) {
+    const all = getMyWorkouts();
+    const filtered = all.filter(w => w._id !== id);
+    saveMyWorkouts(filtered);
+}
+
+function renderMyWorkouts() {
+    const container = document.getElementById('myWorkoutsList');
+    const workouts = getMyWorkouts();
+    
+    if (workouts.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <span>📋</span>
+                <h3>Нет своих тренировок</h3>
+                <p>Создайте свою первую тренировку!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = workouts.map(w => {
+        const workoutId = w._id;
+        const title = w.title;
+        return `
+            <div class="category-card" onclick="window.navigateTo('workout-detail', { category: '${title}', isCustom: true, id: '${workoutId}' })">
+                <div class="category-icon">
+                    <img src="images/${w.icon || 'bodybuilding'}.png">
+                </div>
+                <div class="category-info">
+                    <h3>${title}</h3>
+                    <p>${w.exercises?.length || 0} упражнений</p>
+                </div>
+                <button class="workout-delete" onclick="event.stopPropagation(); deleteCustomWorkout('${workoutId}')">
+                    <i class="fa-regular fa-trash-can"></i>
+                </button>
+            </div>
+        `;
+    }).join('');
+}
+
+window.deleteCustomWorkout = function(id) {
+    if (confirm('Удалить эту тренировку?')) {
+        deleteWorkout(id);
+        renderMyWorkouts();
+    }
+};
+
+window.createNewWorkout = function() {
+    window.navigateTo('workout-edit', { 
+        category: 'Новая тренировка', 
+        isCustom: true, 
+        id: 'new' 
+    });
+};
 
 // ============================================================
 // СТАТИСТИКА (БЕЗ ИСТОРИИ ПРОГРЕССА)
@@ -1046,7 +1201,7 @@ async function loadStats() {
     if (!container) return;
     
     const muscleCounts = muscleGroups.map(m => {
-        return workouts.filter(w => w.title === m).length;
+        return workouts.filter(w => w.title && w.title.includes(m)).length;
     });
     
     const maxCount = Math.max(1, ...muscleCounts);
@@ -1198,14 +1353,13 @@ async function loadProfile() {
     }
     
     document.getElementById('editName').value = profile.displayName || '';
-    document.getElementById('editNameError').textContent = ''; // очищаем ошибку
+    document.getElementById('editNameError').textContent = '';
     
     document.getElementById('levelLvl').textContent = currentLevel.id + ' LVL';
     document.getElementById('levelTitle').textContent = currentLevel.name;
     document.getElementById('levelProgressText').textContent = progressText;
     document.getElementById('levelFill').style.width = progress + '%';
     
-    // Рендерим друзей
     await renderFriendsInProfile();
 }
 
@@ -1225,7 +1379,7 @@ if (editProfileBtn) {
         const nameEl = document.getElementById('editName');
         const currentName = document.getElementById('profileName').textContent;
         if (nameEl) nameEl.value = currentName;
-        document.getElementById('editNameError').textContent = ''; // сброс ошибки
+        document.getElementById('editNameError').textContent = '';
     });
 }
 
@@ -1515,7 +1669,6 @@ async function searchUsers(query) {
     const user = await getFirebaseUser();
     if (!user) return { success: false, error: 'Не авторизован' };
     
-    // Не искать по пустой строке
     if (!query || query.trim().length === 0) {
         return { success: true, data: [] };
     }
@@ -1669,11 +1822,10 @@ async function renderFriendsInProfile() {
     if (searchBtn) {
         searchBtn.onclick = async () => {
             const query = searchInput.value.trim();
-            // Очищаем старые результаты
             resultsDiv.innerHTML = '';
             
             if (!query) {
-                return; // ничего не показываем
+                return;
             }
             
             const result = await searchUsers(query);
@@ -1758,6 +1910,9 @@ async function renderFriendsInProfile() {
                         <strong>${f.displayName || 'Пользователь'}</strong>
                         <span>Уровень ${f.level || 1} · ${(f.totalXp || 0).toFixed(1)} XP</span>
                     </div>
+                    <button class="friend-delete-btn" onclick="removeFriend('${f.id}')" title="Удалить друга">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
                 </div>
             `;
         }).join('');
@@ -1818,3 +1973,74 @@ window.rejectFriend = async function(requestId) {
         console.error('Ошибка отклонения:', result.error);
     }
 };
+
+window.removeFriend = async function(friendId) {
+    if (!confirm('Удалить этого друга?')) return;
+    
+    const user = await getFirebaseUser();
+    if (!user) {
+        alert('Пользователь не авторизован');
+        return;
+    }
+    
+    try {
+        const snapshot1 = await firebase.firestore()
+            .collection('friends')
+            .where('user_id', '==', user.uid)
+            .where('friend_id', '==', friendId)
+            .get();
+        snapshot1.forEach(doc => doc.ref.delete());
+        
+        const snapshot2 = await firebase.firestore()
+            .collection('friends')
+            .where('user_id', '==', friendId)
+            .where('friend_id', '==', user.uid)
+            .get();
+        snapshot2.forEach(doc => doc.ref.delete());
+        
+        const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+        const currentFriends = userDoc.data()?.friends || [];
+        const updatedFriends = currentFriends.filter(id => id !== friendId);
+        await firebase.firestore().collection('users').doc(user.uid).update({
+            friends: updatedFriends
+        });
+        
+        const friendDoc = await firebase.firestore().collection('users').doc(friendId).get();
+        const friendFriends = friendDoc.data()?.friends || [];
+        const updatedFriendFriends = friendFriends.filter(id => id !== user.uid);
+        await firebase.firestore().collection('users').doc(friendId).update({
+            friends: updatedFriendFriends
+        });
+        
+        await renderFriendsInProfile();
+    } catch (error) {
+        console.error('Ошибка удаления друга:', error);
+        alert('Ошибка при удалении друга');
+    }
+};
+
+// ============================================================
+// СБРОС ТРЕНИРОВКИ К ИСХОДНОМУ СОСТОЯНИЮ
+// ============================================================
+function resetWorkout() {
+    if (!editCategory || editIsCustom) {
+        alert('Эта функция только для готовых тренировок');
+        return;
+    }
+
+    const category = editCategory;
+    const level = editLevel || '1 LVL';
+
+    // Восстанавливаем из исходных данных
+    if (exercisesDataDefault[category] && exercisesDataDefault[category][level]) {
+        exercisesData[category][level] = JSON.parse(JSON.stringify(exercisesDataDefault[category][level]));
+        // Сохраняем в localStorage
+        saveExercisesData();
+        // Перезагружаем список упражнений в редакторе
+        editExercises = JSON.parse(JSON.stringify(exercisesData[category][level]));
+        renderEditExercises();
+        alert('Тренировка сброшена!');
+    } else {
+        alert('Не удалось найти исходные данные для этой тренировки');
+    }
+}

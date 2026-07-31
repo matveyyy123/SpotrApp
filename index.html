@@ -29,23 +29,23 @@
                 <div class="catalog-grid" id="catalogGrid">
                     <div class="category-card" data-category="Руки">
                         <div class="category-icon"><img src="images/bodybuilding.png"></div>
-                        <div class="category-info"><h3>Руки</h3><p>7 упражнений</p></div>
+                        <div class="category-info"><h3>Руки</h3><p>Начинающий · Любитель · Профи</p></div>
                     </div>
                     <div class="category-card" data-category="Пресс">
                         <div class="category-icon"><img src="images/press.png"></div>
-                        <div class="category-info"><h3>Пресс</h3><p>15 упражнений</p></div>
+                        <div class="category-info"><h3>Пресс</h3><p>Начинающий · Любитель · Профи</p></div>
                     </div>
                     <div class="category-card" data-category="Грудь">
                         <div class="category-icon"><img src="images/breast.png"></div>
-                        <div class="category-info"><h3>Грудь</h3><p>10 упражнений</p></div>
+                        <div class="category-info"><h3>Грудь</h3><p>Начинающий · Любитель · Профи</p></div>
                     </div>
                     <div class="category-card" data-category="Спина">
                         <div class="category-icon"><img src="images/back.png"></div>
-                        <div class="category-info"><h3>Спина</h3><p>6 упражнений</p></div>
+                        <div class="category-info"><h3>Спина</h3><p>Начинающий · Любитель · Профи</p></div>
                     </div>
                     <div class="category-card" data-category="Ноги">
                         <div class="category-icon"><img src="images/legs.png"></div>
-                        <div class="category-info"><h3>Ноги</h3><p>9 упражнений</p></div>
+                        <div class="category-info"><h3>Ноги</h3><p>Начинающий · Любитель · Профи</p></div>
                     </div>
                 </div>
             </div>
@@ -73,6 +73,19 @@
             <button class="btn-primary-center" id="editWorkoutBtn" style="margin-top:1rem;">
                 <i class="fa-regular fa-pen-to-square"></i> Редактировать тренировку
             </button>
+        </main>
+    </div>
+
+    <!-- СТРАНИЦА: ВЫБОР УРОВНЯ ТРЕНИРОВКИ -->
+    <div id="page-level-select" class="page">
+        <main class="dashboard-container">
+            <header class="dashboard-header">
+                <h1 id="levelSelectTitle">ТРЕНИРОВКА - РУКИ</h1>
+            </header>
+
+            <div class="workout-levels" id="levelsContainer">
+                <!-- Заполняется через JS -->
+            </div>
         </main>
     </div>
 
@@ -118,6 +131,11 @@
             <button class="btn-primary-center btn-add-exercise" onclick="addEditExercise()" style="margin-top:0.5rem;">
                 <i class="fa-solid fa-plus"></i> Добавить упражнение
             </button>
+
+                    <!-- КНОПКА СБРОСА (видна только для готовых тренировок) -->
+        <button class="btn-secondary" id="resetWorkoutBtn" style="width:100%; margin-top:0.5rem; color:#EF4444; border-color:#EF4444; display:none;" onclick="resetWorkout()">
+            <i class="fa-solid fa-arrow-rotate-left"></i> Сбросить тренировку
+        </button>
             
             <div style="display:flex; gap:0.8rem; margin-top:1.5rem;">
                 <button class="btn-primary" id="saveEditBtn" style="flex:1;">Сохранить</button>
@@ -380,11 +398,14 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
     <script src="firebase-config.js"></script>
     <script src="app.js"></script>
+
+
 </body>
 </html>
