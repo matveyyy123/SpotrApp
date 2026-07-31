@@ -1508,7 +1508,6 @@ body {
 }
 
 .hero h1::after {
-    content: '';
     display: block;
     width: 60px;
     height: 4px;
@@ -1557,14 +1556,53 @@ body {
     min-width: 200px;
 }
 
+/* ============================================================ */
+/* ЛОГОТИП НА СТРАНИЦАХ ВХОДА И РЕГИСТРАЦИИ (вне блока)        */
+/* ============================================================ */
+.auth-title {
+    font-size: 4rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-align: center;
+    display: block;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    background: var(--accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Убедись, что контейнер тоже центрирует */
+.auth-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 1rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
 /* Адаптация для телефонов */
 @media (max-width: 480px) {
     .hero h1 {
         font-size: 2.8rem;
     }
     .hero-features {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+        grid-template-columns: 1fr 1fr 1fr; /* ← ТЕПЕРЬ 3 В РЯД */
+        gap: 0.5rem;
+    }
+    .feature {
+        padding: 0.8rem 0.3rem;
+    }
+    .feature i {
+        font-size: 1.5rem;
+    }
+    .feature span {
+        font-size: 0.7rem;
     }
     .hero-buttons {
         flex-direction: column;
