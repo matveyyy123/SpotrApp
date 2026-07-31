@@ -47,6 +47,17 @@ body {
 .theme-gray { --accent: #607D8B; --accent-dark: #455A64; --accent-light: #ECEFF1; }
 
 /* ============================================================ */
+/* ФИКС ДЛЯ ЧЕЛКИ IPHONE                                        */
+/* ============================================================ */
+body {
+    padding-top: env(safe-area-inset-top, 0px);
+}
+
+.dashboard-header {
+    padding-top: 10px;
+}
+
+/* ============================================================ */
 /* СТРАНИЦЫ                                                      */
 /* ============================================================ */
 .page { display: none; }
@@ -64,17 +75,6 @@ body {
 }
 
 /* ============================================================ */
-/* ФИКС ДЛЯ ЧЕЛКИ IPHONE                                        */
-/* ============================================================ */
-body {
-    padding-top: env(safe-area-inset-top, 0px);
-}
-
-.dashboard-header {
-    padding-top: 10px;
-}
-
-/* ============================================================ */
 /* ХЕДЕР                                                         */
 /* ============================================================ */
 .dashboard-header {
@@ -87,6 +87,7 @@ body {
     letter-spacing: 0.5px;
     margin: 0;
     color: var(--dark);
+    word-break: break-word;
 }
 .dashboard-header h2 {
     font-size: 1.2rem;
@@ -153,6 +154,13 @@ body {
 }
 
 /* ============================================================ */
+/* КНОПКА РЕДАКТИРОВАНИЯ ТРЕНИРОВКИ                             */
+/* ============================================================ */
+#editWorkoutBtn {
+    background: var(--accent) !important;
+}
+
+/* ============================================================ */
 /* КАТАЛОГ ТРЕНИРОВОК                                            */
 /* ============================================================ */
 .catalog-grid {
@@ -196,27 +204,35 @@ body {
 
 .category-card .category-info {
     flex: 1;
+    min-width: 0;
 }
 .category-card .category-info h3 {
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--dark);
     margin: 0;
+    word-break: break-word;
 }
 .category-card .category-info p {
     font-size: 0.8rem;
     color: var(--slate);
     margin: 0;
+    word-break: break-word;
 }
 
 /* ============================================================ */
-/* УПРАЖНЕНИЯ                                                    */
+/* УПРАЖНЕНИЯ - ОДИНАКОВЫЙ РАЗМЕР ДЛЯ ТРЕНИРОВКИ И РЕДАКТИРОВАНИЯ */
 /* ============================================================ */
-.workout-levels {
+.workout-levels,
+#editExercisesContainer {
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
     margin-top: 1.5rem;
+}
+
+#editExercisesContainer {
+    margin-top: 0;
 }
 
 .level-card {
@@ -237,18 +253,21 @@ body {
 
 .level-info {
     flex: 1;
+    min-width: 0;
 }
 .level-info h3 {
     font-size: 1rem;
     font-weight: 600;
     color: var(--dark);
     margin: 0;
+    word-break: break-word;
 }
 .level-info p {
     font-size: 0.8rem;
     color: var(--slate);
     margin: 0;
     margin-top: 0.1rem;
+    word-break: break-word;
 }
 
 /* СТАТУС УПРАЖНЕНИЙ - большой фон с маленьким квадратиком */
@@ -290,6 +309,207 @@ body {
 /* Когда упражнение выполнено - квадратик закрашивается */
 .check-box.completed {
     background: var(--accent);
+    border-color: var(--accent);
+}
+
+/* ============================================================ */
+/* ВКЛАДКИ                                                       */
+/* ============================================================ */
+.tabs-container {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    background: var(--light);
+    padding: 0.4rem;
+    border-radius: 14px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 0.7rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: none;
+    background: transparent;
+    color: var(--slate);
+}
+.tab-btn:active {
+    opacity: 0.7;
+}
+.tab-btn.active {
+    background: var(--white);
+    color: var(--accent);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
+
+/* ============================================================ */
+/* МОИ ТРЕНИРОВКИ - используем те же стили что и Готовые      */
+/* ============================================================ */
+.custom-workout {
+    margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.workout-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+/* Кнопка удаления в Моих тренировках */
+.category-card .workout-delete {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--slate);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.category-card .workout-delete:active {
+    opacity: 0.6;
+}
+
+/* ============================================================ */
+/* РЕДАКТИРОВАНИЕ ТРЕНИРОВКИ                                    */
+/* ============================================================ */
+.edit-exercise-item {
+    display: flex;
+    align-items: center;
+    background: var(--white);
+    border-radius: 16px;
+    padding: 0.8rem 1.2rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    border: 2px solid transparent;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+    transition: none;
+    cursor: default;
+}
+.edit-exercise-item:active {
+    opacity: 0.8;
+}
+
+.edit-exercise-item .drag-handle {
+    color: var(--slate);
+    font-size: 1.2rem;
+    cursor: grab;
+    display: flex;
+    flex-direction: column;
+    line-height: 0.4;
+    padding: 0 0.2rem;
+    user-select: none;
+    -webkit-user-select: none;
+}
+.edit-exercise-item .drag-handle span {
+    display: block;
+    font-size: 0.8rem;
+}
+
+.edit-exercise-item .edit-exercise-info {
+    flex: 1;
+    min-width: 0;
+}
+.edit-exercise-item .edit-exercise-info h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin: 0;
+    word-break: break-word;
+}
+.edit-exercise-item .edit-exercise-info p {
+    font-size: 0.8rem;
+    color: var(--slate);
+    margin: 0;
+    margin-top: 0.1rem;
+    word-break: break-word;
+}
+
+.edit-exercise-item .edit-actions {
+    display: flex;
+    gap: 0.3rem;
+}
+.edit-exercise-item .edit-actions button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--slate);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.edit-exercise-item .edit-actions button:active {
+    opacity: 0.6;
+}
+.edit-exercise-item .edit-actions .edit-btn {
+    color: var(--accent);
+}
+.edit-exercise-item .edit-actions .delete-btn {
+    color: #EF4444;
+}
+
+/* ============================================================ */
+/* DRAG & DROP ДЛЯ РЕДАКТИРОВАНИЯ                               */
+/* ============================================================ */
+.edit-exercise-item.dragging {
+    opacity: 0.4;
+    border-color: var(--accent);
+}
+
+.edit-exercise-item.drag-over {
+    border-color: var(--accent);
+    background: var(--accent-light);
+}
+
+/* ============================================================ */
+/* МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ УПРАЖНЕНИЯ                     */
+/* ============================================================ */
+#exerciseModal .modal-content {
+    max-width: 400px;
+    width: 90%;
+}
+
+#exerciseModal .form-group {
+    text-align: left;
+    margin-bottom: 1rem;
+}
+#exerciseModal .form-group label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--dark);
+    display: block;
+    margin-bottom: 0.3rem;
+}
+#exerciseModal .form-group input {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    background: #FAFCFF;
+    color: #0F172A;
+}
+#exerciseModal .form-group input:focus {
+    outline: none;
     border-color: var(--accent);
 }
 
@@ -348,6 +568,7 @@ body {
     font-size: 0.85rem;
     color: var(--dark);
     min-width: 50px;
+    word-break: break-word;
 }
 .muscle-bar {
     flex: 1;
@@ -425,52 +646,8 @@ body {
     border-radius: 12px;
     border-left: 4px solid var(--accent);
 }
-
-/* ============================================================ */
-/* ИСТОРИЯ ПРОГРЕССА внутри скролл-блока                       */
-/* ============================================================ */
-#progressHistory {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    padding-right: 0.3rem;
-}
-
-.progress-history-item {
-    background: var(--light);
-    padding: 0.8rem 1rem;
-    border-radius: 12px;
-    border-left: 4px solid var(--accent);
-}
-
-.progress-history-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.2rem;
-}
-
-.progress-history-level {
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: var(--dark);
-}
-
-.progress-history-date {
-    font-size: 0.8rem;
-    color: var(--slate);
-}
-
-.progress-history-stats {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-.progress-history-lvl {
-    font-weight: 400;
-    font-size: 0.85rem;
-    color: var(--slate);
+#workoutHistory > div strong {
+    word-break: break-word;
 }
 
 /* ============================================================ */
@@ -571,16 +748,21 @@ body {
     justify-content: center;
     margin: 0 auto 0.8rem;
 }
+
 .profile-block h2 {
     text-align: center;
     font-size: 1.5rem;
     margin-bottom: 0.1rem;
+    word-break: break-word;
 }
+
 .profile-block > p {
     text-align: center;
     color: var(--slate);
     margin-bottom: 1rem;
+    word-break: break-all;
 }
+
 .profile-info {
     display: flex;
     align-items: center;
@@ -591,9 +773,33 @@ body {
     padding: 0.6rem;
     background: var(--light);
     border-radius: 10px;
+    word-break: break-word;
+    margin-bottom: 0.5rem;
 }
 .profile-info i {
     color: var(--accent);
+}
+.profile-info strong {
+    font-weight: 400;
+    color: var(--dark);
+}
+
+#profileDateBlock {
+    display: flex;
+}
+
+/* Стиль для ошибки в поле имени при редактировании профиля */
+#editNameError {
+    font-size: 0.8rem;
+    color: #EF4444;
+    min-height: 1.2rem;
+    display: block;
+    margin-top: 0.2rem;
+}
+
+.form-group input.error {
+    border-color: #EF4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.06);
 }
 
 /* ============================================================ */
@@ -651,12 +857,168 @@ body {
     transition: width 0.6s ease;
 }
 
-.level-footer {
-    font-size: 0.65rem;
+/* ============================================================ */
+/* РАЗДЕЛ ДРУЗЬЯ (ОТДЕЛЬНЫЙ БЛОК С ФОНОМ)                     */
+/* ============================================================ */
+.friends-section {
+    margin-top: 1.5rem;
+}
+
+.friends-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.8rem;
+}
+
+.friends-block {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 1rem 1.2rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* ============================================================ */
+/* ПОИСК ДРУЗЕЙ                                                 */
+/* ============================================================ */
+.search-container {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.search-container input {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    background: var(--light);
+    min-width: 0;
+}
+.search-container input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.search-container .btn-primary {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    width: auto;
+}
+
+/* ============================================================ */
+/* ОБЩИЙ СТИЛЬ ДЛЯ ВСЕХ ЭЛЕМЕНТОВ (поиск, заявки, друзья)     */
+/* ============================================================ */
+.friend-result-item,
+.friend-request-item,
+.friend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: var(--light);
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 0.4rem;
+}
+
+.friend-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+    text-transform: uppercase;
+}
+
+.friend-result-info,
+.friend-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.friend-result-info strong,
+.friend-info strong {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--dark);
+    word-break: break-word;
+}
+
+.friend-result-info span,
+.friend-info span {
+    font-size: 0.75rem;
     color: var(--slate);
+    word-break: break-all;
+}
+
+/* ============================================================ */
+/* КНОПКИ В БЛОКАХ ДРУЗЕЙ                                       */
+/* ============================================================ */
+.friend-result-item .btn-sm,
+.friend-request-item .btn-sm {
+    padding: 0.2rem 0.8rem;
+    font-size: 0.75rem;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.friend-result-item .btn-secondary.btn-sm,
+.friend-request-item .btn-secondary.btn-sm {
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    background: transparent;
+}
+
+.friend-request-item .btn-primary.btn-sm {
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+}
+
+.friend-result-item .btn-sm:disabled {
+    opacity: 0.6;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* ============================================================ */
+/* ЗАГОЛОВКИ "Заявки" и "Друзья"                               */
+/* ============================================================ */
+.friends-subtitle {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin: 0.8rem 0 0.4rem 0;
+    color: var(--dark);
+}
+
+/* ============================================================ */
+/* КОНТЕЙНЕРЫ ДЛЯ ЗАЯВОК И ДРУЗЕЙ                              */
+/* ============================================================ */
+#friendRequests,
+#friendsList,
+#searchResults {
+    margin-top: 0.8rem;
+}
+
+/* ============================================================ */
+/* ПУСТОЕ СОСТОЯНИЕ                                            */
+/* ============================================================ */
+.friends-block .empty-state {
     text-align: center;
-    margin-top: 0.4rem;
-    font-weight: 400;
+    padding: 1rem 0;
+    color: var(--slate);
+    font-size: 0.9rem;
 }
 
 /* ============================================================ */
@@ -766,7 +1128,7 @@ body {
 }
 
 /* ============================================================ */
-/* МОДАЛЬНОЕ ОКНО                                               */
+/* МОДАЛЬНОЕ ОКНО РЕЗУЛЬТАТОВ                                   */
 /* ============================================================ */
 .modal-overlay {
     position: fixed;
@@ -867,6 +1229,33 @@ body {
 }
 
 /* ============================================================ */
+/* ПУСТОЕ СОСТОЯНИЕ                                              */
+/* ============================================================ */
+.empty-state {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+.empty-state span {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+.empty-state h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    color: var(--dark);
+    word-break: break-word;
+}
+.empty-state p {
+    color: var(--slate);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* ============================================================ */
 /* АДАПТАЦИЯ                                                     */
 /* ============================================================ */
 @media (max-width: 480px) {
@@ -929,10 +1318,261 @@ body {
         height: 26px;
         font-size: 1rem;
     }
-    .level-card {
+    .level-card,
+    .edit-exercise-item {
         padding: 0.6rem 0.8rem;
     }
     .history-scroll-wrapper {
         max-height: 200px;
+    }
+}
+
+/* ============================================================ */
+/* КНОПКА РЕДАКТИРОВАНИЯ ТРЕНИРОВКИ И ДОБАВИТЬ УПРАЖНЕНИЕ      */
+/* ============================================================ */
+#editWorkoutBtn,
+.btn-add-exercise {
+    background: var(--accent) !important;
+}
+
+/* ============================================================ */
+/* ВЫБОР ЗНАЧКА ДЛЯ ТРЕНИРОВКИ                                 */
+/* ============================================================ */
+.icon-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.3rem;
+}
+
+.icon-option {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 2px solid #E2E8F0;
+    background: var(--light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: none;
+    padding: 0.3rem;
+}
+.icon-option:active {
+    opacity: 0.7;
+}
+.icon-option.active {
+    border-color: var(--accent);
+    background: var(--accent-light);
+}
+.icon-option img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+/* ============================================================ */
+/* БЛОК НАЗВАНИЕ + ЗНАЧОК В РЕДАКТИРОВАНИИ                     */
+/* ============================================================ */
+.edit-header-block {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 1rem 1.2rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    margin-bottom: 1.5rem;
+}
+
+.edit-header-block .form-group {
+    margin-bottom: 1rem;
+}
+.edit-header-block .form-group:last-child {
+    margin-bottom: 0;
+}
+
+.edit-header-block label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--dark);
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.edit-header-block input {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    background: #FAFCFF;
+    color: #0F172A;
+}
+.edit-header-block input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+/* ============================================================ */
+/* АВТОРИЗАЦИЯ (ВХОД / РЕГИСТРАЦИЯ)                            */
+/* ============================================================ */
+.auth-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 1rem;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.auth-card {
+    background: var(--white);
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
+    width: 100%;
+}
+
+.auth-card h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--dark);
+    letter-spacing: -0.01em;
+    word-break: break-word;
+}
+
+.auth-switch {
+    margin-top: 1.8rem;
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--slate);
+}
+
+.auth-switch a {
+    color: var(--dark);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 500;
+    transition: color 0.2s;
+    cursor: pointer;
+}
+
+.auth-switch a:hover {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+/* Ошибки валидации */
+.error-message {
+    font-size: 0.8rem;
+    color: #EF4444;
+    min-height: 1.2rem;
+    display: block;
+    margin-top: 0.2rem;
+}
+
+.form-group input.error {
+    border-color: #EF4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.06);
+}
+
+/* ============================================================ */
+/* HERO (ПРИВЕТСТВИЕ)                                           */
+/* ============================================================ */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--light) 0%, var(--white) 100%);
+}
+
+.hero-content {
+    text-align: center;
+    max-width: 600px;
+    padding: 2rem;
+}
+
+.hero h1 {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    background: var(--accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    word-break: break-word;
+}
+
+.hero h1::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: var(--accent);
+    margin: 0.5rem auto 0;
+    border-radius: 4px;
+}
+
+.hero-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 3rem 0;
+}
+
+.feature {
+    background: var(--white);
+    padding: 1.5rem 1rem;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(220, 20, 60, 0.05);
+}
+
+.feature i {
+    font-size: 2.5rem;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.feature span {
+    font-size: 0.95rem;
+    color: var(--slate);
+    font-weight: 500;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.hero-buttons .btn-primary,
+.hero-buttons .btn-secondary {
+    min-width: 200px;
+}
+
+/* Адаптация для телефонов */
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 2.8rem;
+    }
+    .hero-features {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    .hero-buttons .btn-primary,
+    .hero-buttons .btn-secondary {
+        width: 100%;
+        max-width: 280px;
     }
 }
