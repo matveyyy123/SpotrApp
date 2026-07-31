@@ -1927,21 +1927,22 @@ async function renderFriendsInProfile() {
     const friends = await getFriendsList();
     let friendsHtml = `<p class="friends-subtitle">Друзья</p>`;
     if (friends.success && friends.data.length > 0) {
-        friendsHtml += friends.data.map(f => {
-            const initial = (f.displayName || 'П')[0].toUpperCase();
-            return `
-                <div class="friend-item">
-                    <div class="friend-avatar">${initial}</div>
-                    <div class="friend-info">
-                        <strong>${f.displayName || 'Пользователь'}</strong>
-                        <span>Уровень ${f.level || 1} · ${(f.totalXp || 0).toFixed(1)} XP</span>
-                    </div>
-                    <button class="friend-delete-btn" onclick="removeFriend('${f.id}')" title="Удалить друга">
-                        <i class="fa-regular fa-trash-can"></i>
-                    </button>
-                </div>
-            `;
-        }).join('');
+friendsHtml += friends.data.map(f => {
+    const initial = (f.displayName || 'П')[0].toUpperCase();
+    const level = getCurrentLevel(f.totalXp || 0).id; // вычисляем уровень из XP
+    return `
+        <div class="friend-item">
+            <div class="friend-avatar">${initial}</div>
+            <div class="friend-info">
+                <strong>${f.displayName || 'Пользователь'}</strong>
+                <span>Уровень ${level} · ${(f.totalXp || 0).toFixed(1)} XP</span>
+            </div>
+            <button class="friend-delete-btn" onclick="removeFriend('${f.id}')" title="Удалить друга">
+                <i class="fa-regular fa-trash-can"></i>
+            </button>
+        </div>
+    `;
+}).join('');
     } else {
         friendsHtml += '<p style="color:var(--slate);font-size:0.9rem;">У вас пока нет друзей</p>';
     }
