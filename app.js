@@ -200,6 +200,79 @@ function saveExercisesData() {
 loadExercisesData();
 
 // ============================================================
+// ОФЛАЙН-ОЧЕРЕДЬ НЕСИНХРОНИЗИРОВАННЫХ ТРЕНИРОВОК
+// ============================================================
+const PENDING_KEY = 'pendingWorkouts';
+
+function getPendingWorkouts() {
+  return JSON.parse(localStorage.getItem(PENDING_KEY)) || [];
+}
+
+function savePendingWorkouts(workouts) {
+  localStorage.setItem(PENDING_KEY, JSON.stringify(workouts));
+}
+
+function addPendingWorkout(workoutData) {
+  const pending = getPendingWorkouts();
+  workoutData._localId = Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+  pending.push(workoutData);
+  savePendingWorkouts(pending);
+}
+
+function removePendingWorkout(localId) {
+  let pending = getPendingWorkouts();
+  pending = pending.filter(w => w._localId !== localId);
+  savePendingWorkouts(pending);
+}
+
+async function syncPendingWorkouts() {
+  const pending = getPendingWorkouts();
+  if (pending.length === 0) return;
+
+  const user = await getFirebaseUser();
+  if (!user) {
+    console.warn('Пользователь не авторизован, синхронизация отложена');
+    return;
+  }
+
+  let syncedIds = [];
+  for (const workout of pending) {
+    try {
+      // Попытка сохранить в Firestore
+      const result = await saveWorkoutToFirestore(user.uid, {
+        title: workout.title,
+        date: workout.date,
+        durationSeconds: workout.durationSeconds,
+        exercises: workout.exercises,
+        xpEarned: workout.xpEarned
+      });
+      if (result.success) {
+        // Обновляем профиль: добавляем XP
+        const profileResult = await getUserProfile(user.uid);
+        if (profileResult.success) {
+          const currentXp = profileResult.data.totalXp || 0;
+          await updateUserProfile(user.uid, { totalXp: currentXp + workout.xpEarned });
+        }
+        syncedIds.push(workout._localId);
+      } else {
+        console.warn('Ошибка синхронизации тренировки:', result.error);
+        // Если ошибка не связана с сетью, можно оставить в очереди
+      }
+    } catch (e) {
+      console.warn('Ошибка синхронизации, повторим позже:', e);
+      break; // прерываем цикл, чтобы не повторять при сетевой ошибке
+    }
+  }
+
+  if (syncedIds.length > 0) {
+    let pendingAfter = getPendingWorkouts();
+    pendingAfter = pendingAfter.filter(w => !syncedIds.includes(w._localId));
+    savePendingWorkouts(pendingAfter);
+    console.log(`Синхронизировано ${syncedIds.length} тренировок`);
+  }
+}
+
+// ============================================================
 // НОВЫЕ УРОВНИ (8 уровней, без округления)
 // ============================================================
 const levels = [
@@ -746,41 +819,61 @@ async function finishWorkout() {
     }
     
     const completed = completedExercises.size;
-    
-    // Новая формула XP: сумма (подходы × повторения) / 10
     const fullXp = calculateWorkoutXp(exercises);
     const xpEarned = (fullXp / total) * completed;
-    
     const date = new Date().toISOString();
     const user = await getFirebaseUser();
     
+    // Собираем данные тренировки
+    const workoutData = {
+        title: currentCategory + ' ' + currentLevel,
+        date: date,
+        durationSeconds: totalTime,
+        exercises: exercises.map((ex, i) => ({
+            name: ex.name,
+            sets: parseInt(ex.sets) || 0,
+            reps: parseInt(ex.reps) || 0,
+            weight: 0,
+            order: i,
+            completed: completedExercises.has(i)
+        })),
+        xpEarned: xpEarned
+    };
+
+    // Пытаемся сохранить в Firestore
+    let saveSuccess = false;
     if (user) {
-        const result = await saveWorkoutToFirestore(user.uid, {
-            title: currentCategory + ' ' + currentLevel,
-            date: date,
-            durationSeconds: totalTime,
-            exercises: exercises.map((ex, i) => ({
-                name: ex.name,
-                sets: parseInt(ex.sets) || 0,
-                reps: parseInt(ex.reps) || 0,
-                weight: 0,
-                order: i,
-                completed: completedExercises.has(i)
-            })),
-            xpEarned: xpEarned
-        });
-        
+        const result = await saveWorkoutToFirestore(user.uid, workoutData);
         if (result.success) {
-            console.log('✅ Тренировка сохранена в Firestore');
+            saveSuccess = true;
+            // Обновляем профиль (добавляем XP)
+            const profileResult = await getUserProfile(user.uid);
+            if (profileResult.success) {
+                const currentXp = profileResult.data.totalXp || 0;
+                await updateUserProfile(user.uid, { totalXp: currentXp + xpEarned });
+            }
+        } else {
+            // Если ошибка сохранения (возможно, нет интернета) — сохраняем в локальную очередь
+            if (result.error && (
+                result.error.includes('offline') || 
+                result.error.includes('network') ||
+                result.error.includes('unavailable')
+            )) {
+                // Добавляем в локальное хранилище с флагом pending
+                workoutData._localId = Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+                addPendingWorkout(workoutData);
+                alert('Тренировка сохранена локально. Она будет синхронизирована при восстановлении интернета.');
+                saveSuccess = true; // считаем, что локально сохранили
+            } else {
+                alert('Не удалось сохранить тренировку. Попробуйте позже.');
+            }
         }
-        
-        const profileResult = await getUserProfile(user.uid);
-        if (profileResult.success) {
-            const currentXp = profileResult.data.totalXp || 0;
-            await updateUserProfile(user.uid, { totalXp: currentXp + xpEarned });
-        }
+    } else {
+        // Пользователь не авторизован – сохраняем локально? Но так быть не должно
+        alert('Вы не авторизованы. Тренировка не сохранена.');
     }
-    
+
+    // Показываем модальное окно с результатами
     showModal(currentCategory, totalTime, completed, total, xpEarned);
     
     if (editWorkoutBtn) {
@@ -1097,13 +1190,26 @@ document.getElementById('saveEditBtn')?.addEventListener('click', function() {
     const nameInput = document.getElementById('editWorkoutName');
     const title = nameInput ? nameInput.value.trim() : (editCategory || 'Моя тренировка');
     
-    const selectedIcon = document.querySelector('.icon-option.active');
-    const icon = selectedIcon ? selectedIcon.dataset.icon : 'bodybuilding';
-    
     if (!title) {
         alert('Введите название тренировки');
         return;
     }
+
+    // Проверка уникальности названия для личных тренировок
+    if (editIsCustom || editWorkoutId === 'new') {
+        const allWorkouts = getMyWorkouts();
+        const isDuplicate = allWorkouts.some(w => 
+            w._id !== editWorkoutId && w.title.toLowerCase() === title.toLowerCase()
+        );
+        if (isDuplicate) {
+            if (!confirm('Тренировка с таким названием уже существует. Сохранить с дубликатом?')) {
+                return;
+            }
+        }
+    }
+    
+    const selectedIcon = document.querySelector('.icon-option.active');
+    const icon = selectedIcon ? selectedIcon.dataset.icon : 'bodybuilding';
     
     if (editWorkoutId === 'new') {
         // Создание личной тренировки
@@ -1130,7 +1236,7 @@ document.getElementById('saveEditBtn')?.addEventListener('click', function() {
         if (exercisesData[category]) {
             const targetLevel = editLevel || '1 LVL';
             exercisesData[category][targetLevel] = JSON.parse(JSON.stringify(editExercises));
-            saveExercisesData(); // ← сохраняем в localStorage
+            saveExercisesData();
             alert('Тренировка обновлена!');
         }
     }
@@ -1557,8 +1663,19 @@ firebase.auth().onAuthStateChanged(async (user) => {
 // ============================================================
 // ИНИЦИАЛИЗАЦИЯ
 // ============================================================
+// Синхронизация при загрузке
 document.addEventListener('DOMContentLoaded', function() {
     console.log('SportApp загружен!');
+    // При загрузке пробуем синхронизировать
+    if (navigator.onLine) {
+        syncPendingWorkouts();
+    }
+});
+
+// Синхронизация при восстановлении сети
+window.addEventListener('online', function() {
+    console.log('Интернет появился, синхронизируем...');
+    syncPendingWorkouts();
 });
 
 // ============================================================
@@ -2172,20 +2289,7 @@ window.removeFriend = async function(friendId) {
     }
     
     try {
-        const snapshot1 = await firebase.firestore()
-            .collection('friends')
-            .where('user_id', '==', user.uid)
-            .where('friend_id', '==', friendId)
-            .get();
-        snapshot1.forEach(doc => doc.ref.delete());
-        
-        const snapshot2 = await firebase.firestore()
-            .collection('friends')
-            .where('user_id', '==', friendId)
-            .where('friend_id', '==', user.uid)
-            .get();
-        snapshot2.forEach(doc => doc.ref.delete());
-        
+        // Удаляем друга из своего списка
         const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
         const currentFriends = userDoc.data()?.friends || [];
         const updatedFriends = currentFriends.filter(id => id !== friendId);
@@ -2193,6 +2297,7 @@ window.removeFriend = async function(friendId) {
             friends: updatedFriends
         });
         
+        // Удаляем себя из списка друга
         const friendDoc = await firebase.firestore().collection('users').doc(friendId).get();
         const friendFriends = friendDoc.data()?.friends || [];
         const updatedFriendFriends = friendFriends.filter(id => id !== user.uid);
@@ -2379,3 +2484,31 @@ function addExerciseFromList(name, sets, reps) {
         resetBtn.style.display = (editIsCustom || editWorkoutId === 'new') ? 'none' : 'block';
     }
 }
+
+// ============================================================
+// МОДАЛЬНОЕ ОКНО "НЕТ ИНТЕРНЕТА"
+// ============================================================
+
+function showOfflineModal() {
+    const modal = document.getElementById('offlineModal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeOfflineModal() {
+    const modal = document.getElementById('offlineModal');
+    if (modal) modal.style.display = 'none';
+}
+
+// Показываем при потере соединения
+window.addEventListener('offline', function() {
+    showOfflineModal();
+});
+
+// Автоматически закрываем при восстановлении (по желанию)
+window.addEventListener('online', function() {
+    closeOfflineModal();
+    // Также можно синхронизировать отложенные тренировки
+    if (typeof syncPendingWorkouts === 'function') {
+        syncPendingWorkouts();
+    }
+});

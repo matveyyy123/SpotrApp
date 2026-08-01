@@ -2,17 +2,23 @@
 // firebase-config.js
 // ============================================================
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyD6uUMfXa3MA6wa3RoatzYFex4M6QAo4Iw",
-    authDomain: "sportapp-f3e54.firebaseapp.com",
-    projectId: "sportapp-f3e54",
-    storageBucket: "sportapp-f3e54.firebasestorage.app",
-    messagingSenderId: "745194278905",
-    appId: "1:745194278905:web:bce2b1780b25d6c2613728",
-    measurementId: "G-LN032YHD0T"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyD6uUMfXa3MA6wa3RoatzYFex4M6QAo4Iw",
+  authDomain: "sportapp-f3e54.firebaseapp.com",
+  projectId: "sportapp-f3e54",
+  storageBucket: "sportapp-f3e54.firebasestorage.app",
+  messagingSenderId: "745194278905",
+  appId: "1:745194278905:web:bce2b1780b25d6c2613728",
+  measurementId: "G-LN032YHD0T"
+};
 
 // Инициализация Firebase
 firebase.initializeApp(firebaseConfig);
+
+// Включаем офлайн-персистентность (кеширование)
+firebase.firestore().enablePersistence({ synchronizeTabs: true })
+  .catch((err) => {
+    console.warn('Офлайн-режим не включён:', err.code);
+  });
 
 console.log('✅ Firebase подключен!');
