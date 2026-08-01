@@ -827,6 +827,7 @@ body {
 /* ============================================================ */
 /* УРОВЕНЬ / ПРОГРЕСС-БАР В ПРОФИЛЕ                            */
 /* ============================================================ */
+
 .level-block {
     background: var(--light);
     border-radius: 10px;
@@ -835,10 +836,40 @@ body {
 }
 
 .level-header {
+    position: relative;          /* ← для позиционирования */
     display: flex;
-    justify-content: space-between;
     align-items: baseline;
+    justify-content: space-between;
     margin-bottom: 0.5rem;
+    min-height: 1.8rem;
+}
+
+/* Левый элемент (уровень) */
+.level-left {
+    flex: 0 0 auto;
+    z-index: 2;                  /* ← поверх центра */
+}
+
+/* Центр — заголовок */
+.level-center {
+    position: absolute;          /* ← абсолютное позиционирование */
+    left: 0;
+    right: 0;
+    top: 0;
+    text-align: center;
+    z-index: 1;                  /* ← под левым и правым */
+    pointer-events: none;        /* ← чтобы не мешал кликам */
+}
+
+.level-center .level-title {
+    display: inline-block;
+}
+
+/* Правый элемент (прогресс) */
+.level-right {
+    flex: 0 0 auto;
+    z-index: 2;                  /* ← поверх центра */
+    text-align: right;
 }
 
 .level-lvl {
@@ -1855,4 +1886,261 @@ input::placeholder {
         transform: translateX(-50%) translateY(0);
         opacity: 1;
     }
+}
+
+/* ============================================================ */
+/* ТУТОРИАЛ — ПЛАВНЫЕ ПЕРЕХОДЫ                                  */
+/* ============================================================ */
+
+/* Затемнение */
+.tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: background 0.5s ease;
+}
+
+.tutorial-overlay.active {
+    background: rgba(0, 0, 0, 0.7);
+    pointer-events: auto;
+}
+
+.tutorial-tooltip.active {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+}
+
+/* ============================================================ */
+/* ПОДСВЕТКА ЭЛЕМЕНТОВ — ПЛАВНОЕ ПОЯВЛЕНИЕ                     */
+/* ============================================================ */
+
+/* Базовый класс подсветки */
+.tutorial-highlight {
+    position: relative !important;
+    z-index: 10000 !important;
+    border: 3px solid transparent !important;
+    border-radius: 16px !important;
+    box-shadow: 0 0 0 0 rgba(220, 20, 60, 0) !important;  /* ← начинаем с нуля */
+    background: var(--white) !important;
+    color: var(--accent) !important;
+    transition: border-color 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    will-change: border-color, box-shadow; /* ← для плавности на мобильных */
+}
+
+/* Активный класс — появляется обводка и тень */
+.tutorial-highlight.active {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 30px rgba(220, 20, 60, 0.3) !important;
+}
+
+/* Пульсация для ВСЕХ подсвеченных элементов */
+.tutorial-highlight.pulsing {
+    animation: pulse-border 1.8s ease-in-out infinite;
+}
+
+/* Для активных вкладок при подсветке */
+.tab-btn.tutorial-highlight {
+    background: var(--white) !important;
+    color: var(--accent) !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06) !important;
+}
+
+.tab-btn.tutorial-highlight.active {
+    box-shadow: 0 0 30px rgba(220, 20, 60, 0.3), 0 2px 12px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Для нижнего меню */
+#bottomNav.tutorial-highlight {
+    transform: translateX(-50%) !important;
+    bottom: 24px !important;
+    left: 50% !important;
+    right: auto !important;
+    top: auto !important;
+    position: fixed !important;
+}
+
+#bottomNav.tutorial-highlight .nav-item {
+    color: var(--slate) !important;
+}
+
+#bottomNav.tutorial-highlight .nav-item.active {
+    color: var(--accent) !important;
+}
+
+/* Пульсация — плавная и красивая */
+@keyframes pulse-border {
+    0% { 
+        box-shadow: 0 0 15px rgba(220, 20, 60, 0.2);
+    }
+    50% { 
+        box-shadow: 0 0 40px rgba(220, 20, 60, 0.5), 0 0 60px rgba(220, 20, 60, 0.15);
+    }
+    100% { 
+        box-shadow: 0 0 15px rgba(220, 20, 60, 0.2);
+    }
+}
+
+/* Подсказка — обычная позиция */
+.tutorial-tooltip {
+    position: fixed;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%) translateY(50px);
+    background: var(--white);
+    color: var(--dark);
+    padding: 1.2rem 1.5rem 1.2rem;
+    max-width: 500px;
+    width: 90%;
+    border-radius: 20px;
+    text-align: center;
+    z-index: 10001;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+    border: 2px solid var(--accent);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.4s ease;
+    pointer-events: none;
+}
+
+/* Для первого шага — поднимаем выше меню */
+.tutorial-tooltip.tooltip-top {
+    bottom: 100px;  /* ← подняли выше */
+}
+
+.tutorial-tooltip.active {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+}
+
+/* Точки */
+.tutorial-tooltip .tutorial-dots {
+    display: flex;
+    gap: 0.4rem;
+    justify-content: center;
+    margin-bottom: 0.8rem;
+}
+
+.tutorial-tooltip .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--slate);
+    opacity: 0.4;
+    transition: all 0.3s ease;
+}
+
+.tutorial-tooltip .dot.active {
+    opacity: 1;
+    background: var(--accent);
+    transform: scale(1.2);
+}
+
+.tutorial-tooltip p {
+    font-size: 0.95rem;
+    color: var(--dark);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.tutorial-tooltip .tutorial-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.tutorial-tooltip .btn-primary {
+    padding: 0.7rem 2rem;
+    font-size: 0.95rem;
+    width: auto;
+    min-width: 140px;
+    display: inline-block;
+    border-radius: 12px;
+    transition: opacity 0.2s ease;
+}
+
+/* ============================================================ */
+/* ДОПОЛНИТЕЛЬНЫЕ НАСТРОЙКИ                                     */
+/* ============================================================ */
+
+.settings-section {
+    margin-top: 1.5rem;
+}
+
+.settings-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.8rem;
+}
+
+.settings-block {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 0.5rem 0;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+}
+
+.settings-item {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1.2rem;
+    gap: 1rem;
+    cursor: pointer;
+    transition: none;
+    border-bottom: 1px solid var(--light);
+}
+
+.settings-item:last-child {
+    border-bottom: none;
+}
+
+.settings-item:active {
+    opacity: 0.7;
+}
+
+.settings-item-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 10px;
+    background: var(--accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    font-size: 1.2rem;
+}
+
+.settings-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.settings-item-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.settings-item-desc {
+    font-size: 0.8rem;
+    color: var(--slate);
+    margin-top: 0.1rem;
+}
+
+.settings-item-arrow {
+    color: var(--slate);
+    font-size: 0.9rem;
 }

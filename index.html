@@ -252,16 +252,16 @@
                     <span id="currentMonthYear">Июль 2026</span>
                     <button id="nextMonth" class="btn-calendar-nav"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>
-                <div class="calendar-grid">
-                    <div class="calendar-weekday">Пн</div>
-                    <div class="calendar-weekday">Вт</div>
-                    <div class="calendar-weekday">Ср</div>
-                    <div class="calendar-weekday">Чт</div>
-                    <div class="calendar-weekday">Пт</div>
-                    <div class="calendar-weekday">Сб</div>
-                    <div class="calendar-weekday">Вс</div>
-                    <div id="calendarDays"></div>
-                </div>
+<div class="calendar-grid">
+    <div class="calendar-weekday">Пн</div>
+    <div class="calendar-weekday">Вт</div>
+    <div class="calendar-weekday">Ср</div>
+    <div class="calendar-weekday">Чт</div>
+    <div class="calendar-weekday">Пт</div>
+    <div class="calendar-weekday">Сб</div>
+    <div class="calendar-weekday">Вс</div>
+    <div id="calendarDays"></div>  <!-- ← СЮДА ДОБАВЛЯЮТСЯ ДНИ -->
+</div>
             </div>
             <h2>История тренировок</h2>
             <div class="history-scroll-wrapper" id="workoutHistoryWrapper">
@@ -283,16 +283,22 @@
                 <h2 id="profileName">Пользователь</h2>
                 <p id="profileEmailDisplay" style="text-align:center; color:var(--slate); font-size:0.9rem; word-break:break-all;">email@mail.ru</p>
                 
-                <div class="level-block">
-                    <div class="level-header">
-                        <span class="level-lvl" id="levelLvl">1 LVL</span>
-                        <span class="level-title" id="levelTitle">НАЧИНАЮЩИЙ</span>
-                        <span class="level-progress-text" id="levelProgressText">0/100XP</span>
-                    </div>
-                    <div class="level-bar">
-                        <div class="level-fill" id="levelFill" style="width:0%;"></div>
-                    </div>
-                </div>
+<div class="level-block">
+    <div class="level-header">
+        <div class="level-left">
+            <span class="level-lvl" id="levelLvl">1 LVL</span>
+        </div>
+        <div class="level-center">
+            <span class="level-title" id="levelTitle">НАЧИНАЮЩИЙ</span>
+        </div>
+        <div class="level-right">
+            <span class="level-progress-text" id="levelProgressText">0/100XP</span>
+        </div>
+    </div>
+    <div class="level-bar">
+        <div class="level-fill" id="levelFill" style="width:0%;"></div>
+    </div>
+</div>
 
                 <!-- ДО НАЖАТИЯ НА РЕДАКТИРОВАНИЕ: ВИДНА ТОЛЬКО ЭТА КНОПКА -->
                 <div id="profileView">
@@ -358,7 +364,25 @@
                     <div id="friendsList" style="margin-top:0.8rem;"></div>
                 </div>
             </div>
-
+            
+            <!-- РАЗДЕЛ: ДОПОЛНИТЕЛЬНЫЕ НАСТРОЙКИ -->
+<div class="settings-section">
+    <h2 class="settings-title">Дополнительные настройки</h2>
+    <div class="settings-block">
+        <div class="settings-item" onclick="startTutorial()">
+            <div class="settings-item-icon">
+                <i class="fa-regular fa-circle-question"></i>
+            </div>
+            <div class="settings-item-info">
+                <div class="settings-item-title">Обучение</div>
+                <div class="settings-item-desc">Пройти обучение по использованию приложения</div>
+            </div>
+            <div class="settings-item-arrow">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+</div>
         </div>
     </div>
 

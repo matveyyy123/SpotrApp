@@ -570,18 +570,6 @@ function applyWorkoutsTab(tab) {
     document.getElementById('tab-' + tab).classList.add('active');
 }
 
-// Обработчик клика на вкладках тренировок
-document.querySelectorAll('#page-workouts .tab-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const tab = this.dataset.tab;
-        activeWorkoutsTab = tab;  // ← СОХРАНЯЕМ СОСТОЯНИЕ
-        applyWorkoutsTab(tab);
-        if (tab === 'my') {
-            renderMyWorkouts();
-        }
-    });
-});
-
 // ============================================================
 // УПРАВЛЕНИЕ ВКЛАДКАМИ СТАТИСТИКИ
 // ============================================================
@@ -1493,10 +1481,10 @@ async function renderCalendar(month, year) {
     const container = document.getElementById('calendarDays');
     if (!container) return;
     
-    // ✅ ОЧИЩАЕМ СОДЕРЖИМОЕ, НЕ УДАЛЯЕМ КОНТЕЙНЕР
+    // ✅ ОЧИЩАЕМ КОНТЕЙНЕР ПЕРЕД ДОБАВЛЕНИЕМ
     container.innerHTML = '';
 
-    // Добавляем пустые ячейки до первого дня
+    // Пустые ячейки до первого дня
     for (let i = 1; i < startDayOfWeek; i++) {
         const empty = document.createElement('div');
         empty.classList.add('calendar-empty');
@@ -1573,7 +1561,7 @@ async function loadProfile() {
     
     let progressText = '';
     if (nextLevel) {
-        progressText = `${xp.toFixed(1)} / ${nextLevel.minXp} XP`;
+        progressText = `${xp.toFixed(1)}/${nextLevel.minXp} XP`;
     } else {
         progressText = `${xp.toFixed(1)}+ XP`;
     }
@@ -1597,9 +1585,6 @@ async function loadProfile() {
     
     const editNameEl = document.getElementById('editName');
     if (editNameEl) editNameEl.value = profile.displayName || '';
-    
-    const editEmailEl = document.getElementById('editEmail');
-    if (editEmailEl) editEmailEl.value = profile.email || user.email || '';
     
     const nameErrorEl = document.getElementById('editNameError');
     if (nameErrorEl) nameErrorEl.textContent = '';
@@ -1710,11 +1695,20 @@ firebase.auth().onAuthStateChanged(async (user) => {
         // ПОКАЗЫВАЕМ СТРАНИЦУ ЗАГРУЗКИ
         document.getElementById('page-loading').classList.add('active');
         
-        // Подгружаем данные в фоне
+        // После загрузки данных
         await loadProfile();
         await loadStats();
         renderMyWorkouts();
         await renderCalendar(currentMonth, currentYear);
+
+        // ✅ ЗАПУСК ТУТОРИАЛА ПОСЛЕ РЕГИСТРАЦИИ
+        const syncResult = await syncUserProfile();
+        if (syncResult.isNew && !isTutorialCompleted()) {
+            // Ждём немного, чтобы страница загрузилась
+            setTimeout(() => {
+                startTutorial();
+            }, 1000);
+        }
         
         if (typeof syncPendingWorkouts === 'function') {
             syncPendingWorkouts();
@@ -2680,22 +2674,18 @@ document.querySelectorAll('#page-workouts .tab-btn').forEach(btn => {
 
 async function loadWorldLeaderboard() {
     const container = document.getElementById('worldLeaderboard');
-    const countEl = document.getElementById('worldStatsCount');
     
     if (!container) return;
     
-    // Показываем загрузку
     container.innerHTML = '<div style="text-align:center;color:var(--slate);padding:2rem 0;">Загрузка рейтинга...</div>';
     
     try {
         const user = await getFirebaseUser();
         if (!user) {
             container.innerHTML = '<div style="text-align:center;color:var(--slate);padding:2rem 0;">Авторизуйтесь, чтобы увидеть рейтинг</div>';
-            if (countEl) countEl.textContent = '—';
             return;
         }
         
-        // Запрос топ-30 пользователей по XP
         const snapshot = await firebase.firestore()
             .collection('users')
             .orderBy('totalXp', 'desc')
@@ -2709,11 +2699,10 @@ async function loadWorldLeaderboard() {
         
         if (users.length === 0) {
             container.innerHTML = '<div style="text-align:center;color:var(--slate);padding:2rem 0;">Пока нет пользователей</div>';
-            if (countEl) countEl.textContent = '0';
             return;
         }
         
-        // Рендерим рейтинг
+        // Рендерим топ-30
         container.innerHTML = users.map((userData, index) => {
             const position = index + 1;
             const level = getCurrentLevel(userData.totalXp || 0);
@@ -2741,7 +2730,6 @@ async function loadWorldLeaderboard() {
     } catch (error) {
         console.error('Ошибка загрузки рейтинга:', error);
         container.innerHTML = '<div style="text-align:center;color:#EF4444;padding:2rem 0;">Ошибка загрузки. Проверьте интернет.</div>';
-        if (countEl) countEl.textContent = 'Ошибка';
     }
 }
 
@@ -2874,3 +2862,308 @@ function showToast(message, duration = 3000) {
         }, 300);
     }, duration);
 }
+
+function showTutorialStep(index) {
+    // Если шагов больше нет — завершаем
+    if (index >= tutorialSteps.length) {
+        finishTutorial();
+        return;
+    }
+    
+    const step = tutorialSteps[index];
+    currentTutorialStep = index;
+    
+    // Переключаем страницу
+    if (step.page) {
+        window.navigateTo(step.page);
+    }
+    
+    // Выполняем действие (если есть)
+    if (step.action) {
+        setTimeout(() => {
+            step.action();
+        }, 300);
+    }
+    
+    // Показываем подсказку с задержкой (чтобы страница успела загрузиться)
+    setTimeout(() => {
+        showTutorialOverlay(step);
+    }, 500);
+}
+
+function showTutorialOverlay(step) {
+    // Удаляем старый оверлей с анимацией
+    const oldOverlay = document.getElementById('tutorialOverlay');
+    if (oldOverlay) {
+        oldOverlay.classList.remove('active');
+        setTimeout(() => {
+            oldOverlay.remove();
+        }, 500);
+    }
+    
+    const oldTooltip = document.querySelector('.tutorial-tooltip');
+    if (oldTooltip) {
+        oldTooltip.classList.remove('active');
+        setTimeout(() => {
+            oldTooltip.remove();
+        }, 400);
+    }
+    
+    // Снимаем подсветку со старых элементов
+    document.querySelectorAll('.tutorial-highlight').forEach(el => {
+        el.classList.remove('active');
+        setTimeout(() => {
+            el.classList.remove('tutorial-highlight');
+        }, 500);
+    });
+    
+    // Создаём новый оверлей с задержкой
+    setTimeout(() => {
+        createTutorialOverlay(step);
+    }, 400);
+}
+
+function createTutorialOverlay(step) {
+    // Затемнение
+    const overlay = document.createElement('div');
+    overlay.id = 'tutorialOverlay';
+    overlay.className = 'tutorial-overlay';
+    document.body.appendChild(overlay);
+    
+    // Подсвечиваем элемент(ы)
+    if (step.highlight) {
+        const elements = Array.isArray(step.highlight) 
+            ? step.highlight.map(sel => document.querySelector(sel)).filter(el => el)
+            : [document.querySelector(step.highlight)].filter(el => el);
+        
+        elements.forEach(el => {
+            el.classList.add('tutorial-highlight');
+        });
+        
+        setTimeout(() => {
+            elements.forEach(el => {
+                el.classList.add('active');
+                setTimeout(() => {
+                    el.classList.add('pulsing');
+                }, 100);
+            });
+        }, 50);
+        
+        overlay._highlightElements = elements;
+    }
+    
+    // Показываем затемнение
+    setTimeout(() => {
+        overlay.classList.add('active');
+    }, 50);
+    
+    // Точки
+    let dotsHtml = '';
+    for (let i = 0; i < tutorialSteps.length; i++) {
+        dotsHtml += `<div class="dot ${i === currentTutorialStep ? 'active' : ''}"></div>`;
+    }
+    
+    const isLast = step.isLast || false;
+    const buttonText = isLast ? 'Начать тренироваться' : 'Понятно';
+    
+    // Подсказка
+    const tooltip = document.createElement('div');
+    tooltip.className = 'tutorial-tooltip';
+    tooltip.id = 'tutorialTooltip';
+    
+    // ✅ ДЛЯ ПЕРВОГО ШАГА — ПОДНИМАЕМ ВЫШЕ
+    if (step.id === 1) {
+        tooltip.style.bottom = '100px';
+    } else {
+        tooltip.style.bottom = '50px';
+    }
+    
+    tooltip.innerHTML = `
+        <div class="tutorial-dots">${dotsHtml}</div>
+        <p>${step.text}</p>
+        <div class="tutorial-buttons">
+            <button class="btn-primary" onclick="nextTutorialStep()" style="padding:0.6rem 2rem; width:auto;">
+                ${buttonText}
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(tooltip);
+    
+    setTimeout(() => {
+        tooltip.classList.add('active');
+    }, 200);
+}
+
+function nextTutorialStep() {
+    const nextIndex = currentTutorialStep + 1;
+    removeTutorialOverlay();
+    
+    // Увеличенная задержка для плавного перехода
+    setTimeout(() => {
+        showTutorialStep(nextIndex);
+    }, 600); // ← было 400, стало 600
+}
+
+function removeTutorialOverlay() {
+    const overlay = document.getElementById('tutorialOverlay');
+    if (overlay) {
+        overlay.classList.remove('active');
+        
+        // Снимаем подсветку со всех элементов
+        if (overlay._highlightElements) {
+            overlay._highlightElements.forEach(el => {
+                el.classList.remove('active');
+                el.classList.remove('pulsing');
+                setTimeout(() => {
+                    el.classList.remove('tutorial-highlight');
+                }, 600);
+            });
+        }
+        
+        setTimeout(() => {
+            overlay.remove();
+        }, 500);
+    }
+    
+    const tooltip = document.querySelector('.tutorial-tooltip');
+    if (tooltip) {
+        tooltip.classList.remove('active');
+        setTimeout(() => {
+            tooltip.remove();
+        }, 400);
+    }
+}
+
+function finishTutorial() {
+    removeTutorialOverlay();
+    setTutorialCompleted();
+    
+    // Переходим на тренировки с небольшой задержкой
+    setTimeout(() => {
+        window.navigateTo('workouts');
+    }, 300);
+}
+
+
+
+// ============================================================
+// ТУТОРИАЛ (ОБУЧЕНИЕ)
+// ============================================================
+
+const TUTORIAL_KEY = 'tutorialCompleted';
+
+function isTutorialCompleted() {
+    return localStorage.getItem(TUTORIAL_KEY) === 'true';
+}
+
+function setTutorialCompleted() {
+    localStorage.setItem(TUTORIAL_KEY, 'true');
+}
+
+// Запуск туториала
+function startTutorial() {
+    // Если туториал уже идёт — не запускаем повторно
+    if (document.getElementById('tutorialOverlay')) return;
+    
+    // Сбрасываем флаг, чтобы можно было пройти заново
+    // (но не сохраняем, пока не завершим)
+    
+    // Запускаем первый шаг
+    showTutorialStep(0);
+}
+
+// Текущий шаг
+let currentTutorialStep = 0;
+
+// Массив шагов
+const tutorialSteps = [
+    {
+        id: 1,
+        page: 'workouts',
+        highlight: '#bottomNav',
+        text: 'Это главное меню, здесь есть три раздела: статистика, тренировки и профиль.'
+    },
+    {
+        id: 2,
+        page: 'stats',
+        highlight: [
+            '#page-stats .tab-btn[data-tab="personal"]',
+            '#page-stats .tab-btn[data-tab="world"]',
+        ],
+        text: 'Статистика делится на два раздела: мировая и личная.',
+        action: () => { switchStatsTab('personal'); }
+    },
+    {
+        id: 3,
+        page: 'stats',
+        highlight: '#page-stats .tab-btn[data-tab="personal"]',
+        text: 'В личной статистике хранятся ваши данные, такие как общее количество тренировок, минуты, упражнения, статистика по группам мышц, календарь тренировок и история тренировок.'
+    },
+    {
+        id: 4,
+        page: 'stats',
+        highlight: '#page-stats .tab-btn[data-tab="world"]',
+        text: 'В мировой статистике находится рейтинг пользователей.',
+        action: () => { switchStatsTab('world'); }
+    },
+    {
+        id: 5,
+        page: 'workouts',
+        highlight: [
+            '#page-workouts .tab-btn[data-tab="ready"]',
+            '#page-workouts .tab-btn[data-tab="my"]'
+        ],
+        text: 'Страница тренировок делится на два раздела: готовые и личные.'
+    },
+    {
+        id: 6,
+        page: 'workouts',
+        highlight: [
+            '#page-workouts .tab-btn[data-tab="ready"]',
+            '.category-card[data-category="Руки"]'
+        ],
+        text: 'Здесь уже собраны готовые тренировки, каждая из которых разделена на 3 уровня сложности.'
+    },
+    {
+        id: 7,
+        page: 'workouts',
+        highlight: [
+            '#page-workouts .tab-btn[data-tab="my"]',
+            '.custom-workout .btn-primary'
+        ],
+        text: 'Здесь вы можете создавать свои собственные тренировки.',
+        action: () => { 
+            document.querySelector('#page-workouts .tab-btn[data-tab="my"]')?.click();
+        }
+    },
+    {
+        id: 8,
+        page: 'profile',
+        highlight: '.profile-block',
+        text: 'Это ваш профиль :)'
+    },
+    {
+        id: 9,
+        page: 'profile',
+        highlight: '.level-block',
+        text: 'Это система уровней, по которой вы будете соревноваться с друзьями и другими пользователями. Чтобы повысить уровень, нужно тренироваться.'
+    },
+    {
+        id: 10,
+        page: 'profile',
+        highlight: '.friends-block',
+        text: 'Здесь вы можете найти своих друзей.'
+    },
+    {
+        id: 11,
+        page: 'workouts',
+        highlight: null,
+        text: 'Желаю отличной тренировки!',
+        isLast: true,
+        action: () => {
+            const readyTab = document.querySelector('#page-workouts .tab-btn[data-tab="ready"]');
+            if (readyTab) readyTab.click();
+        }
+    }
+];
