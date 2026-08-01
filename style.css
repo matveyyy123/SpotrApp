@@ -1829,7 +1829,7 @@ input::placeholder {
     font-weight: 500;
     z-index: 3000;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    max-width: 90%;
+    max-width: 95%;
     text-align: center;
     animation: slideUp 0.3s ease-out;
     opacity: 0;
@@ -1849,12 +1849,4 @@ input::placeholder {
         transform: translateX(-50%) translateY(0);
         opacity: 1;
     }
-}
-
-/* ============================================================ */
-/* БАННЕР УСТАНОВКИ PWA                                         */
-/* ============================================================ */
-
-#installBanner {
-    animation: slideUp 0.4s ease-out;
 }
