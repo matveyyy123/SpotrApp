@@ -2903,18 +2903,48 @@ function showToast(message, duration = 3000) {
 
 let deferredPrompt = null;
 
-window.addEventListener('beforeinstallprompt', function(e) {
-    // Предотвращаем стандартный баннер
-    e.preventDefault();
-    deferredPrompt = e;
+// Функция для проверки, установлено ли приложение
+function isAppInstalled() {
+    // Проверяем через localStorage, если пользователь уже устанавливал
+    const installed = localStorage.getItem('appInstalled');
+    if (installed === 'true') return true;
     
-    // Показываем кастомный баннер, если его ещё не скрывали
-    const bannerHidden = localStorage.getItem('installBannerHidden');
-    if (!bannerHidden) {
-        showInstallBanner();
+    // Проверяем через window.navigator (если доступно)
+    if (window.navigator && window.navigator.standalone) {
+        return true;
     }
-});
+    
+    return false;
+}
 
+// Показываем баннер принудительно (при загрузке приложения)
+function showInstallBannerIfNeeded() {
+    // Если приложение уже установлено — не показываем
+    if (isAppInstalled()) {
+        console.log('✅ Приложение уже установлено');
+        return;
+    }
+    
+    // Если пользователь уже закрыл баннер — не показываем
+    const bannerHidden = localStorage.getItem('installBannerHidden');
+    if (bannerHidden === 'true') {
+        console.log('ℹ️ Баннер скрыт пользователем');
+        return;
+    }
+    
+    // Проверяем, поддерживается ли установка
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    if (isStandalone) {
+        console.log('✅ Приложение уже запущено в режиме standalone');
+        return;
+    }
+    
+    // Показываем баннер
+    console.log('📱 Показываем баннер установки');
+    showInstallBanner();
+}
+
+// Показываем баннер
 function showInstallBanner() {
     const banner = document.getElementById('installBanner');
     if (banner) {
@@ -2922,6 +2952,7 @@ function showInstallBanner() {
     }
 }
 
+// Закрываем баннер
 function closeInstallBanner() {
     const banner = document.getElementById('installBanner');
     if (banner) {
@@ -2931,33 +2962,57 @@ function closeInstallBanner() {
     localStorage.setItem('installBannerHidden', 'true');
 }
 
+// Установка приложения
 async function installApp() {
     if (!deferredPrompt) {
-        showToast('❌ Установка недоступна');
+        // Если нет deferredPrompt, показываем инструкцию
+        showToast('📱 Нажмите "Добавить на экран" в меню браузера', 'info', 4000);
         return;
     }
     
     try {
-        // Показываем диалог установки
         const result = await deferredPrompt.prompt();
         
         if (result.outcome === 'accepted') {
-            showToast('✅ Приложение установлено!');
+            localStorage.setItem('appInstalled', 'true');
+            showToast('✅ Приложение установлено!', 'success');
             closeInstallBanner();
         } else {
-            showToast('❌ Установка отменена');
+            showToast('❌ Установка отменена', 'error');
         }
         
         deferredPrompt = null;
     } catch (error) {
         console.error('Ошибка установки:', error);
-        showToast('❌ Ошибка установки');
+        showToast('❌ Ошибка установки', 'error');
     }
 }
 
-// Проверяем, установлено ли уже приложение
+// Слушаем событие beforeinstallprompt (браузерное)
+window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    console.log('✅ Событие beforeinstallprompt получено');
+    
+    // Показываем баннер, если его ещё не скрывали
+    const bannerHidden = localStorage.getItem('installBannerHidden');
+    if (!bannerHidden && !isAppInstalled()) {
+        showInstallBanner();
+    }
+});
+
+// Проверяем, установлено ли приложение
 window.addEventListener('appinstalled', function() {
-    showToast('✅ Приложение установлено!');
+    localStorage.setItem('appInstalled', 'true');
+    showToast('✅ Приложение установлено!', 'success');
     closeInstallBanner();
     deferredPrompt = null;
+});
+
+// Вызываем при загрузке приложения
+document.addEventListener('DOMContentLoaded', function() {
+    // Показываем баннер через 3 секунды после загрузки
+    setTimeout(() => {
+        showInstallBannerIfNeeded();
+    }, 3000);
 });
