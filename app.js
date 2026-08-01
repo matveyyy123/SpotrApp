@@ -211,6 +211,11 @@ let currentYear = new Date().getFullYear();
 let isOfflineModalShown = false; // ← ФЛАГ ДЛЯ ВНУТРИ ПРИЛОЖЕНИЯ
 
 // ============================================================
+// ГЛОБАЛЬНЫЙ ФЛАГ ДЛЯ БЛОКИРОВКИ onAuthStateChanged
+// ============================================================
+let isLoggingIn = false;
+
+// ============================================================
 // ОФЛАЙН-ОЧЕРЕДЬ НЕСИНХРОНИЗИРОВАННЫХ ТРЕНИРОВОК
 // ============================================================
 const PENDING_KEY = 'pendingWorkouts';
@@ -1547,13 +1552,14 @@ async function loadProfile() {
         return;
     }
     
-    const syncResult = await syncUserProfile();
-    if (!syncResult.success) {
-        console.error('Ошибка синхронизации профиля:', syncResult.error);
+    // ✅ ПРОСТО ПОЛУЧАЕМ ПРОФИЛЬ БЕЗ СОЗДАНИЯ
+    const profileResult = await getUserProfile(user.uid);
+    if (!profileResult.success) {
+        console.error('Ошибка получения профиля:', profileResult.error);
         return;
     }
     
-    const profile = syncResult.data;
+    const profile = profileResult.data;
     const xp = profile.totalXp || 0;
     const currentLevel = getCurrentLevel(xp);
     const progress = getXpProgress(xp);
@@ -1672,8 +1678,11 @@ if (saveProfileBtn) {
 firebase.auth().onAuthStateChanged(async (user) => {
     const bottomNav = document.getElementById('bottomNav');
     
-    // Сначала скрываем все страницы
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // ✅ ЕСЛИ МЫ В ПРОЦЕССЕ ВХОДА - НИЧЕГО НЕ ДЕЛАЕМ
+    if (isLoggingIn) {
+        console.log('⏳ Процесс входа, onAuthStateChanged пропущен');
+        return;
+    }
     
     if (user) {
         try {
@@ -1683,32 +1692,38 @@ firebase.auth().onAuthStateChanged(async (user) => {
         if (!user.emailVerified) {
             console.log('❌ Почта не подтверждена');
             bottomNav.style.display = 'none';
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-login').classList.add('active');
             return;
         }
         
         console.log('✅ Пользователь авторизован:', user.email);
         
-        // СКРЫВАЕМ НАВИГАЦИЮ на странице загрузки
+        // ✅ ПРОВЕРЯЕМ, НЕ ЗАГРУЖЕНА ЛИ УЖЕ СТРАНИЦА
+        const isPageLoaded = document.querySelector('#page-workouts.active') || 
+                             document.querySelector('#page-stats.active') || 
+                             document.querySelector('#page-profile.active');
+        
+        if (isPageLoaded) {
+            console.log('✅ Страница уже загружена');
+            return;
+        }
+        
+        // ✅ ПОКАЗЫВАЕМ СТРАНИЦУ ЗАГРУЗКИ
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-loading').classList.add('active');
         bottomNav.style.display = 'none';
         
-        // ПОКАЗЫВАЕМ СТРАНИЦУ ЗАГРУЗКИ
-        document.getElementById('page-loading').classList.add('active');
-        
-        // После загрузки данных
+        // Загружаем данные
         await loadProfile();
         await loadStats();
         renderMyWorkouts();
         await renderCalendar(currentMonth, currentYear);
-
-        // ✅ ЗАПУСК ТУТОРИАЛА ПОСЛЕ РЕГИСТРАЦИИ
-        const syncResult = await syncUserProfile();
-        if (syncResult.isNew && !isTutorialCompleted()) {
-            // Ждём немного, чтобы страница загрузилась
-            setTimeout(() => {
-                startTutorial();
-            }, 1000);
-        }
+        
+        // ✅ ВХОДИМ В ПРИЛОЖЕНИЕ
+        document.getElementById('page-loading').classList.remove('active');
+        bottomNav.style.display = 'block';
+        window.navigateTo('workouts');
         
         if (typeof syncPendingWorkouts === 'function') {
             syncPendingWorkouts();
@@ -1717,8 +1732,7 @@ firebase.auth().onAuthStateChanged(async (user) => {
     } else {
         console.log('❌ Пользователь не авторизован');
         bottomNav.style.display = 'none';
-        
-        // ПОКАЗЫВАЕМ СТРАНИЦУ ПРИВЕТСТВИЯ
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById('page-hero').classList.add('active');
     }
 });
@@ -1824,14 +1838,16 @@ if (registerForm) {
                 displayName: name
             });
             
-            await saveUserProfile(result.user.uid, {
-                displayName: name,
-                email: email,
-                avatar: 'bodybuilding',
-                level: 1,
-                totalXp: 0,
-                createdAt: new Date().toISOString()
-            });
+// В registerForm, после создания пользователя:
+await saveUserProfile(result.user.uid, {
+    displayName: name,
+    email: email,
+    avatar: 'bodybuilding',
+    level: 1,
+    totalXp: 0,
+    createdAt: new Date().toISOString(),
+    tutorialCompleted: false  // ← ДОБАВЛЯЕМ
+});
             
             // ОТПРАВЛЯЕМ ПИСЬМО
             await result.user.sendEmailVerification();
@@ -1924,23 +1940,73 @@ if (loginForm) {
         btn.textContent = 'Вход...';
         btn.disabled = true;
         
+        // ✅ УСТАНАВЛИВАЕМ ФЛАГ, ЧТО МЫ ВХОДИМ
+        isLoggingIn = true;
+        
         try {
             const result = await firebase.auth().signInWithEmailAndPassword(email, password);
             const user = result.user;
             
-            // ✅ ПРИНУДИТЕЛЬНО ОБНОВЛЯЕМ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ
             await user.reload();
             
             if (!user.emailVerified) {
                 alert('Подтвердите почту, письмо отправлено на ' + email);
-                // Остаёмся на странице входа
+                btn.textContent = 'Войти в аккаунт';
+                btn.disabled = false;
+                isLoggingIn = false;
                 return;
             }
-            
+
             console.log('✅ Вход выполнен:', user.email);
-            // Явно показываем меню и переходим в приложение
-            document.getElementById('bottomNav').style.display = 'block';
-            window.navigateTo('workouts');
+            
+            // ✅ СРАЗУ ПОКАЗЫВАЕМ СТРАНИЦУ ЗАГРУЗКИ
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-loading').classList.add('active');
+            document.getElementById('bottomNav').style.display = 'none';
+            
+            // ✅ ПОЛУЧАЕМ ПРОФИЛЬ
+            const profileResult = await getUserProfile(user.uid);
+            
+            // ✅ ПРОВЕРЯЕМ ТУТОРИАЛ
+            const tutorialCompleted = profileResult.data?.tutorialCompleted || false;
+            
+            // Загружаем данные
+            await loadProfile();
+            await loadStats();
+            renderMyWorkouts();
+            await renderCalendar(currentMonth, currentYear);
+            
+            // ✅ СБРАСЫВАЕМ ФЛАГ ПОСЛЕ ВСЕХ ОПЕРАЦИЙ
+            isLoggingIn = false;
+            
+            if (!tutorialCompleted) {
+                // ✅ ТУТОРИАЛ НЕ ПРОЙДЕН - ЗАПУСКАЕМ
+                console.log('🎓 Запускаем туториал');
+                
+                // Помечаем, что туториал пройден
+                await updateUserProfile(user.uid, { tutorialCompleted: true });
+                
+                // Переходим на тренировки
+                document.getElementById('page-loading').classList.remove('active');
+                document.getElementById('bottomNav').style.display = 'block';
+                window.navigateTo('workouts');
+                
+                // Запускаем туториал через секунду
+                setTimeout(() => {
+                    startTutorial();
+                }, 800);
+                
+            } else {
+                // ✅ ТУТОРИАЛ УЖЕ ПРОЙДЕН - ПРОСТО ВХОДИМ
+                console.log('👤 Обычный вход');
+                document.getElementById('page-loading').classList.remove('active');
+                document.getElementById('bottomNav').style.display = 'block';
+                window.navigateTo('workouts');
+            }
+            
+            if (typeof syncPendingWorkouts === 'function') {
+                syncPendingWorkouts();
+            }
             
         } catch (error) {
             passwordInput.classList.add('error');
@@ -1955,6 +2021,7 @@ if (loginForm) {
                 message = 'Слишком много попыток входа. Подождите несколько минут.';
             }
             passwordError.textContent = message;
+            isLoggingIn = false;  // ← СБРАСЫВАЕМ ПРИ ОШИБКЕ
         } finally {
             btn.textContent = 'Войти в аккаунт';
             btn.disabled = false;
@@ -3063,6 +3130,7 @@ function setTutorialCompleted() {
 
 // Запуск туториала
 function startTutorial() {
+        console.log('🚀 Запуск туториала');
     // Если туториал уже идёт — не запускаем повторно
     if (document.getElementById('tutorialOverlay')) return;
     
