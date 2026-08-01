@@ -203,12 +203,28 @@
         </main>
     </div>
 
-    <!-- СТРАНИЦА: СТАТИСТИКА -->
-    <div id="page-stats" class="page">
-        <main class="dashboard-container">
-            <header class="dashboard-header">
-                <h1>СТАТИСТИКА</h1>
-            </header>
+<!-- СТРАНИЦА: СТАТИСТИКА -->
+<div id="page-stats" class="page">
+    <main class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>СТАТИСТИКА</h1>
+        </header>
+
+        <div class="tabs-container" style="margin-bottom:1.5rem;">
+            <button class="tab-btn" data-tab="world" onclick="switchStatsTab('world')">Мировая</button>
+            <button class="tab-btn active" data-tab="personal" onclick="switchStatsTab('personal')">Личная</button>
+        </div>
+
+        <!-- Мировая статистика -->
+        <div id="stats-world" class="stats-tab-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                <h2 style="margin:0; font-size:1.1rem;">Рейтинг пользователей</h2>
+            </div>
+            <div id="worldLeaderboard" style="display:flex; flex-direction:column; gap:0.5rem;"></div>
+        </div>
+
+        <!-- Личная статистика -->
+        <div id="stats-personal" class="stats-tab-content active">
             <div class="stats-summary">
                 <div class="stat-big-card">
                     <span class="stat-big-label">Тренировок</span>
@@ -247,8 +263,9 @@
             <div class="history-scroll-wrapper" id="workoutHistoryWrapper">
                 <div id="workoutHistory"></div>
             </div>
-        </main>
-    </div>
+        </div>
+    </main>
+</div>
 
     <!-- СТРАНИЦА: ПРОФИЛЬ -->
     <div id="page-profile" class="page">

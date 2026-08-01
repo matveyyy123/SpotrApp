@@ -1721,3 +1721,93 @@ input::placeholder {
     outline: none;
     border-color: var(--accent);
 }
+
+/* ============================================================ */
+/* СТАТИСТИКА - ВКЛАДКИ                                          */
+/* ============================================================ */
+
+.stats-tab-content {
+    display: none;
+}
+
+.stats-tab-content.active {
+    display: block;
+}
+
+/* ============================================================ */
+/* МИРОВОЙ РЕЙТИНГ                                               */
+/* ============================================================ */
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    background: var(--white);
+    border-radius: 16px;
+    padding: 0.8rem 1.2rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    gap: 1rem;
+    border: 2px solid transparent;
+}
+
+.leaderboard-item:active {
+    opacity: 0.8;
+}
+
+/* ТОЧНО ТАКИЕ ЖЕ КАК В УПРАЖНЕНИЯХ */
+.leaderboard-position {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    border-radius: 14px;
+    background: var(--accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--accent);
+}
+
+.leaderboard-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.leaderboard-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--dark);
+    word-break: break-word;
+}
+
+.leaderboard-details {
+    font-size: 0.8rem;
+    color: var(--slate);
+    display: flex;
+    gap: 0.4rem;  /* ← УМЕНЬШИЛ С 0.8rem ДО 0.3rem */
+    flex-wrap: wrap;
+    margin-top: 0.1rem;
+    align-items: center;
+}
+
+.leaderboard-details i {
+    color: var(--slate);
+}
+
+.leaderboard-xp {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--accent);
+    min-width: 60px;
+    text-align: right;
+}
+
+/* Подсветка текущего пользователя — ТОЛЬКО ОБВОДКА */
+.leaderboard-item.current-user {
+    border-color: var(--accent);
+}
+
+/* Убираем изменение цвета имени */
+.leaderboard-item.current-user .leaderboard-name {
+    color: var(--dark); /* или var(--text-primary) — стандартный цвет */
+}

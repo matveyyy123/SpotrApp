@@ -200,6 +200,12 @@ function saveExercisesData() {
 loadExercisesData();
 
 // ============================================================
+// ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ДЛЯ КАЛЕНДАРЯ
+// ============================================================
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+
+// ============================================================
 // ОФЛАЙН-ОЧЕРЕДЬ НЕСИНХРОНИЗИРОВАННЫХ ТРЕНИРОВОК
 // ============================================================
 const PENDING_KEY = 'pendingWorkouts';
@@ -500,9 +506,6 @@ window.navigateTo = function(page, params) {
         btn.classList.toggle('active', btn.dataset.page === page);
     });
     
-    if (page === 'stats') {
-        loadStats();
-    }
     if (page === 'profile') {
         loadProfile();
     }
@@ -516,10 +519,17 @@ window.navigateTo = function(page, params) {
         loadEditPage(params.category, params.isCustom, params.id, params.level);
     }
     if (page === 'workouts') {
+        // Применяем сохранённое состояние
+        applyWorkoutsTab(activeWorkoutsTab);
         renderMyWorkouts();
     }
     if (page === 'exercise-list') {
-    renderExerciseListPage();
+        renderExerciseListPage();
+    }
+    if (page === 'stats') {
+        // Применяем сохранённое состояние
+        applyStatsTab(activeStatsTab);
+        loadStats();
     }
 };
 
@@ -533,16 +543,55 @@ document.querySelectorAll('.nav-item').forEach(btn => {
 });
 
 // ============================================================
-// ВКЛАДКИ
+// УПРАВЛЕНИЕ ВКЛАДКАМИ ТРЕНИРОВОК
 // ============================================================
-document.querySelectorAll('.tab-btn').forEach(btn => {
+
+function applyWorkoutsTab(tab) {
+    document.querySelectorAll('#page-workouts .tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tab);
+    });
+    document.querySelectorAll('#page-workouts .tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.getElementById('tab-' + tab).classList.add('active');
+}
+
+// Обработчик клика на вкладках тренировок
+document.querySelectorAll('#page-workouts .tab-btn').forEach(btn => {
     btn.addEventListener('click', function() {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.getElementById('tab-' + this.dataset.tab).classList.add('active');
-        if (this.dataset.tab === 'my') {
+        const tab = this.dataset.tab;
+        activeWorkoutsTab = tab;  // ← СОХРАНЯЕМ СОСТОЯНИЕ
+        applyWorkoutsTab(tab);
+        if (tab === 'my') {
             renderMyWorkouts();
+        }
+    });
+});
+
+// ============================================================
+// УПРАВЛЕНИЕ ВКЛАДКАМИ СТАТИСТИКИ
+// ============================================================
+
+function applyStatsTab(tab) {
+    document.querySelectorAll('#page-stats .tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tab);
+    });
+    document.querySelectorAll('#page-stats .stats-tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.getElementById('stats-' + tab).classList.add('active');
+}
+
+// Обработчик клика на вкладках статистики
+document.querySelectorAll('#page-stats .tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const tab = this.dataset.tab;
+        activeStatsTab = tab;  // ← СОХРАНЯЕМ СОСТОЯНИЕ
+        applyStatsTab(tab);
+        if (tab === 'world') {
+            loadWorldLeaderboard();
+        } else if (tab === 'personal') {
+            loadStats();
         }
     });
 });
@@ -1334,7 +1383,7 @@ window.createNewWorkout = function() {
 // ============================================================
 // СТАТИСТИКА (БЕЗ ИСТОРИИ ПРОГРЕССА)
 // ============================================================
-async function loadStats() {
+async function loadStats() {  
     const user = await getFirebaseUser();
     if (!user) {
         console.log('❌ Пользователь не авторизован');
@@ -1416,9 +1465,6 @@ async function loadStats() {
 // ============================================================
 // КАЛЕНДАРЬ (из FIRESTORE)
 // ============================================================
-let currentMonth = new Date().getMonth();
-let currentYear = new Date().getFullYear();
-
 async function renderCalendar(month, year) {
     const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь',
                        'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
@@ -1430,11 +1476,27 @@ async function renderCalendar(month, year) {
     const firstDay = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const startDayOfWeek = firstDay.getDay() || 7;
-    const container = document.getElementById('calendarDays');
-    if (!container) return;
     
-    container.innerHTML = '';
+    // ✅ НАХОДИМ КОНТЕЙНЕР И УДАЛЯЕМ СТАРЫЙ #calendarDays
+    const calendarGrid = document.querySelector('.calendar-grid');
+    if (!calendarGrid) return;
+    
+    // Удаляем старый #calendarDays, если он есть
+    const oldContainer = document.getElementById('calendarDays');
+    if (oldContainer) {
+        oldContainer.remove();
+    }
+    
+    // Создаём новый контейнер
+    const container = document.createElement('div');
+    container.id = 'calendarDays';
+    container.style.display = 'grid';
+    container.style.gridTemplateColumns = 'repeat(7, 1fr)';
+    container.style.gap = '4px';
+    container.style.gridColumn = '1 / -1';
+    calendarGrid.appendChild(container);
 
+    // Добавляем пустые ячейки до первого дня
     for (let i = 1; i < startDayOfWeek; i++) {
         const empty = document.createElement('div');
         empty.classList.add('calendar-empty');
@@ -1443,7 +1505,6 @@ async function renderCalendar(month, year) {
 
     const today = new Date();
     
-    // ✅ Загружаем тренировки из FIRESTORE
     const user = await getFirebaseUser();
     let workoutDays = [];
     if (user) {
@@ -2545,5 +2606,111 @@ function enterApp() {
     
     if (typeof syncPendingWorkouts === 'function') {
         syncPendingWorkouts();
+    }
+}
+
+// ============================================================
+// СОСТОЯНИЕ ВКЛАДОК
+// ============================================================
+let activeWorkoutsTab = 'ready';  // 'ready' или 'my'
+let activeStatsTab = 'personal';  // 'personal' или 'world'
+
+// ============================================================
+// СТАТИСТИКА - ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
+// ============================================================
+
+function switchStatsTab(tab) {
+    activeStatsTab = tab;  // ← СОХРАНЯЕМ
+    applyStatsTab(tab);
+    if (tab === 'world') {
+        loadWorldLeaderboard();
+    } else if (tab === 'personal') {
+        loadStats();
+    }
+}
+
+// ============================================================
+// ВКЛАДКИ ТРЕНИРОВОК
+// ============================================================
+document.querySelectorAll('#page-workouts .tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('#page-workouts .tab-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        document.querySelectorAll('#page-workouts .tab-content').forEach(c => c.classList.remove('active'));
+        document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+        if (this.dataset.tab === 'my') {
+            renderMyWorkouts();
+        }
+    });
+});
+
+// ============================================================
+// МИРОВОЙ РЕЙТИНГ
+// ============================================================
+
+async function loadWorldLeaderboard() {
+    const container = document.getElementById('worldLeaderboard');
+    const countEl = document.getElementById('worldStatsCount');
+    
+    if (!container) return;
+    
+    // Показываем загрузку
+    container.innerHTML = '<div style="text-align:center;color:var(--slate);padding:2rem 0;">Загрузка рейтинга...</div>';
+    
+    try {
+        const user = await getFirebaseUser();
+        if (!user) {
+            container.innerHTML = '<div style="text-align:center;color:var(--slate);padding:2rem 0;">Авторизуйтесь, чтобы увидеть рейтинг</div>';
+            if (countEl) countEl.textContent = '—';
+            return;
+        }
+        
+        // Запрос топ-30 пользователей по XP
+        const snapshot = await firebase.firestore()
+            .collection('users')
+            .orderBy('totalXp', 'desc')
+            .limit(30)
+            .get();
+        
+        const users = [];
+        snapshot.forEach(doc => {
+            users.push({ id: doc.id, ...doc.data() });
+        });
+        
+        if (users.length === 0) {
+            container.innerHTML = '<div style="text-align:center;color:var(--slate);padding:2rem 0;">Пока нет пользователей</div>';
+            if (countEl) countEl.textContent = '0';
+            return;
+        }
+        
+        // Рендерим рейтинг
+        container.innerHTML = users.map((userData, index) => {
+            const position = index + 1;
+            const level = getCurrentLevel(userData.totalXp || 0);
+            const date = userData.createdAt ? new Date(userData.createdAt).toLocaleDateString('ru-RU') : '—';
+            
+            // Проверяем, текущий ли это пользователь
+            const isCurrentUser = userData.id === user.uid;
+            
+            return `
+                <div class="leaderboard-item ${isCurrentUser ? 'current-user' : ''}">
+                    <div class="leaderboard-position">${position}</div>
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-name">${userData.displayName || 'Пользователь'}</div>
+                        <div class="leaderboard-details">
+                            <span>Уровень ${level.id}</span>
+                            <span>·</span>
+                            <span><i class="fa-regular fa-calendar"></i> ${date}</span>
+                        </div>
+                    </div>
+                    <div class="leaderboard-xp">${(userData.totalXp || 0).toFixed(1)} XP</div>
+                </div>
+            `;
+        }).join('');
+        
+    } catch (error) {
+        console.error('Ошибка загрузки рейтинга:', error);
+        container.innerHTML = '<div style="text-align:center;color:#EF4444;padding:2rem 0;">Ошибка загрузки. Проверьте интернет.</div>';
+        if (countEl) countEl.textContent = 'Ошибка';
     }
 }
