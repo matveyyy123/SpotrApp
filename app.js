@@ -1627,7 +1627,6 @@ firebase.auth().onAuthStateChanged(async (user) => {
     const bottomNav = document.getElementById('bottomNav');
     
     if (user) {
-        // Обновляем данные пользователя на всякий случай
         try {
             await user.reload();
         } catch (e) {}
@@ -1640,18 +1639,23 @@ firebase.auth().onAuthStateChanged(async (user) => {
         }
         
         console.log('✅ Пользователь авторизован:', user.email);
-        bottomNav.style.display = 'block';
         
+        // ❗ СКРЫВАЕМ НАВИГАЦИЮ на странице загрузки
+        bottomNav.style.display = 'none';
+        
+        // Показываем страницу загрузки
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('page-workouts').classList.add('active');
-        document.querySelectorAll('.nav-item').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.page === 'workouts');
-        });
+        document.getElementById('page-loading').classList.add('active');
         
+        // Подгружаем данные в фоне
         await loadProfile();
         await loadStats();
         renderMyWorkouts();
         await renderCalendar(currentMonth, currentYear);
+        
+        if (typeof syncPendingWorkouts === 'function') {
+            syncPendingWorkouts();
+        }
         
     } else {
         console.log('❌ Пользователь не авторизован');
@@ -2512,3 +2516,34 @@ window.addEventListener('online', function() {
         syncPendingWorkouts();
     }
 });
+
+// ============================================================
+// ВХОД В ПРИЛОЖЕНИЕ СО СТРАНИЦЫ ЗАГРУЗКИ
+// ============================================================
+function enterApp() {
+    // Проверяем интернет
+    if (!navigator.onLine) {
+        showOfflineModal();
+        return;
+    }
+    
+    // Показываем нижнюю навигацию
+    document.getElementById('bottomNav').style.display = 'block';
+    
+    // Переходим в приложение
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-workouts').classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.page === 'workouts');
+    });
+    
+    // Данные уже подгружены в фоне, но можно обновить на всякий случай
+    loadProfile();
+    loadStats();
+    renderMyWorkouts();
+    renderCalendar(currentMonth, currentYear);
+    
+    if (typeof syncPendingWorkouts === 'function') {
+        syncPendingWorkouts();
+    }
+}
