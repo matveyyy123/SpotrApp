@@ -1687,6 +1687,9 @@ if (saveProfileBtn) {
 firebase.auth().onAuthStateChanged(async (user) => {
     const bottomNav = document.getElementById('bottomNav');
     
+    // Сначала скрываем все страницы
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    
     if (user) {
         try {
             await user.reload();
@@ -1695,17 +1698,16 @@ firebase.auth().onAuthStateChanged(async (user) => {
         if (!user.emailVerified) {
             console.log('❌ Почта не подтверждена');
             bottomNav.style.display = 'none';
-            showLogin();
+            document.getElementById('page-login').classList.add('active');
             return;
         }
         
         console.log('✅ Пользователь авторизован:', user.email);
         
-        // ❗ СКРЫВАЕМ НАВИГАЦИЮ на странице загрузки
+        // СКРЫВАЕМ НАВИГАЦИЮ на странице загрузки
         bottomNav.style.display = 'none';
         
-        // Показываем страницу загрузки
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        // ПОКАЗЫВАЕМ СТРАНИЦУ ЗАГРУЗКИ
         document.getElementById('page-loading').classList.add('active');
         
         // Подгружаем данные в фоне
@@ -1721,7 +1723,9 @@ firebase.auth().onAuthStateChanged(async (user) => {
     } else {
         console.log('❌ Пользователь не авторизован');
         bottomNav.style.display = 'none';
-        showHero();
+        
+        // ПОКАЗЫВАЕМ СТРАНИЦУ ПРИВЕТСТВИЯ
+        document.getElementById('page-hero').classList.add('active');
     }
 });
 
@@ -2588,11 +2592,13 @@ function enterApp() {
         return;
     }
     
+    // Скрываем все страницы
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    
     // Показываем нижнюю навигацию
     document.getElementById('bottomNav').style.display = 'block';
     
-    // Переходим в приложение
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Показываем страницу тренировок
     document.getElementById('page-workouts').classList.add('active');
     document.querySelectorAll('.nav-item').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.page === 'workouts');
