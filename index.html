@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="theme-red">
+    <!-- PULL-TO-REFRESH ИНДИКАТОР -->
+<div id="pullToRefresh" style="display:none; text-align:center; padding:1rem 0; color:var(--slate);">
+    <i class="fa-solid fa-spinner fa-spin"></i> Обновление...
+</div>
 
     <!-- СТРАНИЦА: ТРЕНИРОВКИ (ГЛАВНАЯ) -->
     <div id="page-workouts" class="page">
@@ -517,6 +521,23 @@
         </p>
         <button class="modal-btn" onclick="closeOfflineModal()">Понятно</button>
     </div>
+</div>
+
+<!-- БАННЕР УСТАНОВКИ PWA -->
+<div id="installBanner" style="display:none; position:fixed; bottom:90px; left:50%; transform:translateX(-50%); width:90%; max-width:400px; background:var(--white); border-radius:16px; padding:1rem; box-shadow:0 4px 20px rgba(0,0,0,0.15); z-index:1500; border:2px solid var(--accent);">
+    <div style="display:flex; align-items:center; gap:0.8rem;">
+        <div style="width:48px; height:48px; background:var(--accent); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; color:white; flex-shrink:0;">
+            <i class="fa-solid fa-dumbbell"></i>
+        </div>
+        <div style="flex:1;">
+            <div style="font-weight:700; font-size:1rem; color:var(--dark);">Установите приложение</div>
+            <div style="font-size:0.8rem; color:var(--slate);">Быстрый доступ с главного экрана</div>
+        </div>
+        <button onclick="installApp()" style="background:var(--accent); color:white; border:none; padding:0.5rem 1rem; border-radius:10px; font-weight:600; font-size:0.85rem; cursor:pointer; white-space:nowrap;">
+            Установить
+        </button>
+    </div>
+    <button onclick="closeInstallBanner()" style="position:absolute; top:0.3rem; right:0.8rem; background:none; border:none; font-size:1.2rem; color:var(--slate); cursor:pointer; padding:0;">✕</button>
 </div>
 
 <!-- Firebase SDK -->

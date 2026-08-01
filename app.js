@@ -237,50 +237,59 @@ function removePendingWorkout(localId) {
 }
 
 async function syncPendingWorkouts() {
-  const pending = getPendingWorkouts();
-  if (pending.length === 0) return;
+    const pending = getPendingWorkouts();
+    if (pending.length === 0) return;
 
-  const user = await getFirebaseUser();
-  if (!user) {
-    console.warn('Пользователь не авторизован, синхронизация отложена');
-    return;
-  }
-
-  let syncedIds = [];
-  for (const workout of pending) {
-    try {
-      // Попытка сохранить в Firestore
-      const result = await saveWorkoutToFirestore(user.uid, {
-        title: workout.title,
-        date: workout.date,
-        durationSeconds: workout.durationSeconds,
-        exercises: workout.exercises,
-        xpEarned: workout.xpEarned
-      });
-      if (result.success) {
-        // Обновляем профиль: добавляем XP
-        const profileResult = await getUserProfile(user.uid);
-        if (profileResult.success) {
-          const currentXp = profileResult.data.totalXp || 0;
-          await updateUserProfile(user.uid, { totalXp: currentXp + workout.xpEarned });
-        }
-        syncedIds.push(workout._localId);
-      } else {
-        console.warn('Ошибка синхронизации тренировки:', result.error);
-        // Если ошибка не связана с сетью, можно оставить в очереди
-      }
-    } catch (e) {
-      console.warn('Ошибка синхронизации, повторим позже:', e);
-      break; // прерываем цикл, чтобы не повторять при сетевой ошибке
+    const user = await getFirebaseUser();
+    if (!user) {
+        console.warn('Пользователь не авторизован, синхронизация отложена');
+        return;
     }
-  }
 
-  if (syncedIds.length > 0) {
-    let pendingAfter = getPendingWorkouts();
-    pendingAfter = pendingAfter.filter(w => !syncedIds.includes(w._localId));
-    savePendingWorkouts(pendingAfter);
-    console.log(`Синхронизировано ${syncedIds.length} тренировок`);
-  }
+    let syncedIds = [];
+    let failedIds = [];
+    
+    for (const workout of pending) {
+        try {
+            const result = await saveWorkoutToFirestore(user.uid, {
+                title: workout.title,
+                date: workout.date,
+                durationSeconds: workout.durationSeconds,
+                exercises: workout.exercises,
+                xpEarned: workout.xpEarned
+            });
+            
+            if (result.success) {
+                const profileResult = await getUserProfile(user.uid);
+                if (profileResult.success) {
+                    const currentXp = profileResult.data.totalXp || 0;
+                    await updateUserProfile(user.uid, { totalXp: currentXp + workout.xpEarned });
+                }
+                syncedIds.push(workout._localId);
+            } else {
+                failedIds.push(workout._localId);
+                console.warn('Ошибка синхронизации тренировки:', result.error);
+            }
+        } catch (e) {
+            failedIds.push(workout._localId);
+            console.warn('Ошибка синхронизации, повторим позже:', e);
+        }
+    }
+
+    if (syncedIds.length > 0) {
+        let pendingAfter = getPendingWorkouts();
+        pendingAfter = pendingAfter.filter(w => !syncedIds.includes(w._localId));
+        savePendingWorkouts(pendingAfter);
+        
+        // ✅ ПОКАЗЫВАЕМ КОРОТКИЙ ТОСТ БЕЗ ALERT
+        showToast(`✅ Синхронизировано ${syncedIds.length} тренировок`);
+        console.log(`Синхронизировано ${syncedIds.length} тренировок`);
+    }
+    
+    if (failedIds.length > 0) {
+        // Оставляем failed тренировки в очереди
+        console.log(`${failedIds.length} тренировок ожидают синхронизации`);
+    }
 }
 
 // ============================================================
@@ -2735,3 +2744,220 @@ async function loadWorldLeaderboard() {
         if (countEl) countEl.textContent = 'Ошибка';
     }
 }
+
+// ============================================================
+// PULL-TO-REFRESH
+// ============================================================
+
+let pullStartY = 0;
+let pullOffset = 0;
+let isPulling = false;
+let pullRefreshEnabled = true;
+
+function initPullToRefresh() {
+    const container = document.querySelector('.dashboard-container');
+    if (!container) return;
+    
+    container.addEventListener('touchstart', function(e) {
+        // Проверяем, что мы вверху страницы
+        if (window.scrollY === 0) {
+            pullStartY = e.touches[0].clientY;
+            isPulling = true;
+        }
+    }, { passive: true });
+    
+    container.addEventListener('touchmove', function(e) {
+        if (!isPulling) return;
+        
+        const currentY = e.touches[0].clientY;
+        pullOffset = currentY - pullStartY;
+        
+        // Если тянем вниз больше 50px
+        if (pullOffset > 50 && pullRefreshEnabled) {
+            e.preventDefault();
+            showPullIndicator();
+        }
+    }, { passive: false });
+    
+    container.addEventListener('touchend', function(e) {
+        if (!isPulling) return;
+        
+        if (pullOffset > 100 && pullRefreshEnabled) {
+            // Выполняем обновление
+            performRefresh();
+        } else {
+            hidePullIndicator();
+        }
+        
+        isPulling = false;
+        pullOffset = 0;
+    }, { passive: true });
+}
+
+function showPullIndicator() {
+    const indicator = document.getElementById('pullToRefresh');
+    if (indicator) {
+        indicator.style.display = 'block';
+    }
+}
+
+function hidePullIndicator() {
+    const indicator = document.getElementById('pullToRefresh');
+    if (indicator) {
+        indicator.style.display = 'none';
+    }
+}
+
+async function performRefresh() {
+    pullRefreshEnabled = false;
+    showPullIndicator();
+    
+    try {
+        // Обновляем все данные
+        const user = await getFirebaseUser();
+        if (user) {
+            await loadProfile();
+            await loadStats();
+            renderMyWorkouts();
+            await renderCalendar(currentMonth, currentYear);
+            
+            // Если активна вкладка "Мировая" — обновляем рейтинг
+            const worldTab = document.getElementById('stats-world');
+            if (worldTab && worldTab.classList.contains('active')) {
+                await loadWorldLeaderboard();
+            }
+            
+            // Синхронизируем отложенные тренировки
+            if (typeof syncPendingWorkouts === 'function') {
+                await syncPendingWorkouts();
+            }
+            
+            // Показываем уведомление об успехе
+            showToast('✅ Данные обновлены');
+        }
+    } catch (error) {
+        console.error('Ошибка обновления:', error);
+        showToast('❌ Ошибка обновления');
+    } finally {
+        hidePullIndicator();
+        pullRefreshEnabled = true;
+    }
+}
+
+// Инициализируем Pull-to-Refresh после загрузки DOM
+document.addEventListener('DOMContentLoaded', function() {
+    initPullToRefresh();
+});
+
+// ============================================================
+// ТОСТ-УВЕДОМЛЕНИЯ
+// ============================================================
+
+function showToast(message, duration = 3000) {
+    // Удаляем старый тост, если есть
+    const oldToast = document.getElementById('toast');
+    if (oldToast) oldToast.remove();
+    
+    const toast = document.createElement('div');
+    toast.id = 'toast';
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--dark);
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        z-index: 3000;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        max-width: 90%;
+        text-align: center;
+        animation: slideUp 0.3s ease-out;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    `;
+    toast.textContent = message;
+    
+    document.body.appendChild(toast);
+    
+    // Показываем с анимацией
+    requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+    });
+    
+    // Автоматически скрываем
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, duration);
+}
+
+// ============================================================
+// PWA - УСТАНОВКА НА ГЛАВНЫЙ ЭКРАН
+// ============================================================
+
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', function(e) {
+    // Предотвращаем стандартный баннер
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Показываем кастомный баннер, если его ещё не скрывали
+    const bannerHidden = localStorage.getItem('installBannerHidden');
+    if (!bannerHidden) {
+        showInstallBanner();
+    }
+});
+
+function showInstallBanner() {
+    const banner = document.getElementById('installBanner');
+    if (banner) {
+        banner.style.display = 'block';
+    }
+}
+
+function closeInstallBanner() {
+    const banner = document.getElementById('installBanner');
+    if (banner) {
+        banner.style.display = 'none';
+    }
+    // Запоминаем, что пользователь закрыл баннер
+    localStorage.setItem('installBannerHidden', 'true');
+}
+
+async function installApp() {
+    if (!deferredPrompt) {
+        showToast('❌ Установка недоступна');
+        return;
+    }
+    
+    try {
+        // Показываем диалог установки
+        const result = await deferredPrompt.prompt();
+        
+        if (result.outcome === 'accepted') {
+            showToast('✅ Приложение установлено!');
+            closeInstallBanner();
+        } else {
+            showToast('❌ Установка отменена');
+        }
+        
+        deferredPrompt = null;
+    } catch (error) {
+        console.error('Ошибка установки:', error);
+        showToast('❌ Ошибка установки');
+    }
+}
+
+// Проверяем, установлено ли уже приложение
+window.addEventListener('appinstalled', function() {
+    showToast('✅ Приложение установлено!');
+    closeInstallBanner();
+    deferredPrompt = null;
+});
