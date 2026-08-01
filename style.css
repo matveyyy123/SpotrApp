@@ -791,7 +791,7 @@ body {
     background: var(--light);
     border-radius: 10px;
     word-break: break-word;
-    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
 }
 .profile-info i {
     color: var(--accent);
@@ -1499,11 +1499,12 @@ body {
 
 .auth-switch a {
     color: var(--dark);
-    text-decoration: underline;
+    text-decoration: none;
     text-underline-offset: 2px;
     font-weight: 500;
     transition: color 0.2s;
     cursor: pointer;
+    font-style: italic;
 }
 
 .auth-switch a:hover {
@@ -1660,4 +1661,63 @@ body {
         width: 100%;
         max-width: 280px;
     }
+}
+
+input::placeholder {
+    font-style: italic;
+}
+
+/* ============================================================ */
+/* ПОЛЕ ПОИСКА НА СТРАНИЦЕ УПРАЖНЕНИЙ                          */
+/* ============================================================ */
+#exerciseSearchInput {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    background: #FAFCFF;
+    color: #0F172A;
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+#exerciseSearchInput:focus {
+    outline: none;
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 4px rgba(220, 20, 60, 0.08);
+}
+
+/* ============================================================ */
+/* МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ УПРАЖНЕНИЯ (дополнительно)    */
+/* ============================================================ */
+#exerciseModal .modal-content {
+    max-width: 400px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+#exerciseModal .form-group {
+    text-align: left;
+    margin-bottom: 1rem;
+}
+#exerciseModal .form-group label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--dark);
+    display: block;
+    margin-bottom: 0.3rem;
+}
+#exerciseModal .form-group input {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    background: #FAFCFF;
+    color: #0F172A;
+}
+#exerciseModal .form-group input:focus {
+    outline: none;
+    border-color: var(--accent);
 }

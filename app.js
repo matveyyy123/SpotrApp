@@ -30,6 +30,32 @@ const exercisesData = {
             { name: 'Планка на одной руке', reps: '30 сек', sets: '3' }
         ]
     },
+    'Плечи': {
+        '1 LVL': [
+            { name: 'Разведение рук с резинкой в стороны', reps: '15', sets: '2' },
+            { name: 'Подъем рук вперед с резинкой', reps: '15', sets: '2' },
+            { name: 'Жим гантелей сидя', reps: '12', sets: '2' },
+            { name: 'Разведение гантелей в стороны стоя', reps: '12', sets: '2' },
+            { name: 'Тяга к подбородку с резинкой', reps: '15', sets: '2' }
+        ],
+        '2 LVL': [
+            { name: 'Жим гантелей сидя', reps: '12', sets: '3' },
+            { name: 'Разведение гантелей в стороны стоя', reps: '12', sets: '3' },
+            { name: 'Тяга к подбородку с гантелью', reps: '12', sets: '3' },
+            { name: 'Подъем рук вперед с гантелями', reps: '12', sets: '3' },
+            { name: 'Разведение гантелей в наклоне', reps: '12', sets: '3' },
+            { name: 'Жим Арнольда', reps: '10', sets: '3' }
+        ],
+        '3 LVL': [
+            { name: 'Жим гантелей сидя', reps: '12', sets: '4' },
+            { name: 'Разведение гантелей в стороны стоя', reps: '15', sets: '4' },
+            { name: 'Тяга к подбородку с гантелью', reps: '12', sets: '4' },
+            { name: 'Подъем рук вперед с гантелями', reps: '15', sets: '4' },
+            { name: 'Разведение гантелей в наклоне', reps: '15', sets: '4' },
+            { name: 'Жим Арнольда', reps: '12', sets: '4' },
+            { name: 'Отжимания в стойке у стены', reps: '8', sets: '3' }
+        ]
+    },
     'Пресс': {
         '1 LVL': [
             { name: 'Скручивания лёжа', reps: '12', sets: '2' },
@@ -171,7 +197,6 @@ function saveExercisesData() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(exercisesData));
 }
 
-// Загружаем сохранённые данные при старте
 loadExercisesData();
 
 // ============================================================
@@ -189,10 +214,9 @@ const levels = [
 ];
 
 // ============================================================
-// РАБОТА С XP (НОВАЯ ФОРМУЛА)
+// РАБОТА С XP
 // ============================================================
 
-// Получить текущий уровень
 function getCurrentLevel(xp) {
     let currentLevel = levels[0];
     for (let i = levels.length - 1; i >= 0; i--) {
@@ -204,7 +228,6 @@ function getCurrentLevel(xp) {
     return currentLevel;
 }
 
-// Получить следующий уровень
 function getNextLevel(xp) {
     for (let i = 0; i < levels.length; i++) {
         if (xp < levels[i].minXp) {
@@ -214,7 +237,6 @@ function getNextLevel(xp) {
     return null;
 }
 
-// Прогресс до следующего уровня (%)
 function getXpProgress(xp) {
     const current = getCurrentLevel(xp);
     const next = getNextLevel(xp);
@@ -225,7 +247,7 @@ function getXpProgress(xp) {
 }
 
 // ============================================================
-// РАСЧЁТ XP ЗА ТРЕНИРОВКУ (НОВАЯ ФОРМУЛА)
+// РАСЧЁТ XP ЗА ТРЕНИРОВКУ
 // ============================================================
 function calculateWorkoutXp(exercises) {
     let totalXp = 0;
@@ -238,10 +260,9 @@ function calculateWorkoutXp(exercises) {
 }
 
 // ============================================================
-// FIREBASE - РАБОТА С БАЗОЙ ДАННЫХ
+// FIREBASE
 // ============================================================
 
-// Получить текущего пользователя Firebase
 function getFirebaseUser() {
     return new Promise((resolve) => {
         const unsubscribe = firebase.auth().onAuthStateChanged(user => {
@@ -252,7 +273,7 @@ function getFirebaseUser() {
 }
 
 // ============================================================
-// ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ
+// ПРОФИЛЬ
 // ============================================================
 
 async function saveUserProfile(userId, data) {
@@ -314,7 +335,7 @@ async function syncUserProfile() {
 }
 
 // ============================================================
-// ТРЕНИРОВКИ
+// ТРЕНИРОВКИ В FIRESTORE
 // ============================================================
 
 async function saveWorkoutToFirestore(userId, workoutData) {
@@ -424,6 +445,9 @@ window.navigateTo = function(page, params) {
     if (page === 'workouts') {
         renderMyWorkouts();
     }
+    if (page === 'exercise-list') {
+    renderExerciseListPage();
+    }
 };
 
 document.querySelectorAll('.nav-item').forEach(btn => {
@@ -479,7 +503,8 @@ function loadLevelSelect(category) {
         'Пресс': 'press',
         'Грудь': 'breast',
         'Спина': 'back',
-        'Ноги': 'legs'
+        'Ноги': 'legs',
+        'Плечи': 'shoulder'
     };
     const icon = icons[category] || 'bodybuilding';
 
@@ -973,14 +998,33 @@ window.removeEditExercise = function(index) {
     }
 };
 
+// ============================================================
+// ОТКРЫТИЕ МОДАЛЬНОГО ОКНА РЕДАКТИРОВАНИЯ УПРАЖНЕНИЯ
+// ============================================================
 window.openExerciseModal = function(index) {
-    editingExerciseIndex = index;
-    const ex = editExercises[index];
-    if (!ex) return;
+    // Закрываем все модалки
+    const addModal = document.getElementById('addExerciseModal');
+    if (addModal) addModal.style.display = 'none';
     
-    document.getElementById('modalExerciseName').value = '';
-    document.getElementById('modalExerciseSets').value = '';
-    document.getElementById('modalExerciseReps').value = '';
+    // Если индекс не передан или упражнение не существует — создаём новое
+    if (index === undefined || index === null || index === editExercises.length) {
+        // Создаём новое упражнение
+        editingExerciseIndex = editExercises.length;
+        editExercises.push({ name: 'Новое упражнение', sets: 3, reps: 12 });
+        renderEditExercises();
+        index = editingExerciseIndex;
+    } else if (!editExercises[index]) {
+        // Если упражнение с таким индексом не найдено — создаём новое
+        editingExerciseIndex = editExercises.length;
+        editExercises.push({ name: 'Новое упражнение', sets: 3, reps: 12 });
+        renderEditExercises();
+        index = editingExerciseIndex;
+    } else {
+        editingExerciseIndex = index;
+    }
+    
+    const ex = editExercises[editingExerciseIndex];
+    if (!ex) return;
     
     document.getElementById('modalExerciseName').value = ex.name || '';
     document.getElementById('modalExerciseSets').value = ex.sets || 3;
@@ -1012,12 +1056,30 @@ document.getElementById('modalSaveBtn')?.addEventListener('click', function() {
 });
 
 document.getElementById('modalCancelBtn')?.addEventListener('click', function() {
+    // Если это новое созданное упражнение (имя по умолчанию) — удаляем его
+    if (editingExerciseIndex !== null) {
+        const ex = editExercises[editingExerciseIndex];
+        // Проверяем, что это новое упражнение (созданное через "Создать своё")
+        if (ex && ex.name === 'Новое упражнение') {
+            editExercises.splice(editingExerciseIndex, 1);
+            renderEditExercises();
+        }
+    }
+    
     document.getElementById('exerciseModal').style.display = 'none';
     editingExerciseIndex = null;
 });
 
 document.getElementById('exerciseModal')?.addEventListener('click', function(e) {
     if (e.target === this) {
+        // Если это новое созданное упражнение — удаляем его
+        if (editingExerciseIndex !== null) {
+            const ex = editExercises[editingExerciseIndex];
+            if (ex && ex.name === 'Новое упражнение') {
+                editExercises.splice(editingExerciseIndex, 1);
+                renderEditExercises();
+            }
+        }
         this.style.display = 'none';
         editingExerciseIndex = null;
     }
@@ -1196,7 +1258,7 @@ async function loadStats() {
     if (totalMinutesEl) totalMinutesEl.textContent = totalMinutes;
     if (totalExercisesEl) totalExercisesEl.textContent = totalExercises;
 
-    const muscleGroups = ['Руки', 'Пресс', 'Грудь', 'Спина', 'Ноги'];
+    const muscleGroups = ['Руки', 'Плечи', 'Пресс', 'Грудь', 'Спина', 'Ноги'];
     const container = document.getElementById('musclesStats');
     if (!container) return;
     
@@ -1246,12 +1308,12 @@ async function loadStats() {
 }
 
 // ============================================================
-// КАЛЕНДАРЬ (из localStorage)
+// КАЛЕНДАРЬ (из FIRESTORE)
 // ============================================================
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 
-function renderCalendar(month, year) {
+async function renderCalendar(month, year) {
     const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь',
                        'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
     const monthYearEl = document.getElementById('currentMonthYear');
@@ -1274,7 +1336,16 @@ function renderCalendar(month, year) {
     }
 
     const today = new Date();
-    const workoutDays = JSON.parse(localStorage.getItem('myWorkouts') || '[]').map(w => new Date(w.date));
+    
+    // ✅ Загружаем тренировки из FIRESTORE
+    const user = await getFirebaseUser();
+    let workoutDays = [];
+    if (user) {
+        const result = await getUserWorkoutsFromFirestore(user.uid);
+        if (result.success) {
+            workoutDays = result.data.map(w => new Date(w.date));
+        }
+    }
 
     for (let day = 1; day <= daysInMonth; day++) {
         const dayEl = document.createElement('div');
@@ -1312,7 +1383,7 @@ if (nextMonthBtn) {
 }
 
 // ============================================================
-// ПРОФИЛЬ (С НОВЫМИ УРОВНЯМИ И ТОЧНЫМ XP)
+// ПРОФИЛЬ
 // ============================================================
 async function loadProfile() {
     const user = await getFirebaseUser();
@@ -1340,9 +1411,14 @@ async function loadProfile() {
         progressText = `${xp.toFixed(1)}+ XP`;
     }
     
-    document.getElementById('profileName').textContent = profile.displayName || 'Пользователь';
-    document.getElementById('profileInitials').textContent = (profile.displayName || 'П')[0].toUpperCase();
-    document.getElementById('profileEmailDisplay').textContent = profile.email || user.email || '';
+    const nameEl = document.getElementById('profileName');
+    if (nameEl) nameEl.textContent = profile.displayName || 'Пользователь';
+    
+    const initialsEl = document.getElementById('profileInitials');
+    if (initialsEl) initialsEl.textContent = (profile.displayName || 'П')[0].toUpperCase();
+    
+    const emailDisplayEl = document.getElementById('profileEmailDisplay');
+    if (emailDisplayEl) emailDisplayEl.textContent = profile.email || user.email || '';
     
     const dateEl = document.getElementById('profileDate');
     if (dateEl && profile.createdAt) {
@@ -1352,15 +1428,29 @@ async function loadProfile() {
         });
     }
     
-    document.getElementById('editName').value = profile.displayName || '';
-    document.getElementById('editEmail').value = profile.email || user.email || ''; // ← добавляем
-    document.getElementById('editNameError').textContent = '';
-    document.getElementById('editEmailError').textContent = ''; // ← очищаем ошибку
+    const editNameEl = document.getElementById('editName');
+    if (editNameEl) editNameEl.value = profile.displayName || '';
     
-    document.getElementById('levelLvl').textContent = currentLevel.id + ' LVL';
-    document.getElementById('levelTitle').textContent = currentLevel.name;
-    document.getElementById('levelProgressText').textContent = progressText;
-    document.getElementById('levelFill').style.width = progress + '%';
+    const editEmailEl = document.getElementById('editEmail');
+    if (editEmailEl) editEmailEl.value = profile.email || user.email || '';
+    
+    const nameErrorEl = document.getElementById('editNameError');
+    if (nameErrorEl) nameErrorEl.textContent = '';
+    
+    const emailErrorEl = document.getElementById('editEmailError');
+    if (emailErrorEl) emailErrorEl.textContent = '';
+    
+    const levelLvlEl = document.getElementById('levelLvl');
+    if (levelLvlEl) levelLvlEl.textContent = currentLevel.id + ' LVL';
+    
+    const levelTitleEl = document.getElementById('levelTitle');
+    if (levelTitleEl) levelTitleEl.textContent = currentLevel.name;
+    
+    const levelProgressTextEl = document.getElementById('levelProgressText');
+    if (levelProgressTextEl) levelProgressTextEl.textContent = progressText;
+    
+    const levelFillEl = document.getElementById('levelFill');
+    if (levelFillEl) levelFillEl.style.width = progress + '%';
     
     await renderFriendsInProfile();
 }
@@ -1396,11 +1486,8 @@ if (cancelProfileBtn) {
 if (saveProfileBtn) {
     saveProfileBtn.addEventListener('click', async () => {
         const nameEl = document.getElementById('editName');
-        const emailEl = document.getElementById('editEmail');
         const nameError = document.getElementById('editNameError');
-        const emailError = document.getElementById('editEmailError');
         const name = nameEl ? nameEl.value.trim() : '';
-        const email = emailEl ? emailEl.value.trim() : '';
         
         let hasError = false;
         if (!name) {
@@ -1412,29 +1499,13 @@ if (saveProfileBtn) {
             nameEl.classList.remove('error');
         }
         
-        if (!email) {
-            emailError.textContent = 'Введите почту';
-            emailEl.classList.add('error');
-            hasError = true;
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            emailError.textContent = 'Неверный формат почты';
-            emailEl.classList.add('error');
-            hasError = true;
-        } else {
-            emailError.textContent = '';
-            emailEl.classList.remove('error');
-        }
-        
         if (hasError) return;
         
         const user = await getFirebaseUser();
         if (user) {
             await updateUserProfile(user.uid, { 
-                displayName: name,
-                email: email
+                displayName: name
             });
-            // Обновляем отображение почты на странице
-            document.getElementById('profileEmailDisplay').textContent = email;
             loadProfile();
         }
         
@@ -1450,7 +1521,19 @@ firebase.auth().onAuthStateChanged(async (user) => {
     const bottomNav = document.getElementById('bottomNav');
     
     if (user) {
-        console.log('✅ Пользователь авторизован:', user.phoneNumber || user.email);
+        // Обновляем данные пользователя на всякий случай
+        try {
+            await user.reload();
+        } catch (e) {}
+        
+        if (!user.emailVerified) {
+            console.log('❌ Почта не подтверждена');
+            bottomNav.style.display = 'none';
+            showLogin();
+            return;
+        }
+        
+        console.log('✅ Пользователь авторизован:', user.email);
         bottomNav.style.display = 'block';
         
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1458,10 +1541,12 @@ firebase.auth().onAuthStateChanged(async (user) => {
         document.querySelectorAll('.nav-item').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.page === 'workouts');
         });
+        
         await loadProfile();
         await loadStats();
         renderMyWorkouts();
-        renderCalendar(currentMonth, currentYear);
+        await renderCalendar(currentMonth, currentYear);
+        
     } else {
         console.log('❌ Пользователь не авторизован');
         bottomNav.style.display = 'none';
@@ -1495,7 +1580,7 @@ function showHero() {
 }
 
 // ============================================================
-// РЕГИСТРАЦИЯ (Email + пароль)
+// РЕГИСТРАЦИЯ (с подтверждением почты)
 // ============================================================
 const registerForm = document.getElementById('registerForm');
 if (registerForm) {
@@ -1514,17 +1599,26 @@ if (registerForm) {
         const password = passwordInput.value;
         const btn = registerForm.querySelector('.btn-primary');
         
+        // Валидация
         let hasError = false;
         if (!name) {
             nameInput.classList.add('error');
             nameError.textContent = 'Введите имя';
             hasError = true;
+        } else {
+            nameInput.classList.remove('error');
+            nameError.textContent = '';
         }
+        
         if (!email) {
             emailInput.classList.add('error');
             emailError.textContent = 'Введите почту';
             hasError = true;
+        } else {
+            emailInput.classList.remove('error');
+            emailError.textContent = '';
         }
+        
         if (!password) {
             passwordInput.classList.add('error');
             passwordError.textContent = 'Введите пароль';
@@ -1533,7 +1627,11 @@ if (registerForm) {
             passwordInput.classList.add('error');
             passwordError.textContent = 'Пароль минимум 6 символов';
             hasError = true;
+        } else {
+            passwordInput.classList.remove('error');
+            passwordError.textContent = '';
         }
+        
         if (hasError) return;
         
         btn.textContent = 'Регистрация...';
@@ -1555,16 +1653,35 @@ if (registerForm) {
                 createdAt: new Date().toISOString()
             });
             
-            console.log('✅ Регистрация успешна:', result.user.email);
-            window.navigateTo('workouts');
+            // ОТПРАВЛЯЕМ ПИСЬМО
+            await result.user.sendEmailVerification();
+            
+            // ПОКАЗЫВАЕМ СООБЩЕНИЕ
+            alert('Подтвердите почту, письмо отправлено на ' + email);
+            
+            // НЕ ВЫХОДИМ — onAuthStateChanged покажет страницу входа
+            
         } catch (error) {
-            passwordInput.classList.add('error');
             let message = 'Ошибка регистрации';
-            if (error.code === 'auth/email-already-in-use') message = 'Почта уже используется';
-            else if (error.code === 'auth/weak-password') message = 'Пароль минимум 6 символов';
-            else if (error.code === 'auth/invalid-email') message = 'Неверный формат почты';
-            else if (error.code === 'auth/network-request-failed') message = 'Проверьте интернет';
-            passwordError.textContent = message;
+            if (error.code === 'auth/email-already-in-use') {
+                message = 'Почта уже используется';
+                emailInput.classList.add('error');
+                emailError.textContent = message;
+            } else if (error.code === 'auth/weak-password') {
+                message = 'Пароль минимум 6 символов';
+                passwordInput.classList.add('error');
+                passwordError.textContent = message;
+            } else if (error.code === 'auth/invalid-email') {
+                message = 'Неверный формат почты';
+                emailInput.classList.add('error');
+                emailError.textContent = message;
+            } else if (error.code === 'auth/network-request-failed') {
+                message = 'Проверьте интернет-соединение';
+                passwordInput.classList.add('error');
+                passwordError.textContent = message;
+            } else {
+                alert('Ошибка ' + error.message);
+            }
         } finally {
             btn.textContent = 'Зарегистрироваться';
             btn.disabled = false;
@@ -1586,7 +1703,7 @@ if (registerForm) {
 }
 
 // ============================================================
-// ВХОД (Email + пароль)
+// ВХОД (Email + пароль) — С ПРИНУДИТЕЛЬНЫМ ОБНОВЛЕНИЕМ
 // ============================================================
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
@@ -1629,15 +1746,34 @@ if (loginForm) {
         
         try {
             const result = await firebase.auth().signInWithEmailAndPassword(email, password);
-            console.log('✅ Вход выполнен:', result.user.email);
+            const user = result.user;
+            
+            // ✅ ПРИНУДИТЕЛЬНО ОБНОВЛЯЕМ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ
+            await user.reload();
+            
+            if (!user.emailVerified) {
+                alert('Подтвердите почту, письмо отправлено на ' + email);
+                // Остаёмся на странице входа
+                return;
+            }
+            
+            console.log('✅ Вход выполнен:', user.email);
+            // Явно показываем меню и переходим в приложение
+            document.getElementById('bottomNav').style.display = 'block';
             window.navigateTo('workouts');
+            
         } catch (error) {
             passwordInput.classList.add('error');
             let message = 'Неверный email или пароль';
-            if (error.code === 'auth/user-not-found') message = 'Пользователь не найден';
-            else if (error.code === 'auth/wrong-password') message = 'Неверный пароль';
-            else if (error.code === 'auth/invalid-email') message = 'Неверный формат email';
-            else if (error.code === 'auth/too-many-requests') message = 'Слишком много попыток';
+            if (error.code === 'auth/user-not-found') {
+                message = 'Пользователь не найден';
+            } else if (error.code === 'auth/wrong-password') {
+                message = 'Неверный пароль';
+            } else if (error.code === 'auth/invalid-email') {
+                message = 'Неверный формат email';
+            } else if (error.code === 'auth/too-many-requests') {
+                message = 'Слишком много попыток входа. Подождите несколько минут.';
+            }
             passwordError.textContent = message;
         } finally {
             btn.textContent = 'Войти в аккаунт';
@@ -1652,7 +1788,32 @@ if (loginForm) {
 async function logout() {
     if (confirm('Выйти из аккаунта?')) {
         await firebase.auth().signOut();
-        showHero();
+        // onAuthStateChanged покажет страницу приветствия
+    }
+}
+
+// ============================================================
+// ПОВТОРНАЯ ОТПРАВКА ПИСЬМА (ТОЛЬКО ПО КНОПКЕ)
+// ============================================================
+async function resendVerification() {
+    const user = firebase.auth().currentUser;
+    if (!user) {
+        alert('Вы не авторизованы');
+        return;
+    }
+    if (user.emailVerified) {
+        alert('Почта уже подтверждена');
+        return;
+    }
+    try {
+        await user.sendEmailVerification();
+        alert('Письмо отправлено на ' + user.email);
+    } catch (error) {
+        if (error.code === 'auth/too-many-requests') {
+            alert('Слишком много попыток. Подождите несколько минут и попробуйте снова.');
+        } else {
+            alert('Ошибка: ' + error.message);
+        }
     }
 }
 
@@ -1927,22 +2088,22 @@ async function renderFriendsInProfile() {
     const friends = await getFriendsList();
     let friendsHtml = `<p class="friends-subtitle">Друзья</p>`;
     if (friends.success && friends.data.length > 0) {
-friendsHtml += friends.data.map(f => {
-    const initial = (f.displayName || 'П')[0].toUpperCase();
-    const level = getCurrentLevel(f.totalXp || 0).id; // вычисляем уровень из XP
-    return `
-        <div class="friend-item">
-            <div class="friend-avatar">${initial}</div>
-            <div class="friend-info">
-                <strong>${f.displayName || 'Пользователь'}</strong>
-                <span>Уровень ${level} · ${(f.totalXp || 0).toFixed(1)} XP</span>
-            </div>
-            <button class="friend-delete-btn" onclick="removeFriend('${f.id}')" title="Удалить друга">
-                <i class="fa-regular fa-trash-can"></i>
-            </button>
-        </div>
-    `;
-}).join('');
+        friendsHtml += friends.data.map(f => {
+            const initial = (f.displayName || 'П')[0].toUpperCase();
+            const level = getCurrentLevel(f.totalXp || 0).id;
+            return `
+                <div class="friend-item">
+                    <div class="friend-avatar">${initial}</div>
+                    <div class="friend-info">
+                        <strong>${f.displayName || 'Пользователь'}</strong>
+                        <span>Уровень ${level} · ${(f.totalXp || 0).toFixed(1)} XP</span>
+                    </div>
+                    <button class="friend-delete-btn" onclick="removeFriend('${f.id}')" title="Удалить друга">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                </div>
+            `;
+        }).join('');
     } else {
         friendsHtml += '<p style="color:var(--slate);font-size:0.9rem;">У вас пока нет друзей</p>';
     }
@@ -2055,19 +2216,166 @@ function resetWorkout() {
         return;
     }
 
+    // ✅ НОВОЕ СООБЩЕНИЕ С КНОПКАМИ "Да" и "Нет"
+    if (!confirm('Сбросить тренировку?')) {
+        return;
+    }
+
     const category = editCategory;
     const level = editLevel || '1 LVL';
 
     // Восстанавливаем из исходных данных
     if (exercisesDataDefault[category] && exercisesDataDefault[category][level]) {
         exercisesData[category][level] = JSON.parse(JSON.stringify(exercisesDataDefault[category][level]));
-        // Сохраняем в localStorage
         saveExercisesData();
-        // Перезагружаем список упражнений в редакторе
         editExercises = JSON.parse(JSON.stringify(exercisesData[category][level]));
         renderEditExercises();
-        alert('Тренировка сброшена!');
     } else {
         alert('Не удалось найти исходные данные для этой тренировки');
+    }
+}
+
+// ============================================================
+// ВСЕ УПРАЖНЕНИЯ ДЛЯ СПИСКА
+// ============================================================
+function getAllExercises() {
+    const all = [];
+    for (const category in exercisesData) {
+        for (const level in exercisesData[category]) {
+            exercisesData[category][level].forEach(ex => {
+                if (!all.some(e => e.name === ex.name && e.category === category)) {
+                    all.push({
+                        ...ex,
+                        category: category,
+                        level: level
+                    });
+                }
+            });
+        }
+    }
+    return all;
+}
+
+let allExercisesList = [];
+let currentCategoryFilter = 'all';
+let currentSearchQuery = '';
+
+// ============================================================
+// ОТКРЫТИЕ СПИСКА УПРАЖНЕНИЙ (НОВАЯ СТРАНИЦА)
+// ============================================================
+function openExerciseList() {
+    closeAddExerciseModal();
+    allExercisesList = getAllExercises();
+    currentCategoryFilter = 'all';
+    currentSearchQuery = '';
+    document.getElementById('exerciseSearchInput').value = '';
+    window.navigateTo('exercise-list');
+}
+
+// ============================================================
+// РЕНДЕР СТРАНИЦЫ СПИСКА УПРАЖНЕНИЙ
+// ============================================================
+function renderExerciseListPage() {
+    // Устанавливаем фильтры
+    document.querySelectorAll('#exerciseCategoryFilter .icon-option').forEach(el => {
+        el.classList.toggle('active', el.dataset.category === currentCategoryFilter);
+    });
+    
+    // Обработчики для фильтров
+    document.querySelectorAll('#exerciseCategoryFilter .icon-option').forEach(el => {
+        el.onclick = function() {
+            document.querySelectorAll('#exerciseCategoryFilter .icon-option').forEach(e => e.classList.remove('active'));
+            this.classList.add('active');
+            currentCategoryFilter = this.dataset.category;
+            renderExerciseListPageContent();
+        };
+    });
+    
+    // Поиск
+    document.getElementById('exerciseSearchInput').oninput = function() {
+        currentSearchQuery = this.value.trim().toLowerCase();
+        renderExerciseListPageContent();
+    };
+    
+    renderExerciseListPageContent();
+}
+
+function renderExerciseListPageContent() {
+    const container = document.getElementById('exerciseListContainer');
+    const searchQuery = currentSearchQuery.toLowerCase();
+    
+    let filtered = allExercisesList;
+    
+    if (currentCategoryFilter !== 'all') {
+        filtered = filtered.filter(ex => ex.category === currentCategoryFilter);
+    }
+    
+    if (searchQuery) {
+        filtered = filtered.filter(ex => ex.name.toLowerCase().includes(searchQuery));
+    }
+    
+    filtered.sort((a, b) => a.name.localeCompare(b.name));
+    
+    if (filtered.length === 0) {
+        container.innerHTML = '<p style="color:var(--slate);text-align:center;padding:2rem 0;">Упражнения не найдены</p>';
+        return;
+    }
+    
+    const icons = {
+        'Руки': 'bodybuilding',
+        'Пресс': 'press',
+        'Грудь': 'breast',
+        'Спина': 'back',
+        'Ноги': 'legs',
+        'Плечи': 'shoulder'
+    };
+    
+    container.innerHTML = filtered.map(ex => {
+        const icon = icons[ex.category] || 'bodybuilding';
+        return `
+            <div class="level-card" onclick="addExerciseFromList('${ex.name}', ${ex.sets}, ${ex.reps})" style="cursor:pointer; margin-bottom:0.8rem;">
+                <div class="level-icon" style="width:44px;height:44px;min-width:44px;">
+                    <img src="images/${icon}.png" style="width:28px;height:28px;">
+                </div>
+                <div class="level-info">
+                    <h3>${ex.name}</h3>
+                    <p>${ex.sets} подходов × ${ex.reps} повторений</p>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// ============================================================
+// МОДАЛЬНОЕ ОКНО ВЫБОРА ДЕЙСТВИЯ
+// ============================================================
+function openAddExerciseModal() {
+    document.getElementById('addExerciseModal').style.display = 'flex';
+}
+
+function closeAddExerciseModal() {
+    document.getElementById('addExerciseModal').style.display = 'none';
+}
+
+// ============================================================
+// ДОБАВЛЕНИЕ УПРАЖНЕНИЯ ИЗ СПИСКА
+// ============================================================
+function addExerciseFromList(name, sets, reps) {
+    editExercises.push({ 
+        name: name, 
+        sets: parseInt(sets) || 3, 
+        reps: parseInt(reps) || 12 
+    });
+    // Возвращаемся на страницу редактирования
+    window.navigateTo('workout-edit', { 
+        category: editCategory, 
+        isCustom: editIsCustom, 
+        id: editWorkoutId, 
+        level: editLevel 
+    });
+    renderEditExercises();
+    const resetBtn = document.getElementById('resetWorkoutBtn');
+    if (resetBtn) {
+        resetBtn.style.display = (editIsCustom || editWorkoutId === 'new') ? 'none' : 'block';
     }
 }
