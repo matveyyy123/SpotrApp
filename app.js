@@ -204,6 +204,11 @@ loadExercisesData();
 // ============================================================
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
+// ============================================================
+// МОДАЛЬНОЕ ОКНО "НЕТ ИНТЕРНЕТА"
+// ============================================================
+
+let isOfflineModalShown = false; // ← ФЛАГ ДЛЯ ВНУТРИ ПРИЛОЖЕНИЯ
 
 // ============================================================
 // ОФЛАЙН-ОЧЕРЕДЬ НЕСИНХРОНИЗИРОВАННЫХ ТРЕНИРОВОК
@@ -1476,25 +1481,11 @@ async function renderCalendar(month, year) {
     const firstDay = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const startDayOfWeek = firstDay.getDay() || 7;
+    const container = document.getElementById('calendarDays');
+    if (!container) return;
     
-    // ✅ НАХОДИМ КОНТЕЙНЕР И УДАЛЯЕМ СТАРЫЙ #calendarDays
-    const calendarGrid = document.querySelector('.calendar-grid');
-    if (!calendarGrid) return;
-    
-    // Удаляем старый #calendarDays, если он есть
-    const oldContainer = document.getElementById('calendarDays');
-    if (oldContainer) {
-        oldContainer.remove();
-    }
-    
-    // Создаём новый контейнер
-    const container = document.createElement('div');
-    container.id = 'calendarDays';
-    container.style.display = 'grid';
-    container.style.gridTemplateColumns = 'repeat(7, 1fr)';
-    container.style.gap = '4px';
-    container.style.gridColumn = '1 / -1';
-    calendarGrid.appendChild(container);
+    // ✅ ОЧИЩАЕМ СОДЕРЖИМОЕ, НЕ УДАЛЯЕМ КОНТЕЙНЕР
+    container.innerHTML = '';
 
     // Добавляем пустые ячейки до первого дня
     for (let i = 1; i < startDayOfWeek; i++) {
@@ -2566,17 +2557,46 @@ function showOfflineModal() {
 function closeOfflineModal() {
     const modal = document.getElementById('offlineModal');
     if (modal) modal.style.display = 'none';
+    
+    // ✅ После нажатия "Понятно" на странице загрузки → переходим в приложение
+    const loadingPage = document.getElementById('page-loading');
+    if (loadingPage && loadingPage.classList.contains('active')) {
+        // Просто переходим в приложение (enterApp() сам проверит интернет)
+        enterApp();
+    }
 }
 
-// Показываем при потере соединения
+// Показываем при потере соединения (ТОЛЬКО ВНУТРИ ПРИЛОЖЕНИЯ)
 window.addEventListener('offline', function() {
-    showOfflineModal();
+    // Проверяем, что мы НЕ на странице загрузки
+    const loadingPage = document.getElementById('page-loading');
+    if (loadingPage && loadingPage.classList.contains('active')) {
+        return; // на странице загрузки не показываем
+    }
+    
+    // Проверяем, что мы в приложении (на тренировках, статистике или профиле)
+    const workoutsPage = document.getElementById('page-workouts');
+    const statsPage = document.getElementById('page-stats');
+    const profilePage = document.getElementById('page-profile');
+    
+    const isInApp = (workoutsPage && workoutsPage.classList.contains('active')) ||
+                    (statsPage && statsPage.classList.contains('active')) ||
+                    (profilePage && profilePage.classList.contains('active'));
+    
+    if (!isInApp) return; // не в приложении → выходим
+    
+    // Если модалку ещё не показывали → показываем
+    if (!isOfflineModalShown) {
+        showOfflineModal();
+        isOfflineModalShown = true; // запоминаем, что показали
+    }
 });
 
-// Автоматически закрываем при восстановлении (по желанию)
+// Закрываем при восстановлении и сбрасываем флаг
 window.addEventListener('online', function() {
     closeOfflineModal();
-    // Также можно синхронизировать отложенные тренировки
+    isOfflineModalShown = false; // сбрасываем флаг
+    
     if (typeof syncPendingWorkouts === 'function') {
         syncPendingWorkouts();
     }
@@ -2586,25 +2606,20 @@ window.addEventListener('online', function() {
 // ВХОД В ПРИЛОЖЕНИЕ СО СТРАНИЦЫ ЗАГРУЗКИ
 // ============================================================
 function enterApp() {
-    // Проверяем интернет
+    // Проверяем интернет (ВСЕГДА при нажатии)
     if (!navigator.onLine) {
-        showOfflineModal();
-        return;
+        showOfflineModal(); // ← показываем модалку
+        return; // НЕ переходим на тренировки, пока не нажмут "Понятно"
     }
     
-    // Скрываем все страницы
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    
-    // Показываем нижнюю навигацию
+    // Если интернет есть → переходим в приложение
     document.getElementById('bottomNav').style.display = 'block';
-    
-    // Показываем страницу тренировок
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-workouts').classList.add('active');
     document.querySelectorAll('.nav-item').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.page === 'workouts');
     });
     
-    // Данные уже подгружены в фоне, но можно обновить на всякий случай
     loadProfile();
     loadStats();
     renderMyWorkouts();
