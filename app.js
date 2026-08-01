@@ -2854,46 +2854,23 @@ document.addEventListener('DOMContentLoaded', function() {
 // ============================================================
 
 function showToast(message, duration = 3000) {
-    // Удаляем старый тост, если есть
     const oldToast = document.getElementById('toast');
     if (oldToast) oldToast.remove();
     
     const toast = document.createElement('div');
     toast.id = 'toast';
-    toast.style.cssText = `
-        position: fixed;
-        bottom: 100px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: var(--dark);
-        color: white;
-        padding: 0.8rem 1.5rem;
-        border-radius: 12px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        z-index: 3000;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        max-width: 95%;
-        text-align: center;
-        animation: slideUp 0.3s ease-out;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    `;
     toast.textContent = message;
     
     document.body.appendChild(toast);
     
-    // Показываем с анимацией
     requestAnimationFrame(() => {
-        toast.style.opacity = '1';
+        toast.classList.add('show');
     });
     
-    // Автоматически скрываем
     setTimeout(() => {
-        toast.style.opacity = '0';
+        toast.classList.remove('show');
         setTimeout(() => {
             toast.remove();
         }, 300);
     }, duration);
 }
-

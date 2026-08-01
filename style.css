@@ -1816,24 +1816,30 @@ input::placeholder {
 /* ТОСТ-УВЕДОМЛЕНИЯ                                             */
 /* ============================================================ */
 
+/* ============================================================ */
+/* ТОСТ-УВЕДОМЛЕНИЯ                                             */
+/* ============================================================ */
+
 #toast {
     position: fixed;
     bottom: 100px;
     left: 50%;
     transform: translateX(-50%);
-    background: var(--dark);
+    background: var(--dark);      /* ← ЕДИНЫЙ ФОН ДЛЯ ВСЕХ */
     color: white;
     padding: 0.8rem 1.5rem;
     border-radius: 12px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 500;
     z-index: 3000;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    max-width: 95%;
+    max-width: 90%;
     text-align: center;
-    animation: slideUp 0.3s ease-out;
     opacity: 0;
     transition: opacity 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #toast.show {
