@@ -2150,7 +2150,37 @@ firebase.auth().onAuthStateChanged(async (user) => {
             document.getElementById('page-loading').classList.add('active');
             bottomNav.style.display = 'none';
             
+            // ✅ ПОЛУЧАЕМ ПРОФИЛЬ
+            const profileResult = await getUserProfile(user.uid);
+            let profile = null;
+            
+            if (profileResult.success) {
+                profile = profileResult.data;
+            } else {
+                // Если профиля нет — создаём
+                const newProfile = {
+                    displayName: user.displayName || user.email?.split('@')[0] || 'Пользователь',
+                    avatar: 'bodybuilding',
+                    level: 1,
+                    totalXp: 0,
+                    createdAt: new Date().toISOString(),
+                    tutorialCompleted: false
+                };
+                await saveUserProfile(user.uid, newProfile);
+                profile = newProfile;
+            }
+            
+            // ✅ ОБНОВЛЯЕМ UI ПРОФИЛЯ
             await loadProfile();
+            
+            // ✅ ПРОВЕРЯЕМ, НУЖНО ЛИ ПОКАЗАТЬ ОБУЧЕНИЕ
+            if (profile && profile.tutorialCompleted === false) {
+                console.log('🎓 Запускаем обучение для нового пользователя');
+                setTimeout(() => {
+                    startTutorial();
+                }, 1000);
+            }
+            
             await loadStats();
             renderMyWorkouts();
             await renderCalendar(currentMonth, currentYear);
@@ -2173,7 +2203,6 @@ firebase.auth().onAuthStateChanged(async (user) => {
         }
     } catch (error) {
         console.error('Ошибка в onAuthStateChanged:', error);
-        // Если ошибка — показываем страницу входа
         bottomNav.style.display = 'none';
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById('page-login').classList.add('active');
