@@ -29,34 +29,82 @@
                 <button class="tab-btn" data-tab="my">Личные</button>
             </div>
 
-            <div id="tab-ready" class="tab-content active">
-                <div class="catalog-grid" id="catalogGrid">
-                    <div class="category-card" data-category="Руки">
-                        <div class="category-icon"><img src="images/bodybuilding.png"></div>
-                        <div class="category-info"><h3>Руки</h3><p>Начинающий · Любитель · Профи</p></div>
-                    </div>
-                    <div class="category-card" data-category="Плечи">
-                        <div class="category-icon"><img src="images/shoulder.png"></div>
-                        <div class="category-info"><h3>Плечи</h3><p>Начинающий · Любитель · Профи</p></div>
-                    </div>
-                    <div class="category-card" data-category="Пресс">
-                        <div class="category-icon"><img src="images/press.png"></div>
-                        <div class="category-info"><h3>Пресс</h3><p>Начинающий · Любитель · Профи</p></div>
-                    </div>
-                    <div class="category-card" data-category="Грудь">
-                        <div class="category-icon"><img src="images/breast.png"></div>
-                        <div class="category-info"><h3>Грудь</h3><p>Начинающий · Любитель · Профи</p></div>
-                    </div>
-                    <div class="category-card" data-category="Спина">
-                        <div class="category-icon"><img src="images/back.png"></div>
-                        <div class="category-info"><h3>Спина</h3><p>Начинающий · Любитель · Профи</p></div>
-                    </div>
-                    <div class="category-card" data-category="Ноги">
-                        <div class="category-icon"><img src="images/legs.png"></div>
-                        <div class="category-info"><h3>Ноги</h3><p>Начинающий · Любитель · Профи</p></div>
-                    </div>
-                </div>
-            </div>
+<div id="tab-ready" class="tab-content active">
+    <!-- СИЛОВЫЕ -->
+    <div style="margin-bottom: 0.5rem;">
+        <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); padding-left: 0.3rem;">Силовые</h2>
+    </div>
+    <div class="catalog-grid" id="catalogGridStrength">
+        <div class="category-card" data-category="Руки" data-parent="Силовые">
+            <div class="category-icon"><img src="images/bodybuilding.png"></div>
+            <div class="category-info"><h3>Руки</h3><p>Бицепс · Трицепс · Плечи</p></div>
+        </div>
+        <div class="category-card" data-category="Плечи" data-parent="Силовые">
+            <div class="category-icon"><img src="images/shoulder.png"></div>
+            <div class="category-info"><h3>Плечи</h3><p>Дельты · Жим · Разводка</p></div>
+        </div>
+        <div class="category-card" data-category="Пресс" data-parent="Силовые">
+            <div class="category-icon"><img src="images/press.png"></div>
+            <div class="category-info"><h3>Пресс</h3><p>Куб · Планка · Скручивания</p></div>
+        </div>
+        <div class="category-card" data-category="Грудь" data-parent="Силовые">
+            <div class="category-icon"><img src="images/breast.png"></div>
+            <div class="category-info"><h3>Грудь</h3><p>Жим · Отжимания · Разводка</p></div>
+        </div>
+        <div class="category-card" data-category="Спина" data-parent="Силовые">
+            <div class="category-icon"><img src="images/back.png"></div>
+            <div class="category-info"><h3>Спина</h3><p>Тяга · Подтягивания · Гиперэкстензия</p></div>
+        </div>
+        <div class="category-card" data-category="Ноги" data-parent="Силовые">
+            <div class="category-icon"><img src="images/legs.png"></div>
+            <div class="category-info"><h3>Ноги</h3><p>Присед · Выпады · Мостик</p></div>
+        </div>
+    </div>
+
+    <!-- КАРДИО -->
+    <div style="margin: 1.5rem 0 0.5rem;">
+        <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); padding-left: 0.3rem;">Кардио</h2>
+    </div>
+    <div class="catalog-grid" id="catalogGridCardio">
+        <div class="category-card" data-category="Кардио" data-parent="Кардио">
+            <div class="category-icon"><img src="images/cardio.png"></div>
+            <div class="category-info"><h3>Кардио</h3><p>Бег · Прыжки · Бёрпи</p></div>
+        </div>
+    </div>
+
+    <!-- РАСТЯЖКА -->
+    <div style="margin: 1.5rem 0 0.5rem;">
+        <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); padding-left: 0.3rem;">Растяжка</h2>
+    </div>
+    <div class="catalog-grid" id="catalogGridStretch">
+        <div class="category-card" data-category="Растяжка" data-parent="Растяжка">
+            <div class="category-icon"><img src="images/stretching.png"></div>
+            <div class="category-info"><h3>Растяжка</h3><p>Гибкость · Шпагат · Наклоны</p></div>
+        </div>
+    </div>
+
+<!-- ОСОБЫЕ (PREMIUM) -->
+<div class="premium-title-container" style="margin: 1.5rem 0 0.5rem; display: flex; justify-content: space-between; align-items: center; padding-left: 0.3rem; padding-right: 0.3rem;">
+    <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); margin: 0;">Особые</h2>
+    <span style="font-size: 0.75rem; font-weight: 700; color: var(--accent); background: var(--accent-light); padding: 0.2rem 0.8rem; border-radius: 12px;">PREMIUM</span>
+</div>
+<div class="catalog-grid" id="catalogGridPremium">
+    <div class="category-card" data-category="Мужская сила" data-parent="Особые" data-premium="true">
+        <div class="category-icon"><img src="images/men.png"></div>
+        <div class="category-info">
+            <h3>Мужская сила</h3>
+            <p>Начинающий · Любитель · Профи</p>
+        </div>
+    </div>
+    <div class="category-card" data-category="Женское счастье" data-parent="Особые" data-premium="true">
+        <div class="category-icon"><img src="images/woman.png"></div>
+        <div class="category-info">
+            <h3>Женское счастье</h3>
+            <p>Начинающий · Любитель · Профи</p>
+        </div>
+    </div>
+</div>
+</div>
 
             <div id="tab-my" class="tab-content">
                 <div id="myWorkoutsList" class="workout-list"></div>
@@ -111,26 +159,33 @@
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
                     <label>Выберите значок</label>
-                    <div class="icon-picker">
-                        <div class="icon-option active" data-icon="bodybuilding">
-                            <img src="images/bodybuilding.png">
+                        <div class="icon-picker">
+                            <div class="icon-option active" data-icon="bodybuilding">
+                                <img src="images/bodybuilding.png">
+                            </div>
+                            <div class="icon-option" data-icon="press">
+                                <img src="images/press.png">
+                            </div>
+                            <div class="icon-option" data-icon="breast">
+                                <img src="images/breast.png">
+                            </div>
+                            <div class="icon-option" data-icon="back">
+                                <img src="images/back.png">
+                            </div>
+                            <div class="icon-option" data-icon="legs">
+                                <img src="images/legs.png">
+                            </div>
+                            <div class="icon-option" data-icon="shoulder">
+                                <img src="images/shoulder.png">
+                            </div>
+                            <!-- НОВЫЕ ИКОНКИ -->
+                            <div class="icon-option" data-icon="cardio">
+                                <img src="images/cardio.png">
+                            </div>
+                            <div class="icon-option" data-icon="stretching">
+                                <img src="images/stretching.png">
+                            </div>
                         </div>
-                        <div class="icon-option" data-icon="press">
-                            <img src="images/press.png">
-                        </div>
-                        <div class="icon-option" data-icon="breast">
-                            <img src="images/breast.png">
-                        </div>
-                        <div class="icon-option" data-icon="back">
-                            <img src="images/back.png">
-                        </div>
-                        <div class="icon-option" data-icon="legs">
-                            <img src="images/legs.png">
-                        </div>
-                        <div class="icon-option" data-icon="shoulder">
-                            <img src="images/shoulder.png">
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -178,29 +233,36 @@
             </div>
             
             <h2 style="font-size:1rem; font-weight:600; color:var(--dark); margin-bottom:0.5rem;">Категории</h2>
-            <div class="icon-picker" id="exerciseCategoryFilter" style="margin-bottom:1.5rem;">
-                <div class="icon-option active" data-category="all">
-                    <span style="font-size:1.2rem;">📋</span>
+                <div class="icon-picker" id="exerciseCategoryFilter" style="margin-bottom:1.5rem;">
+                    <div class="icon-option active" data-category="all">
+                        <span style="font-size:1.2rem;">📋</span>
+                    </div>
+                    <div class="icon-option" data-category="Руки">
+                        <img src="images/bodybuilding.png">
+                    </div>
+                    <div class="icon-option" data-category="Пресс">
+                        <img src="images/press.png">
+                    </div>
+                    <div class="icon-option" data-category="Грудь">
+                        <img src="images/breast.png">
+                    </div>
+                    <div class="icon-option" data-category="Спина">
+                        <img src="images/back.png">
+                    </div>
+                    <div class="icon-option" data-category="Ноги">
+                        <img src="images/legs.png">
+                    </div>
+                    <div class="icon-option" data-category="Плечи">
+                        <img src="images/shoulder.png">
+                    </div>
+                    <!-- НОВЫЕ ИКОНКИ ДЛЯ КАРДИО И РАСТЯЖКИ -->
+                    <div class="icon-option" data-category="Кардио">
+                        <img src="images/cardio.png">
+                    </div>
+                    <div class="icon-option" data-category="Растяжка">
+                        <img src="images/stretching.png">
+                    </div>
                 </div>
-                <div class="icon-option" data-category="Руки">
-                    <img src="images/bodybuilding.png">
-                </div>
-                <div class="icon-option" data-category="Пресс">
-                    <img src="images/press.png">
-                </div>
-                <div class="icon-option" data-category="Грудь">
-                    <img src="images/breast.png">
-                </div>
-                <div class="icon-option" data-category="Спина">
-                    <img src="images/back.png">
-                </div>
-                <div class="icon-option" data-category="Ноги">
-                    <img src="images/legs.png">
-                </div>
-                <div class="icon-option" data-category="Плечи">
-                    <img src="images/shoulder.png">
-                </div>
-            </div>
             
             <h2 style="font-size:1rem; font-weight:600; color:var(--dark); margin-bottom:0.5rem;">Каталог упражнений</h2>
             <div id="exerciseListContainer"></div>
@@ -365,11 +427,26 @@
                 </div>
             </div>
             
-            <!-- РАЗДЕЛ: ДОПОЛНИТЕЛЬНЫЕ НАСТРОЙКИ -->
+<!-- РАЗДЕЛ: ДОПОЛНИТЕЛЬНЫЕ НАСТРОЙКИ -->
 <div class="settings-section">
     <h2 class="settings-title">Дополнительные настройки</h2>
     <div class="settings-block">
-        <div class="settings-item" onclick="startTutorial()">
+        <!-- PREMIUM БЛОК -->
+        <div class="settings-item" onclick="openPremiumModal()">
+            <div class="settings-item-icon">
+                <i class="fa-solid fa-crown"></i>
+            </div>
+            <div class="settings-item-info">
+                <div class="settings-item-title">PREMIUM</div>
+                <div class="settings-item-desc" id="premiumStatus">Откройте все особые тренировки</div>
+            </div>
+            <div class="settings-item-arrow">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <!-- ОБУЧЕНИЕ -->
+        <div class="settings-item" onclick="startTutorial()" style="border-top: 1px solid #E2E8F0;">
             <div class="settings-item-icon">
                 <i class="fa-regular fa-circle-question"></i>
             </div>
@@ -414,7 +491,7 @@
     </div>
 
 <!-- СТРАНИЦА: ЗАГРУЗКИ (ДЛЯ АВТОРИЗОВАННЫХ ПОЛЬЗОВАТЕЛЕЙ) -->
-<div id="page-loading" class="page active">
+<div id="page-loading" class="page">
     <div class="hero">
         <div class="hero-content">
             <h1>SportApp</h1>
@@ -544,6 +621,51 @@
             <strong>Мы работаем над этим.</strong>
         </p>
         <button class="modal-btn" onclick="closeOfflineModal()">Понятно</button>
+    </div>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО PREMIUM -->
+<div id="premiumModal" class="modal-overlay premium-modal" style="display:none;">
+    <div class="modal-content">
+        <div style="font-size:3.5rem;">
+            <i class="fa-solid fa-crown" style="color: #F7C948;"></i>
+        </div>
+        <div class="premium-price">299 ₽</div>
+        <div class="modal-title" style="font-size:1.5rem; color: var(--accent);">PREMIUM</div>
+        <ul class="premium-features">
+            <li>Особые тренировки</li>
+            <li>3 уровня сложности в каждой</li>
+            <li>Эксклюзивные упражнения</li>
+            <li>Поддержка разработчика</li>
+        </ul>
+                <p style="color:var(--slate); font-size:0.8rem; margin-bottom:1rem;">
+            Разовый платёж · Доступ навсегда
+        </p>
+        
+        <button class="btn-premium" onclick="buyPremium()">
+            <i class="fa-solid fa-crown"></i> Купить PREMIUM
+        </button>
+        
+        <button class="btn-close-premium" onclick="closePremiumModal()">
+            Закрыть
+        </button>
+    </div>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО PREMIUM АКТИВИРОВАН -->
+<div id="premiumActiveModal" class="modal-overlay premium-modal" style="display:none;">
+    <div class="modal-content">
+        <div style="font-size:3.5rem; margin-bottom:0.5rem;">
+            <i class="fa-solid fa-crown" style="color: #F7C948;"></i>
+        </div>
+        <div class="modal-title" style="font-size:1.5rem; color: var(--accent);">PREMIUM АКТИВИРОВАН</div>
+        <p style="color:var(--slate); font-size:0.95rem; margin-bottom:1.5rem;">
+            У вас есть доступ ко всем особым тренировкам
+        </p>
+        
+        <button class="btn-premium-active" onclick="closePremiumActiveModal()">
+            Отлично!
+        </button>
     </div>
 </div>
 

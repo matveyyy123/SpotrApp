@@ -1248,7 +1248,6 @@ body {
     font-weight: 700;
     color: var(--dark);
     letter-spacing: 0.5px;
-    margin-bottom: 1.5rem;
 }
 
 .modal-stats {
@@ -2099,11 +2098,11 @@ input::placeholder {
     gap: 1rem;
     cursor: pointer;
     transition: none;
-    border-bottom: 1px solid var(--light);
+    border-bottom: 1px solid #E2E8F0 !important;
 }
 
 .settings-item:last-child {
-    border-bottom: none;
+    border-bottom: none !important;
 }
 
 .settings-item:active {
@@ -2121,6 +2120,15 @@ input::placeholder {
     justify-content: center;
     color: var(--accent);
     font-size: 1.2rem;
+}
+
+/* PREMIUM иконка - золотая, без градиента */
+.settings-item-icon i.fa-crown {
+    color: #F7C948;
+}
+
+.settings-item-icon i.fa-check-circle {
+    color: #2ECC71;
 }
 
 .settings-item-info {
@@ -2143,4 +2151,95 @@ input::placeholder {
 .settings-item-arrow {
     color: var(--slate);
     font-size: 0.9rem;
+}
+
+/* ============================================================ */
+/* PREMIUM - МОДАЛЬНЫЕ ОКНА                                      */
+/* ============================================================ */
+
+.premium-modal .modal-content {
+    max-width: 380px;
+    text-align: center;
+}
+
+.premium-price {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent);
+}
+
+.premium-features {
+    text-align: left;
+    margin: 1.5rem 0;
+    padding: 0 0.5rem;
+}
+
+.premium-features li {
+    list-style: none;
+    padding: 0.4rem 0;
+    color: var(--dark);
+    font-size: 0.95rem;
+}
+
+.premium-features li::before {
+    content: "✓ ";
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.btn-premium {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    transition: opacity 0.2s;
+}
+
+.btn-premium:active {
+    opacity: 0.8;
+}
+
+.btn-premium-active {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    transition: opacity 0.2s;
+}
+
+.btn-premium-active:active {
+    opacity: 0.8;
+}
+
+.btn-close-premium {
+    background: transparent;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-top: 0.8rem;
+    padding: 0.6rem 2rem;
+    border-radius: 10px;
+    width: 100%;
+    transition: opacity 0.2s;
+}
+
+.btn-close-premium:active {
+    opacity: 0.6;
+}
+
+/* PREMIUM карточки (без свечения) */
+.premium-card {
+    border: 2px solid #F7C948;
+    border-radius: 16px;
 }
