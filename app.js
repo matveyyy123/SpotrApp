@@ -2117,59 +2117,66 @@ if (saveProfileBtn) {
 firebase.auth().onAuthStateChanged(async (user) => {
     const bottomNav = document.getElementById('bottomNav');
     
-    if (isLoggingIn) {
-        console.log('⏳ Процесс входа, onAuthStateChanged пропущен');
-        return;
-    }
-    
-    if (user) {
-        try {
-            await user.reload();
-        } catch (e) {}
-        
-        if (!user.emailVerified) {
-            console.log('❌ Почта не подтверждена');
+    try {
+        if (user) {
+            // ✅ ОБНОВЛЯЕМ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ
+            try {
+                await user.reload();
+            } catch (e) {
+                console.warn('Ошибка перезагрузки пользователя:', e);
+            }
+            
+            // ✅ ЕСЛИ EMAIL НЕ ПОДТВЕРЖДЁН — ПОКАЗЫВАЕМ СТРАНИЦУ ВХОДА
+            if (!user.emailVerified) {
+                console.log('❌ Почта не подтверждена');
+                bottomNav.style.display = 'none';
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById('page-login').classList.add('active');
+                return;
+            }
+            
+            console.log('✅ Пользователь авторизован:', user.email);
+            
+            const isPageLoaded = document.querySelector('#page-workouts.active') || 
+                                 document.querySelector('#page-stats.active') || 
+                                 document.querySelector('#page-profile.active');
+            
+            if (isPageLoaded) {
+                console.log('✅ Страница уже загружена');
+                return;
+            }
+            
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-loading').classList.add('active');
+            bottomNav.style.display = 'none';
+            
+            await loadProfile();
+            await loadStats();
+            renderMyWorkouts();
+            await renderCalendar(currentMonth, currentYear);
+            updatePremiumUI();
+            
+            if (typeof syncPendingWorkouts === 'function') {
+                syncPendingWorkouts();
+            }
+            
+            // ✅ ПЕРЕХОДИМ В ПРИЛОЖЕНИЕ
+            document.getElementById('page-loading').classList.remove('active');
+            bottomNav.style.display = 'block';
+            window.navigateTo('workouts');
+            
+        } else {
+            console.log('❌ Пользователь не авторизован');
             bottomNav.style.display = 'none';
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById('page-login').classList.add('active');
-            return;
+            document.getElementById('page-hero').classList.add('active');
         }
-        
-        console.log('✅ Пользователь авторизован:', user.email);
-        
-        const isPageLoaded = document.querySelector('#page-workouts.active') || 
-                             document.querySelector('#page-stats.active') || 
-                             document.querySelector('#page-profile.active');
-        
-        if (isPageLoaded) {
-            console.log('✅ Страница уже загружена');
-            return;
-        }
-        
-        // ⚠️ ПОКАЗЫВАЕМ СТРАНИЦУ ЗАГРУЗКИ, НО НЕ ЗАКРЫВАЕМ ЕЁ АВТОМАТИЧЕСКИ
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('page-loading').classList.add('active');
-        bottomNav.style.display = 'none';
-        
-        // Загружаем данные в фоне (без закрытия страницы загрузки)
-        await loadProfile();
-        await loadStats();
-        renderMyWorkouts();
-        await renderCalendar(currentMonth, currentYear);
-        updatePremiumUI();
-        
-        // ✅ НЕ ЗАКРЫВАЕМ СТРАНИЦУ ЗАГРУЗКИ АВТОМАТИЧЕСКИ
-        // Пользователь сам нажмёт кнопку "Начать тренироваться"
-        
-        if (typeof syncPendingWorkouts === 'function') {
-            syncPendingWorkouts();
-        }
-        
-    } else {
-        console.log('❌ Пользователь не авторизован');
+    } catch (error) {
+        console.error('Ошибка в onAuthStateChanged:', error);
+        // Если ошибка — показываем страницу входа
         bottomNav.style.display = 'none';
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('page-hero').classList.add('active');
+        document.getElementById('page-login').classList.add('active');
     }
 });
 
@@ -2336,7 +2343,7 @@ await saveUserProfile(result.user.uid, {
 }
 
 // ============================================================
-// ВХОД (Email + пароль) — С РАСШИРЕННЫМ ЛОГИРОВАНИЕМ
+// ВХОД (Email + пароль) — ИСПРАВЛЕННАЯ ВЕРСИЯ
 // ============================================================
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
@@ -2393,22 +2400,45 @@ if (loginForm) {
         btn.disabled = true;
         isLoggingIn = true;
         
-        try {
-            console.log('🔐 Попытка входа для:', email);
-            
-            const result = await firebase.auth().signInWithEmailAndPassword(email, password);
-            
-            console.log('✅ Вход выполнен:', result.user.email);
-            console.log('✅ Email подтвержден:', result.user.emailVerified);
-            
-            // Если дошли сюда - вход успешен
+try {
+    console.log('🔐 Попытка входа для:', email);
+    
+    const result = await firebase.auth().signInWithEmailAndPassword(email, password);
+    
+    console.log('✅ Вход выполнен:', result.user.email);
+    console.log('✅ Email подтвержден:', result.user.emailVerified);
+    
+    // ✅ ЕСЛИ ПОЧТА НЕ ПОДТВЕРЖДЕНА — ПОКАЗЫВАЕМ СООБЩЕНИЕ, НЕ ОБНОВЛЯЕМ
+    if (!result.user.emailVerified) {
+        console.log('❌ Email НЕ ПОДТВЕРЖДЁН!');
+        alert('⚠️ Подтвердите почту! Письмо отправлено на ' + email);
+        
+        // СБРАСЫВАЕМ КНОПКУ
+        btn.textContent = 'Войти в аккаунт';
+        btn.disabled = false;
+        isLoggingIn = false;
+        isSubmitting = false;
+        
+        // ❌ НЕ ОБНОВЛЯЕМ СТРАНИЦУ
+        return;
+    }
+    
+    // ✅ ЕСЛИ ПОЧТА ПОДТВЕРЖДЕНА — ОБНОВЛЯЕМ СТРАНИЦУ
+    console.log('✅ Email подтвержден, вход выполнен');
+    
+    btn.textContent = 'Войти в аккаунт';
+    btn.disabled = false;
+    isLoggingIn = false;
+    isSubmitting = false;
+    
+    // ✅ ОБНОВЛЯЕМ СТРАНИЦУ
+    window.location.reload();
             
         } catch (error) {
             console.error('❌ ОШИБКА ВХОДА:');
             console.error('  - Код:', error.code);
             console.error('  - Сообщение:', error.message);
             
-            // Показываем понятное сообщение
             let message = 'Неверный email или пароль';
             if (error.code === 'auth/user-not-found') {
                 message = 'Пользователь с таким email не найден';
