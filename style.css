@@ -791,7 +791,6 @@ body {
     background: var(--light);
     border-radius: 10px;
     word-break: break-word;
-    margin-top: 0.5rem;
 }
 .profile-info i {
     color: var(--accent);
@@ -1219,7 +1218,6 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 2000;
-    animation: fadeIn 0.3s ease-out;
 }
 
 .modal-content {
@@ -1230,18 +1228,8 @@ body {
     width: 90%;
     text-align: center;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: slideUp 0.3s ease-out;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideUp {
-    from { transform: translateY(30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
 
 .modal-title {
     font-size: 1.2rem;
@@ -1939,7 +1927,7 @@ input::placeholder {
 /* Активный класс — появляется обводка и тень */
 .tutorial-highlight.active {
     border-color: var(--accent) !important;
-    box-shadow: 0 0 30px rgba(220, 20, 60, 0.3) !important;
+    box-shadow: 0 0 30px var(--accent) !important;
 }
 
 /* Пульсация для ВСЕХ подсвеченных элементов */
@@ -1955,7 +1943,7 @@ input::placeholder {
 }
 
 .tab-btn.tutorial-highlight.active {
-    box-shadow: 0 0 30px rgba(220, 20, 60, 0.3), 0 2px 12px rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 0 30px var(--accent), 0 2px 12px rgba(0, 0, 0, 0.06) !important;
 }
 
 /* Для нижнего меню */
@@ -2238,8 +2226,50 @@ input::placeholder {
     opacity: 0.6;
 }
 
-/* PREMIUM карточки (без свечения) */
-.premium-card {
-    border: 2px solid #F7C948;
-    border-radius: 16px;
+/* Стиль для блока с цветами в настройках */
+.settings-item .color-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding-bottom: 0.2rem;
+}
+
+.settings-item .color-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #E2E8F0;
+    cursor: pointer;
+    transition: none;
+    flex-shrink: 0;
+}
+
+.settings-item .color-btn:active {
+    opacity: 0.7;
+}
+
+.settings-item .color-btn.active {
+    border-color: var(--accent);
+    border-width: 3px;
+    box-shadow: 0 0 0 2px var(--white), 0 0 0 4px var(--accent);
+}
+
+/* Кнопки цвета в модальном окне */
+.color-btn-modal {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 3px solid #E2E8F0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.color-btn-modal:active {
+    transform: scale(0.9);
+}
+
+.color-btn-modal.active {
+    border-color: var(--dark);
+    transform: scale(0.9);
 }

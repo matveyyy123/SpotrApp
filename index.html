@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="Partypay" content="6a6f5e9de764e">
     <title>SportApp</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="images/icon-192.png">
@@ -85,22 +86,21 @@
 
 <!-- ОСОБЫЕ (PREMIUM) -->
 <div class="premium-title-container" style="margin: 1.5rem 0 0.5rem; display: flex; justify-content: space-between; align-items: center; padding-left: 0.3rem; padding-right: 0.3rem;">
-    <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); margin: 0;">Особые</h2>
-    <span style="font-size: 0.75rem; font-weight: 700; color: var(--accent); background: var(--accent-light); padding: 0.2rem 0.8rem; border-radius: 12px;">PREMIUM</span>
+    <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); margin: 0;">PREMIUM</h2>
 </div>
 <div class="catalog-grid" id="catalogGridPremium">
-    <div class="category-card" data-category="Мужская сила" data-parent="Особые" data-premium="true">
+    <div class="category-card premium-card" data-category="Мужская сила" data-parent="Особые" data-premium="true" onclick="checkPremiumAndNavigate('Мужская сила')">
         <div class="category-icon"><img src="images/men.png"></div>
         <div class="category-info">
             <h3>Мужская сила</h3>
-            <p>Начинающий · Любитель · Профи</p>
+            <p>Сила · Мощь · Выносливость</p>
         </div>
     </div>
-    <div class="category-card" data-category="Женское счастье" data-parent="Особые" data-premium="true">
+    <div class="category-card premium-card" data-category="Женское счастье" data-parent="Особые" data-premium="true" onclick="checkPremiumAndNavigate('Женское счастье')">
         <div class="category-icon"><img src="images/woman.png"></div>
         <div class="category-info">
             <h3>Женское счастье</h3>
-            <p>Начинающий · Любитель · Профи</p>
+            <p>Грация · Тонус · Гармония</p>
         </div>
     </div>
 </div>
@@ -210,7 +210,7 @@
 <!-- МОДАЛЬНОЕ ОКНО: ДОБАВИТЬ УПРАЖНЕНИЕ (ВЫБОР ДЕЙСТВИЯ) -->
 <div id="addExerciseModal" class="modal-overlay" style="display:none;">
     <div class="modal-content" style="max-width:340px;">
-        <div class="modal-title">Добавить упражнение</div>
+        <div class="modal-title" style="margin-bottom: 0.8rem;">Добавить упражнение</div>
         <div style="display:flex; gap:0.8rem; flex-direction:column;">
             <button class="btn-primary" onclick="openExerciseList()">Из списка</button>
             <button class="btn-secondary" onclick="closeAddExerciseModal(); setTimeout(() => openExerciseModal(editExercises.length), 100);">Создать своё</button>
@@ -377,23 +377,6 @@
                         <span class="error-message" id="editNameError" style="color:#EF4444; font-size:0.8rem; display:block; min-height:1.2rem;"></span>
                     </div>
 
-                    <!-- Акцентный цвет -->
-                    <div class="form-group">
-                        <label>Акцентный цвет</label>
-                        <div class="color-picker">
-                            <button class="color-btn active" data-color="red" style="background:#DC143C;"></button>
-                            <button class="color-btn" data-color="orange" style="background:#FF6B35;"></button>
-                            <button class="color-btn" data-color="yellow" style="background:#F7C948;"></button>
-                            <button class="color-btn" data-color="green" style="background:#2ECC71;"></button>
-                            <button class="color-btn" data-color="darkgreen" style="background:#1A7A3A;"></button>
-                            <button class="color-btn" data-color="blue" style="background:#3498DB;"></button>
-                            <button class="color-btn" data-color="darkblue" style="background:#1a237e;"></button>
-                            <button class="color-btn" data-color="purple" style="background:#9B59B6;"></button>
-                            <button class="color-btn" data-color="pink" style="background:#E91E8C;"></button>
-                            <button class="color-btn" data-color="gray" style="background:#607D8B;"></button>
-                        </div>
-                    </div>
-
                     <!-- Дата регистрации -->
                     <div class="profile-info" id="profileDateBlock">
                         <i class="fa-regular fa-calendar"></i>
@@ -431,6 +414,7 @@
 <div class="settings-section">
     <h2 class="settings-title">Дополнительные настройки</h2>
     <div class="settings-block">
+        
         <!-- PREMIUM БЛОК -->
         <div class="settings-item" onclick="openPremiumModal()">
             <div class="settings-item-icon">
@@ -445,8 +429,22 @@
             </div>
         </div>
 
+        <!-- АКЦЕНТНЫЙ ЦВЕТ -->
+        <div class="settings-item" onclick="openColorModal()">
+            <div class="settings-item-icon">
+                <i class="fa-solid fa-palette"></i>
+            </div>
+            <div class="settings-item-info">
+                <div class="settings-item-title">Акцентный цвет</div>
+                <div class="settings-item-desc" id="colorStatus">Красный</div>
+            </div>
+            <div class="settings-item-arrow">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+
         <!-- ОБУЧЕНИЕ -->
-        <div class="settings-item" onclick="startTutorial()" style="border-top: 1px solid #E2E8F0;">
+        <div class="settings-item" onclick="startTutorial()">
             <div class="settings-item-icon">
                 <i class="fa-regular fa-circle-question"></i>
             </div>
@@ -458,6 +456,7 @@
                 <i class="fa-solid fa-chevron-right"></i>
             </div>
         </div>
+        
     </div>
 </div>
         </div>
@@ -666,6 +665,26 @@
         <button class="btn-premium-active" onclick="closePremiumActiveModal()">
             Отлично!
         </button>
+    </div>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО ВЫБОРА ЦВЕТА -->
+<div id="colorModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content" style="max-width:400px;">
+        <div class="modal-title" style="font-size:1.2rem; margin-bottom:1rem;">Выберите акцентный цвет</div>
+        <div class="color-picker" style="display:flex; flex-wrap:wrap; gap:0.6rem; justify-content:center; padding:0.5rem 0;">
+            <button class="color-btn-modal active" data-color="red" style="background:#DC143C;"></button>
+            <button class="color-btn-modal" data-color="orange" style="background:#FF6B35;"></button>
+            <button class="color-btn-modal" data-color="yellow" style="background:#F7C948;"></button>
+            <button class="color-btn-modal" data-color="green" style="background:#2ECC71;"></button>
+            <button class="color-btn-modal" data-color="darkgreen" style="background:#1A7A3A;"></button>
+            <button class="color-btn-modal" data-color="blue" style="background:#3498DB;"></button>
+            <button class="color-btn-modal" data-color="darkblue" style="background:#1a237e;"></button>
+            <button class="color-btn-modal" data-color="purple" style="background:#9B59B6;"></button>
+            <button class="color-btn-modal" data-color="pink" style="background:#E91E8C;"></button>
+            <button class="color-btn-modal" data-color="gray" style="background:#607D8B;"></button>
+        </div>
+        <button class="btn-primary" onclick="closeColorModal()" style="margin-top:0.5rem;">Готово</button>
     </div>
 </div>
 

@@ -237,66 +237,65 @@ const exercisesData = {
             ]
         }
     },
-
-    // ======================================================
-    // ОСОБЫЕ (PREMIUM)
-    // ======================================================
-    'Особые': {
-        'Мужская сила': {
-            '1 LVL': [
-                { name: 'Отжимания с кулаков', reps: '10', sets: '3' },
-                { name: 'Приседания с выпрыгиванием', reps: '12', sets: '3' },
-                { name: 'Тяга гантели в наклоне', reps: '12', sets: '3' },
-                { name: 'Планка с отведением ног', reps: '25 сек', sets: '3' },
-                { name: 'Выпады с поворотом', reps: '10', sets: '3' }
-            ],
-            '2 LVL': [
-                { name: 'Отжимания в стойке', reps: '8', sets: '4' },
-                { name: 'Приседания с гантелями', reps: '15', sets: '4' },
-                { name: 'Тяга штанги к поясу', reps: '12', sets: '4' },
-                { name: 'Планка с подтягиванием колен', reps: '30 сек', sets: '4' },
-                { name: 'Выпады с гантелями', reps: '12', sets: '4' },
-                { name: 'Бёрпи с отжиманием', reps: '10', sets: '4' }
-            ],
-            '3 LVL': [
-                { name: 'Отжимания на одной руке', reps: '6', sets: '4' },
-                { name: 'Приседания со штангой', reps: '12', sets: '5' },
-                { name: 'Становая тяга', reps: '10', sets: '5' },
-                { name: 'Планка с отягощением', reps: '45 сек', sets: '4' },
-                { name: 'Выпады с прыжком', reps: '12', sets: '4' },
-                { name: 'Подтягивания с весом', reps: '8', sets: '4' },
-                { name: 'Жим стоя', reps: '10', sets: '4' }
-            ],
-            '_premium': true
-        },
-        'Женское счастье': {
-            '1 LVL': [
-                { name: 'Ягодичный мостик', reps: '15', sets: '3' },
-                { name: 'Приседания плие', reps: '12', sets: '3' },
-                { name: 'Махи ногой назад', reps: '15', sets: '3' },
-                { name: 'Боковая планка на колене', reps: '20 сек', sets: '3' },
-                { name: 'Отведение ноги в сторону', reps: '15', sets: '3' }
-            ],
-            '2 LVL': [
-                { name: 'Ягодичный мостик с гантелью', reps: '15', sets: '4' },
-                { name: 'Приседания плие с гантелью', reps: '15', sets: '4' },
-                { name: 'Махи ногой назад с утяжелением', reps: '15', sets: '4' },
-                { name: 'Боковая планка', reps: '30 сек', sets: '4' },
-                { name: 'Отведение ноги в сторону с резинкой', reps: '15', sets: '4' },
-                { name: 'Выпады в сторону', reps: '12', sets: '4' }
-            ],
-            '3 LVL': [
-                { name: 'Румынская тяга', reps: '15', sets: '4' },
-                { name: 'Приседания с гантелями глубокие', reps: '15', sets: '4' },
-                { name: 'Махи ногой назад с резинкой', reps: '20', sets: '4' },
-                { name: 'Планка с подъемом ноги', reps: '35 сек', sets: '4' },
-                { name: 'Болгарские сплит-приседания', reps: '12', sets: '4' },
-                { name: 'Выпады с прыжком', reps: '12', sets: '4' },
-                { name: 'Ягодичный мостик на одной ноге', reps: '12', sets: '4' }
-            ],
-            '_premium': true
-        }
+// ======================================================
+// ОСОБЫЕ (PREMIUM) - упражнения Кегеля
+// ======================================================
+'Особые': {
+    'Мужская сила': {
+        '1 LVL': [
+            { name: 'Кегель для мужчин', reps: '10', sets: '3' },
+            { name: 'Ягодичный мостик', reps: '15', sets: '3' },
+            { name: 'Приседания с задержкой', reps: '12', sets: '3' },
+            { name: 'Планка с подъемом таза', reps: '15 сек', sets: '3' },
+            { name: 'Махи ногами в сторону', reps: '12', sets: '3' }
+        ],
+        '2 LVL': [
+            { name: 'Кегель для мужчин', reps: '15', sets: '4' },
+            { name: 'Ягодичный мостик с гантелью', reps: '15', sets: '4' },
+            { name: 'Приседания с выпрыгиванием', reps: '12', sets: '4' },
+            { name: 'Боковая планка с подъемом ноги', reps: '20 сек', sets: '4' },
+            { name: 'Болгарские сплит-приседания', reps: '10', sets: '4' },
+            { name: 'Отведение ноги в сторону с резинкой', reps: '15', sets: '4' }
+        ],
+        '3 LVL': [
+            { name: 'Кегель для мужчин', reps: '20', sets: '4' },
+            { name: 'Ягодичный мостик на одной ноге', reps: '12', sets: '4' },
+            { name: 'Приседания со штангой', reps: '12', sets: '4' },
+            { name: 'Планка с отягощением на тазу', reps: '30 сек', sets: '4' },
+            { name: 'Румынская тяга с гантелями', reps: '15', sets: '4' },
+            { name: 'Выпады с прыжком', reps: '12', sets: '4' },
+            { name: 'Махи ногой назад с резинкой', reps: '15', sets: '4' }
+        ],
+        '_premium': true
+    },
+    'Женское счастье': {
+        '1 LVL': [
+            { name: 'Кегель для женщин', reps: '10', sets: '3' },
+            { name: 'Ягодичный мостик', reps: '15', sets: '3' },
+            { name: 'Приседания плие', reps: '12', sets: '3' },
+            { name: 'Планка на коленях', reps: '20 сек', sets: '3' },
+            { name: 'Махи ногой назад', reps: '15', sets: '3' }
+        ],
+        '2 LVL': [
+            { name: 'Кегель для женщин', reps: '15', sets: '4' },
+            { name: 'Ягодичный мостик с гантелью', reps: '15', sets: '4' },
+            { name: 'Приседания плие с гантелью', reps: '15', sets: '4' },
+            { name: 'Боковая планка', reps: '30 сек', sets: '4' },
+            { name: 'Махи ногой назад с утяжелением', reps: '15', sets: '4' },
+            { name: 'Отведение ноги в сторону с резинкой', reps: '15', sets: '4' }
+        ],
+        '3 LVL': [
+            { name: 'Кегель для женщин', reps: '20', sets: '4' },
+            { name: 'Ягодичный мостик на одной ноге', reps: '12', sets: '4' },
+            { name: 'Приседания с гантелями глубокие', reps: '15', sets: '4' },
+            { name: 'Планка с подъемом ноги', reps: '35 сек', sets: '4' },
+            { name: 'Болгарские сплит-приседания', reps: '12', sets: '4' },
+            { name: 'Выпады с прыжком', reps: '12', sets: '4' },
+            { name: 'Махи ногой назад с резинкой', reps: '20', sets: '4' }
+        ],
+        '_premium': true
     }
+}
 };
 
 // Сохраняем исходные данные для сброса
@@ -632,9 +631,14 @@ async function deleteWorkoutFromFirestore(workoutId) {
 function setTheme(color) {
     document.body.className = 'theme-' + color;
     localStorage.setItem('themeColor', color);
-    document.querySelectorAll('.color-btn').forEach(btn => {
+    
+    // Обновляем кнопки в модалке
+    document.querySelectorAll('.color-btn-modal').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.color === color);
     });
+    
+    // Обновляем статус
+    updateColorStatus(color);
 }
 
 const savedColor = localStorage.getItem('themeColor') || 'red';
@@ -787,6 +791,17 @@ function loadLevelSelect(category) {
         }
     }
     
+    // ✅ ПРОВЕРКА PREMIUM
+    if (parentCategory === 'Особые') {
+        if (!hasPremium()) {
+            // Показываем модалку и НЕ загружаем страницу
+            openPremiumModal();
+            // Возвращаемся на предыдущую страницу (тренировки)
+            window.navigateTo('workouts');
+            return;
+        }
+    }
+    
     const titleEl = document.getElementById('levelSelectTitle');
     if (titleEl) {
         titleEl.textContent = 'ТРЕНИРОВКА - ' + category.toUpperCase();
@@ -875,20 +890,16 @@ function loadWorkoutDetail(category, level, isCustom, id, parentCategory, isPrem
     console.log('loadWorkoutDetail вызван:', { category, level, isCustom, id, parentCategory, isPremium });
     
     // ✅ ПРОВЕРКА PREMIUM-ДОСТУПА
-    // Проверяем, является ли тренировка особой (premium)
     let isPremiumWorkout = false;
     
-    // Проверяем через переданный параметр
     if (isPremium === true) {
         isPremiumWorkout = true;
     }
     
-    // Дополнительная проверка через parentCategory
     if (parentCategory === 'Особые') {
         isPremiumWorkout = true;
     }
     
-    // Проверяем через exercisesData
     if (!isPremiumWorkout) {
         for (const parent in exercisesData) {
             if (exercisesData[parent] && exercisesData[parent][category] && exercisesData[parent][category]._premium === true) {
@@ -898,23 +909,17 @@ function loadWorkoutDetail(category, level, isCustom, id, parentCategory, isPrem
         }
     }
     
-    // Если это премиум-тренировка и у пользователя нет PREMIUM - блокируем
+    // ✅ Если это премиум-тренировка и у пользователя нет PREMIUM
     if (isPremiumWorkout) {
         if (!hasPremium()) {
             console.log('❌ PREMIUM не куплен, открываем модалку');
-            // Очищаем контейнер упражнений
-            const container = document.getElementById('exercisesContainer');
-            if (container) {
-                container.innerHTML = `
-                    <div class="empty-state" style="padding:1.5rem; margin-top:0;">
-                        <p style="color:var(--slate);">🔒 Эта тренировка доступна только в PREMIUM-версии</p>
-                    </div>
-                `;
-            }
-            // Открываем модальное окно
+            // ⚠️ НЕ ОЧИЩАЕМ КОНТЕЙНЕР И НЕ ПОКАЗЫВАЕМ ПУСТУЮ СТРАНИЦУ
+            // Просто открываем модалку и возвращаемся назад
             setTimeout(() => {
                 openPremiumModal();
-            }, 300);
+                // Возвращаемся на страницу тренировок
+                window.navigateTo('workouts');
+            }, 100);
             return;
         } else {
             console.log('✅ PREMIUM куплен, показываем упражнения');
@@ -980,7 +985,13 @@ function loadWorkoutDetail(category, level, isCustom, id, parentCategory, isPrem
     
 const titleEl = document.getElementById('workoutDetailTitle');
 if (titleEl) {
-    titleEl.textContent = 'ТРЕНИРОВКА - ' + currentCategory.toUpperCase() + ' ' + (level || '1 LVL');
+    if (isCustom) {
+        // Для личных тренировок — только название
+        titleEl.textContent = 'ТРЕНИРОВКА - ' + currentCategory.toUpperCase();
+    } else {
+        // Для готовых тренировок — название + уровень
+        titleEl.textContent = 'ТРЕНИРОВКА - ' + currentCategory.toUpperCase() + ' ' + (level || '1 LVL');
+    }
 }
     
     const container = document.getElementById('exercisesContainer');
@@ -1190,7 +1201,7 @@ async function finishWorkout() {
     
     const total = exercises.length;
     if (total === 0) {
-        alert('Тренировка не содержит упражнений');
+        showToast('⚠️ Тренировка не содержит упражнений');
         if (actionButton) actionButton.textContent = 'Начать тренировку';
         if (timerDisplay) timerDisplay.textContent = '00:00';
         seconds = 0;
@@ -1566,7 +1577,7 @@ document.getElementById('modalSaveBtn')?.addEventListener('click', function() {
     let reps = parseInt(document.getElementById('modalExerciseReps').value);
     
     if (!name) {
-        alert('Введите название упражнения');
+        showToast('⚠️ Введите название упражнения');
         return;
     }
     if (isNaN(sets) || sets < 1) sets = 3;
@@ -1613,7 +1624,7 @@ document.getElementById('exerciseModal')?.addEventListener('click', function(e) 
 // ============================================================
 document.getElementById('saveEditBtn')?.addEventListener('click', function() {
     if (editExercises.length === 0) {
-        alert('Добавьте хотя бы одно упражнение');
+        showToast('⚠️ Добавьте хотя бы одно упражнение');
         return;
     }
     
@@ -1621,7 +1632,7 @@ document.getElementById('saveEditBtn')?.addEventListener('click', function() {
     const title = nameInput ? nameInput.value.trim() : (editCategory || 'Моя тренировка');
     
     if (!title) {
-        alert('Введите название тренировки');
+        showToast('⚠️ Введите название тренировки');
         return;
     }
 
@@ -1650,7 +1661,7 @@ document.getElementById('saveEditBtn')?.addEventListener('click', function() {
         const workouts = getMyWorkouts();
         workouts.push(newWorkout);
         saveMyWorkouts(workouts);
-        alert('Тренировка создана!');
+        showToast('✅ Тренировка создана!');
         window.navigateTo('workouts');
         return;
     }
@@ -1661,7 +1672,7 @@ document.getElementById('saveEditBtn')?.addEventListener('click', function() {
             icon: icon,
             exercises: editExercises 
         });
-        alert('Тренировка обновлена!');
+        showToast('✅ Тренировка обновлена!');
         window.navigateTo('workouts');
         return;
     }
@@ -2844,7 +2855,7 @@ window.removeFriend = async function(friendId) {
 // ============================================================
 function resetWorkout() {
     if (!editCategory || editIsCustom) {
-        alert('Эта функция только для готовых тренировок');
+        showToast('⚠️ Эта функция только для готовых тренировок');
         return;
     }
 
@@ -3431,12 +3442,40 @@ function createTutorialOverlay(step) {
     overlay.className = 'tutorial-overlay';
     document.body.appendChild(overlay);
     
-    // Подсвечиваем элемент(ы)
-    if (step.highlight) {
-        const elements = Array.isArray(step.highlight) 
-            ? step.highlight.map(sel => document.querySelector(sel)).filter(el => el)
-            : [document.querySelector(step.highlight)].filter(el => el);
+// Подсвечиваем элемент(ы)
+if (step.highlight) {
+    // Проверяем, является ли highlight массивом
+    if (Array.isArray(step.highlight)) {
+        const elements = [];
+        step.highlight.forEach(sel => {
+            // Если селектор начинается с '.', ищем все элементы с этим классом
+            if (sel.startsWith('.')) {
+                const found = document.querySelectorAll(sel);
+                found.forEach(el => elements.push(el));
+            } else {
+                const el = document.querySelector(sel);
+                if (el) elements.push(el);
+            }
+        });
+        // Убираем дубликаты
+        const uniqueElements = [...new Set(elements)];
+        uniqueElements.forEach(el => {
+            el.classList.add('tutorial-highlight');
+        });
         
+        setTimeout(() => {
+            uniqueElements.forEach(el => {
+                el.classList.add('active');
+                setTimeout(() => {
+                    el.classList.add('pulsing');
+                }, 100);
+            });
+        }, 50);
+        
+        overlay._highlightElements = uniqueElements;
+    } else {
+        // Обработка одиночного селектора
+        const elements = document.querySelectorAll(step.highlight);
         elements.forEach(el => {
             el.classList.add('tutorial-highlight');
         });
@@ -3450,8 +3489,9 @@ function createTutorialOverlay(step) {
             });
         }, 50);
         
-        overlay._highlightElements = elements;
+        overlay._highlightElements = Array.from(elements);
     }
+}
     
     // Показываем затемнение
     setTimeout(() => {
@@ -3599,13 +3639,19 @@ const tutorialSteps = [
     {
         id: 3,
         page: 'stats',
-        highlight: '#page-stats .tab-btn[data-tab="personal"]',
+        highlight: [
+            '#page-stats .tab-btn[data-tab="personal"]',
+            '.stat-big-card'
+        ],
         text: 'В личной статистике хранятся ваши данные, такие как общее количество тренировок, минуты, упражнения, статистика по группам мышц, календарь тренировок и история тренировок.'
     },
     {
         id: 4,
         page: 'stats',
-        highlight: '#page-stats .tab-btn[data-tab="world"]',
+        highlight: [
+            '#page-stats .tab-btn[data-tab="world"]',
+            '#worldLeaderboard'
+        ],
         text: 'В мировой статистике находится рейтинг пользователей.',
         action: () => { switchStatsTab('world'); }
     },
@@ -3659,6 +3705,12 @@ const tutorialSteps = [
     },
     {
         id: 11,
+        page: 'profile',
+        highlight: '.settings-block',
+        text: 'В дополнительных настройках вы можете подключить PREMIUM, изменить акцентный цвет, и пройти это обучение еще раз.'
+    },
+    {
+        id: 12,
         page: 'workouts',
         highlight: null,
         text: 'Желаю отличной тренировки!',
@@ -3707,7 +3759,7 @@ function buyPremium() {
     localStorage.setItem(PREMIUM_KEY, 'true');
     closePremiumModal();
     updatePremiumUI();
-    showToast('Поздравляем! PREMIUM активирован!');
+    showToast('👑 Поздравляем! PREMIUM активирован!');
     // Показываем модалку об активации
     setTimeout(() => {
         openPremiumActiveModal();
@@ -3745,4 +3797,100 @@ document.addEventListener('click', function(e) {
     if (e.target === modal2) {
         closePremiumActiveModal();
     }
+});
+
+// ============================================================
+// ПРОВЕРКА PREMIUM ПРИ КЛИКЕ НА КАТЕГОРИЮ
+// ============================================================
+
+function checkPremiumAndNavigate(category) {
+    // Проверяем, есть ли у пользователя Premium
+    if (!hasPremium()) {
+        // Если Premium нет - открываем модалку покупки
+        openPremiumModal();
+        return; // ← НЕ ПЕРЕХОДИМ НА СТРАНИЦУ
+    }
+    
+    // Если Premium есть - переходим на страницу выбора уровня
+    window.navigateTo('level-select', { category: category });
+}
+
+// ============================================================
+// ВЫБОР ЦВЕТА ЧЕРЕЗ МОДАЛЬНОЕ ОКНО
+// ============================================================
+
+function openColorModal() {
+    const modal = document.getElementById('colorModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        // Обновляем активную кнопку в модалке
+        const currentColor = localStorage.getItem('themeColor') || 'red';
+        document.querySelectorAll('.color-btn-modal').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.color === currentColor);
+        });
+    }
+}
+
+function closeColorModal() {
+    const modal = document.getElementById('colorModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Закрытие по клику вне модалки
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('colorModal');
+    if (e.target === modal) {
+        closeColorModal();
+    }
+});
+
+// Обработчики для кнопок цвета в модалке
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.color-btn-modal');
+    if (btn) {
+        const color = btn.dataset.color;
+        // Обновляем активную кнопку
+        document.querySelectorAll('.color-btn-modal').forEach(b => {
+            b.classList.remove('active');
+        });
+        btn.classList.add('active');
+        
+        // Применяем цвет
+        setTheme(color);
+        
+        // Обновляем статус в настройках
+        updateColorStatus(color);
+        
+        // Закрываем модалку через секунду
+        setTimeout(() => {
+            closeColorModal();
+        }, 400);
+    }
+});
+
+function updateColorStatus(color) {
+    const colorNames = {
+        'red': 'Красный',
+        'orange': 'Оранжевый',
+        'yellow': 'Желтый',
+        'green': 'Зеленый',
+        'darkgreen': 'Темно-зеленый',
+        'blue': 'Голубой',
+        'darkblue': 'Синий',
+        'purple': 'Фиолетовый',
+        'pink': 'Розовый',
+        'gray': 'Серый'
+    };
+    const statusEl = document.getElementById('colorStatus');
+    if (statusEl) {
+        statusEl.textContent = colorNames[color] || 'Красный';
+    }
+}
+
+// При загрузке обновляем статус цвета
+document.addEventListener('DOMContentLoaded', function() {
+    const currentColor = localStorage.getItem('themeColor') || 'red';
+    updateColorStatus(currentColor);
 });
