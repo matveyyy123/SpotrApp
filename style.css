@@ -614,7 +614,7 @@ body {
     background: var(--white);
     border-radius: 16px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-    max-height: 260px;
+    max-height: 340px;
     overflow-y: auto;
     margin-bottom: 1.5rem;
     scroll-behavior: smooth;
@@ -1236,6 +1236,7 @@ body {
     font-weight: 700;
     color: var(--dark);
     letter-spacing: 0.5px;
+    margin-bottom: 1.2rem;
 }
 
 .modal-stats {
@@ -1930,11 +1931,6 @@ input::placeholder {
     box-shadow: 0 0 30px var(--accent) !important;
 }
 
-/* Пульсация для ВСЕХ подсвеченных элементов */
-.tutorial-highlight.pulsing {
-    animation: pulse-border 1.8s ease-in-out infinite;
-}
-
 /* Для активных вкладок при подсветке */
 .tab-btn.tutorial-highlight {
     background: var(--white) !important;
@@ -1962,19 +1958,6 @@ input::placeholder {
 
 #bottomNav.tutorial-highlight .nav-item.active {
     color: var(--accent) !important;
-}
-
-/* Пульсация — плавная и красивая */
-@keyframes pulse-border {
-    0% { 
-        box-shadow: 0 0 15px rgba(220, 20, 60, 0.2);
-    }
-    50% { 
-        box-shadow: 0 0 40px rgba(220, 20, 60, 0.5), 0 0 60px rgba(220, 20, 60, 0.15);
-    }
-    100% { 
-        box-shadow: 0 0 15px rgba(220, 20, 60, 0.2);
-    }
 }
 
 /* Подсказка — обычная позиция */
@@ -2054,6 +2037,10 @@ input::placeholder {
     display: inline-block;
     border-radius: 12px;
     transition: opacity 0.2s ease;
+}
+
+.tutorial-tooltip p {
+    white-space: pre-wrap;
 }
 
 /* ============================================================ */
@@ -2344,4 +2331,18 @@ input::placeholder {
     #page-loading .hero-content {
         padding: 0.5rem;
     }
+}
+
+#pullToRefresh {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: rgba(255,255,255,0.95);
+    padding: 1rem;
+    text-align: center;
+    color: var(--slate);
+    font-size: 0.9rem;
+    display: none;
 }
