@@ -1437,9 +1437,10 @@ body {
 #page-hero .hero-content,
 #page-loading .hero-content {
     text-align: center;
-    max-width: 600px;
+    max-width: 600px;  /* ← ОСТАВЛЯЕМ */
     width: 100%;
     padding: 1rem;
+    margin: 0 auto;    /* ← ЦЕНТРИРУЕМ */
 }
 @media (max-height: 600px) {
     #page-hero .hero,
@@ -1519,13 +1520,17 @@ body {
 }
 .hero-buttons {
     display: flex;
-    gap: 1rem;
-    justify-content: center;
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: center;
     margin-top: 2rem;
+    width: 100%;       /* ← РАСТЯГИВАЕМ НА ВСЮ ШИРИНУ КОНТЕЙНЕРА */
 }
 .hero-buttons .btn-primary,
 .hero-buttons .btn-secondary {
     min-width: 200px;
+        width: 100%;       /* ← КНОПКА НА ВСЮ ШИРИНУ .hero-buttons */
+    max-width: 100%;
 }
 
 input::placeholder { font-style: italic; }
