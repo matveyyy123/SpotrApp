@@ -715,7 +715,7 @@ body {
     padding-right: 0.3rem;
 }
 #workoutHistory > div {
-    background: var(--light);
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
     padding: 0.8rem 1rem;
     border-radius: 12px;
     border-left: 4px solid var(--accent);
