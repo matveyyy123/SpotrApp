@@ -549,6 +549,129 @@ let currentYear = new Date().getFullYear();
 let isOfflineModalShown = false;
 let isLoggingIn = false;
 
+// Редакторы страниц (будут инициализированы позже)
+window.statsEditor = null;
+window.workoutsEditor = null;
+
+// =================== ДЕФОЛТНЫЕ ЛЕЙАУТЫ ===================
+function getDefaultStatsLayout() {
+    return {
+        statsSummary: ['workouts', 'minutes', 'exercises'],
+        statsBlocksContainer: ['muscles', 'categories', 'calendar', 'history'],
+        exerciseMuscleStats: ['Руки', 'Плечи', 'Пресс', 'Грудь', 'Спина', 'Ноги', 'Ягодицы'],
+        categoriesStats: ['Руки', 'Плечи', 'Пресс', 'Грудь', 'Спина', 'Ноги', 'Ягодицы', 'Кардио', 'Гибкость', 'Всё тело']
+    };
+}
+
+function getDefaultWorkoutsLayout() {
+    return {
+        workoutsBlocksContainer: ['strength', 'fitness', 'premium'],
+        catalogGridStrength: ['Руки', 'Плечи', 'Пресс', 'Грудь', 'Спина', 'Ноги', 'Всё тело'],
+        catalogGridFitness: ['Зарядка', 'Кардио', 'Пилатес', 'Растяжка'],
+        catalogGridPremium: ['Кроссфит', 'Мужская сила', 'Женское счастье'],
+        myWorkoutsList: []
+    };
+}
+
+function saveStatsLayout(layout) {
+    localStorage.setItem('statsLayout', JSON.stringify(layout));
+}
+
+function saveWorkoutsLayout(layout) {
+    localStorage.setItem('workoutsLayout', JSON.stringify(layout));
+}
+
+function applySavedWorkoutsOrder() {
+    const layout = JSON.parse(localStorage.getItem('workoutsLayout'));
+    if (!layout) return;
+
+    // Порядок блоков
+    const blocksContainer = document.getElementById('workoutsBlocksContainer');
+    if (blocksContainer && layout.workoutsBlocksContainer) {
+        const blockMap = {};
+        blocksContainer.querySelectorAll('.editable-block').forEach(b => {
+            const id = b.dataset.blockId;
+            if (id) blockMap[id] = b;
+        });
+        layout.workoutsBlocksContainer.forEach(id => {
+            if (blockMap[id]) blocksContainer.appendChild(blockMap[id]);
+        });
+    }
+
+    // Порядок тренировок в каждой категории
+    const containers = [
+        { id: 'catalogGridStrength', dataAttr: 'category' },
+        { id: 'catalogGridFitness', dataAttr: 'category' },
+        { id: 'catalogGridPremium', dataAttr: 'category' },
+        { id: 'myWorkoutsList', dataAttr: 'workoutId' }
+    ];
+    containers.forEach(({ id, dataAttr }) => {
+        const list = document.getElementById(id);
+        if (!list) return;
+        const items = layout[id] || [];
+        if (items.length === 0) return;
+        const childMap = {};
+        list.querySelectorAll('.category-card').forEach(el => {
+            const key = el.dataset[dataAttr];
+            if (key) childMap[key] = el;
+        });
+        items.forEach(key => {
+            if (childMap[key]) list.appendChild(childMap[key]);
+        });
+    });
+}
+
+function applySavedStatsOrder() {
+    const layout = JSON.parse(localStorage.getItem('statsLayout'));
+    if (!layout) return;
+
+    // Верхние карточки
+    const summary = document.getElementById('statsSummary');
+    if (summary && layout.statsSummary) {
+        const childMap = {};
+        summary.querySelectorAll('.stat-big-card').forEach(el => {
+            const id = el.dataset.statId;
+            if (id) childMap[id] = el;
+        });
+        layout.statsSummary.forEach(id => {
+            if (childMap[id]) summary.appendChild(childMap[id]);
+        });
+    }
+
+    // Блоки
+    const blocksContainer = document.getElementById('statsBlocksContainer');
+    if (blocksContainer && layout.statsBlocksContainer) {
+        const blockMap = {};
+        blocksContainer.querySelectorAll('.editable-block').forEach(b => {
+            const id = b.dataset.blockId;
+            if (id) blockMap[id] = b;
+        });
+        layout.statsBlocksContainer.forEach(id => {
+            if (blockMap[id]) blocksContainer.appendChild(blockMap[id]);
+        });
+    }
+
+    // Списки мышц и категорий
+    const lists = [
+        { id: 'exerciseMuscleStats', dataAttr: 'muscleName' },
+        { id: 'categoriesStats', dataAttr: 'categoryName' }
+    ];
+    lists.forEach(({ id, dataAttr }) => {
+        const list = document.getElementById(id);
+        if (!list) return;
+        const items = layout[id] || [];
+        if (items.length === 0) return;
+        const childMap = {};
+        list.querySelectorAll('.stat-muscle-item').forEach(el => {
+            const name = el.querySelector('.muscle-name')?.textContent;
+            if (name) childMap[name] = el;
+        });
+        items.forEach(name => {
+            if (childMap[name]) list.appendChild(childMap[name]);
+        });
+    });
+}
+
 // ===================ОФЛАЙН-ОЧЕРЕДЬ ===================
 const PENDING_KEY = 'pendingWorkouts';
 
@@ -666,8 +789,8 @@ function calculateWorkoutXp(exercises) {
         const sets = parseInt(ex.sets) || 0;
         const repsStr = String(ex.reps || '');
         if (repsStr.includes('сек') || repsStr.includes('с')) {
-            const seconds = parseFloat(repsStr.replace(/[^0-9.]/g, '')) || 0;
-            totalXp += (sets * seconds) / 20;
+            const secs = parseFloat(repsStr.replace(/[^0-9.]/g, '')) || 0; // ✅ переименовано
+            totalXp += (sets * secs) / 20;
         } else {
             const reps = parseFloat(repsStr) || 0;
             totalXp += (sets * reps) / 10;
@@ -823,12 +946,22 @@ setTheme(savedColor);
 
 // ===================НАВИГАЦИЯ ===================
 window.navigateTo = function(page, params) {
+    if (window.statsEditor && window.statsEditor.isEditing) {
+        showToast('⚠️ Сначала завершите редактирование страницы статистики');
+        return;
+    }
+    if (window.workoutsEditor && window.workoutsEditor.isEditing) {
+        showToast('⚠️ Сначала завершите редактирование страницы тренировок');
+        return;
+    }
+    
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const target = document.getElementById('page-' + page);
     if (target) target.classList.add('active');
     document.querySelectorAll('.nav-item').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.page === page);
     });
+    
     if (page === 'profile') loadProfile();
     if (page === 'level-select' && params) loadLevelSelect(params.category);
     if (page === 'workout-detail' && params) {
@@ -856,6 +989,10 @@ window.navigateTo = function(page, params) {
     }
     if (page === 'exercise-list') renderExerciseListPage();
     if (page === 'stats') {
+        if (window.statsEditor && window.statsEditor.isEditing) {
+            showToast('⚠️ Сначала завершите редактирование страницы статистики');
+            return;
+        }
         applyStatsTab(activeStatsTab);
         if (activeStatsTab === 'world') loadWorldLeaderboard();
         else loadStats();
@@ -926,6 +1063,13 @@ function applyWorkoutsTab(tab) {
         content.classList.remove('active');
     });
     document.getElementById('tab-' + tab).classList.add('active');
+
+    // Показываем кнопку сброса только на вкладке "Готовые" И если редактирование страниц включено
+    const resetBtn = document.getElementById('resetWorkoutsBtn');
+    if (resetBtn) {
+        const pagesEnabled = localStorage.getItem(EDIT_PAGES_KEY) !== 'false';
+        resetBtn.style.display = (tab === 'ready' && pagesEnabled) ? 'block' : 'none';
+    }
 }
 
 function applyStatsTab(tab) {
@@ -1092,6 +1236,9 @@ function loadWorkoutDetail(category, level, isCustom, id, parentCategory, isPrem
     currentWorkoutId = id || null;
     completedExercises = new Set();
 
+    // Сохраняем флаг премиум для использования в других местах
+    window._currentIsPremium = isPremiumWorkout;
+
     // Сохраняем данные для быстрого редактирования
     _quickEditCategory = category;
     _quickEditLevel = currentLevel;
@@ -1112,7 +1259,6 @@ function loadWorkoutDetail(category, level, isCustom, id, parentCategory, isPrem
     } else {
         let found = false;
         let savedTitle = '';
-        // Ищем данные по уровню
         let levelData = null;
         for (const parent in exercisesData) {
             if (exercisesData[parent] && exercisesData[parent][category]) {
@@ -1125,7 +1271,6 @@ function loadWorkoutDetail(category, level, isCustom, id, parentCategory, isPrem
         }
 
         if (levelData) {
-            // Если это объект с _exercises
             if (typeof levelData === 'object' && !Array.isArray(levelData)) {
                 if (levelData._exercises) {
                     exercises = levelData._exercises;
@@ -1140,7 +1285,6 @@ function loadWorkoutDetail(category, level, isCustom, id, parentCategory, isPrem
             }
         }
 
-        // Если не нашли, пробуем поискать по всем уровням
         if (!found) {
             for (const parent in exercisesData) {
                 if (exercisesData[parent] && exercisesData[parent][category]) {
@@ -1165,7 +1309,6 @@ function loadWorkoutDetail(category, level, isCustom, id, parentCategory, isPrem
             }
         }
 
-        // Определяем отображаемый заголовок
         if (savedTitle) {
             displayTitle = savedTitle;
         } else {
@@ -1173,7 +1316,6 @@ function loadWorkoutDetail(category, level, isCustom, id, parentCategory, isPrem
         }
     }
 
-    // Сохраняем ссылку на массив упражнений для быстрого редактирования
     _quickEditExercises = exercises;
 
     const titleEl = document.getElementById('workoutDetailTitle');
@@ -1215,8 +1357,16 @@ function loadWorkoutDetail(category, level, isCustom, id, parentCategory, isPrem
             });
         }
     }
+
+    // ========== УПРАВЛЕНИЕ КНОПКОЙ РЕДАКТИРОВАНИЯ ==========
+    const editWorkoutBtn = document.getElementById('editWorkoutBtn');
+    const workoutEditEnabled = localStorage.getItem(EDIT_WORKOUT_KEY) !== 'false';
+
     if (editWorkoutBtn) {
-        if (isPremiumWorkout) {
+        // Кнопка видна только если:
+        // 1) это НЕ премиум-тренировка
+        // 2) настройка редактирования тренировок включена
+        if (isPremiumWorkout || !workoutEditEnabled) {
             editWorkoutBtn.style.display = 'none';
         } else {
             editWorkoutBtn.style.display = 'block';
@@ -1228,6 +1378,7 @@ function loadWorkoutDetail(category, level, isCustom, id, parentCategory, isPrem
             };
         }
     }
+
     if (timerDisplay) timerDisplay.textContent = '00:00';
     if (actionButton) actionButton.textContent = 'Начать тренировку';
     seconds = 0;
@@ -1236,7 +1387,7 @@ function loadWorkoutDetail(category, level, isCustom, id, parentCategory, isPrem
         clearInterval(timerInterval);
         timerInterval = null;
     }
-    // Скрываем кнопки редактирования
+    // Скрываем кнопки быстрого редактирования, если они есть
     document.querySelectorAll('.quick-edit-btn').forEach(btn => btn.style.display = 'none');
 }
 
@@ -1309,12 +1460,13 @@ document.getElementById('quickEditSaveBtn')?.addEventListener('click', function(
         reps: repsDisplay
     };
     
-    // Сохраняем изменения в базу
+    // ========== ИСПРАВЛЕННОЕ СОХРАНЕНИЕ ==========
     if (_quickEditIsCustom) {
-        const workout = getWorkoutById(_quickEditWorkoutId);
-        if (workout) {
-            workout.exercises = _quickEditExercises;
-            saveMyWorkouts(getMyWorkouts());
+        const allWorkouts = getMyWorkouts();
+        const index = allWorkouts.findIndex(w => w._id === _quickEditWorkoutId);
+        if (index !== -1) {
+            allWorkouts[index].exercises = _quickEditExercises;
+            saveMyWorkouts(allWorkouts);
         }
     } else {
         let saved = false;
@@ -1519,10 +1671,11 @@ async function finishWorkout() {
         if (completedExercises.has(i)) {
             const sets = parseInt(ex.sets) || 0;
             const repsStr = String(ex.reps || '');
-            if (repsStr.includes('сек') || repsStr.includes('с')) {
-                const seconds = parseFloat(repsStr.replace(/[^0-9.]/g, '')) || 0;
-                xpEarned += (sets * seconds) / 20;
-            } else {
+// ✅ ИСПРАВЛЕНО: используем другое имя переменной
+if (repsStr.includes('сек') || repsStr.includes('с')) {
+    const secs = parseFloat(repsStr.replace(/[^0-9.]/g, '')) || 0;
+    xpEarned += (sets * secs) / 20;
+} else {
                 const reps = parseFloat(repsStr) || 0;
                 xpEarned += (sets * reps) / 10;
             }
@@ -2212,12 +2365,27 @@ function renderMyWorkouts() {
         return;
     }
     container.innerHTML = workouts.map(w => `
-        <div class="category-card" onclick="window.navigateTo('workout-detail', { category: '${w.title}', isCustom: true, id: '${w._id}' })">
+        <div class="category-card" data-workout-id="${w._id}" onclick="handleWorkoutClick('${w._id}', event)">
             <div class="category-icon"><img src="images/${w.icon || 'bodybuilding'}.png"></div>
-            <div class="category-info"><h3>${w.title}</h3><p>${w.exercises?.length || 0} упражнений</p></div>
+            <div class="category-info">
+                <h3>${w.title}</h3>
+                <p>${w.exercises?.length || 0} упражнений</p>
+            </div>
             <button class="workout-delete" onclick="event.stopPropagation(); deleteCustomWorkout('${w._id}')"><i class="fa-regular fa-trash-can"></i></button>
         </div>
     `).join('');
+}
+
+// Добавьте функцию-обработчик
+function handleWorkoutClick(id, event) {
+    // Проверяем, не перетаскиваем ли мы карточку
+    if (event.target.closest('.category-card')?.classList.contains('sortable-chosen')) {
+        return;
+    }
+    const workout = getWorkoutById(id);
+    if (workout) {
+        window.navigateTo('workout-detail', { category: workout.title, isCustom: true, id: id });
+    }
 }
 
 window.deleteCustomWorkout = function(id) {
@@ -3424,6 +3592,7 @@ function createTutorialOverlay(step) {
     overlay.id = 'tutorialOverlay';
     overlay.className = 'tutorial-overlay';
     document.body.appendChild(overlay);
+    
     let highlightElements = [];
     if (step.highlight) {
         if (Array.isArray(step.highlight)) {
@@ -3454,17 +3623,31 @@ function createTutorialOverlay(step) {
         }
     }
     setTimeout(() => overlay.classList.add('active'), 50);
+    
     let dotsHtml = '';
     for (let i = 0; i < tutorialSteps.length; i++) {
         dotsHtml += `<div class="dot ${i === currentTutorialStep ? 'active' : ''}"></div>`;
     }
     const isLast = step.isLast || false;
     const buttonText = isLast ? 'Начать тренироваться' : 'Понятно';
+    
     const tooltip = document.createElement('div');
     tooltip.className = 'tutorial-tooltip';
     tooltip.id = 'tutorialTooltip';
-    if (step.id === 1) tooltip.style.bottom = '100px';
-    else tooltip.style.bottom = '50px';
+    
+    // ========== ПОЗИЦИЯ СНИЗУ С ИНДИВИДУАЛЬНЫМ ОТСТУПОМ ==========
+    tooltip.style.position = 'fixed';
+    tooltip.style.left = '50%';
+    tooltip.style.transform = 'translateX(-50%)';
+    tooltip.style.zIndex = '10001';
+    tooltip.style.maxWidth = '500px';
+    tooltip.style.width = '90%';
+    
+    // Отступ от низа: если есть bottomOffset — используем его, иначе 30px
+    const bottomOffset = step.bottomOffset || 30;
+    tooltip.style.bottom = bottomOffset + 'px';
+    tooltip.style.top = 'auto';
+    
     tooltip.innerHTML = `
         <div class="tutorial-dots">${dotsHtml}</div>
         <p>${step.text}</p>
@@ -3473,6 +3656,7 @@ function createTutorialOverlay(step) {
         </div>
     `;
     document.body.appendChild(tooltip);
+    
     setTimeout(() => tooltip.classList.add('active'), 200);
 }
 
@@ -3524,19 +3708,201 @@ async function finishTutorial() {
 }
 
 const tutorialSteps = [
-    { id: 1, page: 'workouts', highlight: '#bottomNav', text: 'Это главное меню.\nЗдесь есть три раздела: статистика, тренировки и профиль.' },
-    { id: 2, page: 'stats', highlight: ['#page-stats .tab-btn[data-tab="personal"]', '#page-stats .tab-btn[data-tab="world"]'], text: 'Статистика делится на два раздела:\nмировая и личная.', action: () => { switchStatsTab('personal'); } },
-    { id: 3, page: 'stats', highlight: ['#page-stats .tab-btn[data-tab="personal"]', '.stat-big-card'], text: 'В личной статистике хранятся ваши данные.\nТакие как общее количество тренировок, минуты, упражнения, статистика упражнений по группам мышц, тренировки по категориям, календарь тренировок и история тренировок.' },
-    { id: 4, page: 'stats', highlight: ['#page-stats .tab-btn[data-tab="world"]', '#worldLeaderboard'], text: 'В мировой статистике находится\nрейтинг пользователей.', action: () => { switchStatsTab('world'); } },
-    { id: 5, page: 'workouts', highlight: ['#page-workouts .tab-btn[data-tab="ready"]', '#page-workouts .tab-btn[data-tab="my"]'], text: 'Страница тренировок делится на два раздела:\nготовые и личные.' },
-    { id: 6, page: 'workouts', highlight: ['#page-workouts .tab-btn[data-tab="ready"]', '.category-card[data-category="Руки"]'], text: 'Здесь уже собраны готовые тренировки\nкаждая из которых разделена на 3 уровня сложности.' },
-    { id: 7, page: 'workouts', highlight: ['#page-workouts .tab-btn[data-tab="my"]', '.custom-workout .btn-primary'], text: 'Здесь вы можете создавать свои собственные тренировки.', action: () => { activeWorkoutsTab = 'my'; applyWorkoutsTab('my'); } },
-    { id: 8, page: 'profile', highlight: '.profile-block', text: 'Это ваш профиль :)' },
-    { id: 9, page: 'profile', highlight: '.level-block', text: 'Это система уровней.\nПо ней вы будете соревноваться с друзьями и другими пользователями\nЧтобы повысить уровень, нужно тренироваться.' },
-    { id: 10, page: 'profile', highlight: '.friends-block', text: 'Здесь вы можете найти своих друзей.' },
-    { id: 11, page: 'profile', highlight: '.settings-block-main', text: 'Это дополнительные настройки.\nЗдесь вы можете подключить PREMIUM, изменить акцентный цвет, и пройти это обучение еще раз.' },
-    { id: 12, page: 'workouts', highlight: null, text: 'Пара важных правил!\nОтмечайте только те упражнения, которые действительно выполнили.\nРегулируйте количество подходов и повторений под себя.\nОт вашей честности зависит точность расчёта XP.\nТренируйтесь с умом и достигайте своих целей!', isLast: true, action: () => { activeWorkoutsTab = 'ready'; applyWorkoutsTab('ready'); } }
+    { 
+        id: 1, 
+        page: 'workouts', 
+        highlight: '#bottomNav', 
+        text: 'Это главное меню.\nЗдесь есть три раздела: статистика, тренировки и профиль.',
+        bottomOffset: 110
+    },
+    { 
+        id: 2, 
+        page: 'stats', 
+        highlight: ['#page-stats .tab-btn[data-tab="personal"]', '#page-stats .tab-btn[data-tab="world"]'], 
+        text: 'Статистика делится на два раздела:\nмировая и личная.', 
+        action: () => { switchStatsTab('personal'); } 
+    },
+    { 
+        id: 3, 
+        page: 'stats', 
+        highlight: ['#page-stats .tab-btn[data-tab="personal"]', '.stat-big-card'], 
+        text: 'В личной статистике хранятся ваши данные.\nТакие как общее количество тренировок, минуты, упражнения, статистика упражнений по группам мышц, тренировки по категориям, календарь тренировок и история тренировок.' 
+    },
+    { 
+        id: 4, 
+        page: 'stats', 
+        highlight: ['#page-stats .tab-btn[data-tab="world"]', '#worldLeaderboard'], 
+        text: 'В мировой статистике находится\nрейтинг пользователей.', 
+        action: () => { switchStatsTab('world'); } 
+    },
+    { 
+        id: 5, 
+        page: 'stats', 
+        highlight: '#editStatsBtn', 
+        text: 'Также вы можете редактировать страницы.\nВы можете как передвигать местами сами разделы, так и содержание этих разделов.\nТакже это доступно на странице тренировок.',
+        bottomOffset: 180
+    },
+    { 
+        id: 6, 
+        page: 'workouts', 
+        highlight: ['#page-workouts .tab-btn[data-tab="ready"]', '#page-workouts .tab-btn[data-tab="my"]'], 
+        text: 'Страница тренировок делится на два раздела:\nготовые и личные.' 
+    },
+    { 
+        id: 7, 
+        page: 'workouts', 
+        highlight: ['#page-workouts .tab-btn[data-tab="ready"]', '.category-card[data-category="Руки"]'], 
+        text: 'Здесь уже собраны готовые тренировки.',
+        action: () => { 
+            activeWorkoutsTab = 'ready'; 
+            applyWorkoutsTab('ready'); 
+        }
+    },
+    { 
+        id: 8, 
+        page: 'level-select', 
+        highlight: '.level-card', // все карточки уровней
+        text: 'Каждая тренировка разделена на 3 уровня сложности.\nВы сможете найти подходящий для себя.',
+        action: () => { 
+            window.navigateTo('level-select', { category: 'Руки' }); 
+        }
+    },
+    { 
+        id: 9, 
+        page: 'workout-detail', 
+        highlight: '#actionButton', 
+        text: 'После выбора уровня вы переходите в саму тренировку,\nгде видите полный список упражнений для этой тренировки.\nСнизу нажимаете "Начать тренировку" и начинаете тренироваться.',
+        bottomOffset: 30,
+        action: () => { 
+            window.navigateTo('workout-detail', { 
+                category: 'Руки', 
+                level: '1 LVL',
+                parentCategory: 'Силовые'
+            }); 
+        }
+    },
+    { 
+        id: 10, 
+        page: 'workout-detail', 
+        highlight: '.level-card:first-child', 
+        text: 'Очень просим вас редактировать количество подходов и повторений/секунд,\nи честно отмечать упражнения, которые вы выполнили.\nЭто нужно для точного подсчёта XP и статистики.',
+        action: () => {
+            // ЗАПУСКАЕМ ТРЕНИРОВКУ
+            if (!isWorkoutActive) {
+                startTimer();
+                if (actionButton) actionButton.textContent = 'Завершить тренировку';
+            }
+        }
+    },
+    { 
+        id: 11, 
+        page: 'workout-detail', 
+        highlight: '#editWorkoutBtn', 
+        text: 'Также вы можете редактировать тренировку.\nМенять название, добавлять и удалять упражнения.',
+        bottomOffset: 30,
+        action: () => {
+            // ПОЛНОСТЬЮ ЗАВЕРШАЕМ ТРЕНИРОВКУ
+            if (isWorkoutActive || document.querySelector('.check-box[style*="display: flex"]')) {
+                resetWorkoutState();
+            }
+            // Принудительно показываем кнопку редактирования
+            const editWorkoutBtn = document.getElementById('editWorkoutBtn');
+            if (editWorkoutBtn) {
+                editWorkoutBtn.style.display = 'block';
+            }
+        }
+    },
+    { 
+        id: 12, 
+        page: 'workouts', 
+        highlight: ['#page-workouts .tab-btn[data-tab="my"]', '.custom-workout .btn-primary'], 
+        text: 'Здесь вы можете создавать свои собственные тренировки\nи редактировать их.', 
+        action: () => { 
+            activeWorkoutsTab = 'my'; 
+            applyWorkoutsTab('my'); 
+        } 
+    },
+    { 
+        id: 13, 
+        page: 'profile', 
+        highlight: '.profile-block', 
+        text: 'Это ваш профиль :)' 
+    },
+    { 
+        id: 14, 
+        page: 'profile', 
+        highlight: '.level-block', 
+        text: 'Это система уровней.\nПо ней вы будете соревноваться с друзьями и другими пользователями.\nЧтобы повысить уровень, нужно тренироваться.' 
+    },
+    { 
+        id: 15, 
+        page: 'profile', 
+        highlight: '.friends-block', 
+        text: 'Здесь вы можете найти своих друзей.' 
+    },
+    { 
+        id: 16, 
+        page: 'profile', 
+        highlight: '.settings-block-main', 
+        text: 'Это дополнительные настройки.\nЗдесь вы можете подключить PREMIUM, изменить акцентный цвет,\nпройти это обучение еще раз,\nвключать и выключать кнопки редактирования.' 
+    },
+    { 
+        id: 17, 
+        page: 'workouts', 
+        highlight: null, 
+        text: 'Пара важных правил!\nОтмечайте только те упражнения, которые действительно выполнили.\nРегулируйте количество подходов и повторений под себя.\nОт вашей честности зависит точность расчёта XP.\nТренируйтесь с умом и достигайте своих целей!', 
+        isLast: true, 
+        action: () => { 
+            activeWorkoutsTab = 'ready'; 
+            applyWorkoutsTab('ready'); 
+        } 
+    }
 ];
+
+// Полный сброс состояния тренировки (как после завершения)
+function resetWorkoutState() {
+    // Останавливаем таймер
+    clearInterval(timerInterval);
+    timerInterval = null;
+    isWorkoutActive = false;
+    
+    // Скрываем кнопки быстрого редактирования
+    document.querySelectorAll('.quick-edit-btn').forEach(btn => btn.style.display = 'none');
+    
+    // Возвращаем кнопку "Начать тренировку"
+    if (actionButton) actionButton.textContent = 'Начать тренировку';
+    if (timerDisplay) timerDisplay.textContent = '00:00';
+    
+    // Сбрасываем состояние упражнений (убираем галочки)
+    document.querySelectorAll('.exercise-status').forEach(el => {
+        const number = el.querySelector('.exercise-number');
+        const checkBox = el.querySelector('.check-box');
+        if (number) number.style.display = 'block';
+        if (checkBox) {
+            checkBox.style.display = 'none';
+            checkBox.textContent = '';
+            checkBox.classList.remove('completed');
+        }
+        el.classList.remove('completed');
+    });
+    
+    // Очищаем список выполненных упражнений
+    completedExercises.clear();
+    
+    // Показываем кнопку редактирования тренировки (если не премиум)
+    const editWorkoutBtn = document.getElementById('editWorkoutBtn');
+    if (editWorkoutBtn) {
+        const isPremium = window._currentIsPremium || false;
+        const workoutEditEnabled = localStorage.getItem(EDIT_WORKOUT_KEY) !== 'false';
+        if (!isPremium && workoutEditEnabled) {
+            editWorkoutBtn.style.display = 'block';
+        } else {
+            editWorkoutBtn.style.display = 'none';
+        }
+    }
+    
+    seconds = 0;
+}
 
 // ===================PREMIUM ===================
 const PREMIUM_KEY = 'sportapp_premium';
@@ -3624,6 +3990,80 @@ document.querySelectorAll('.color-btn-modal').forEach(btn => {
     });
 });
 
+// =================== НАСТРОЙКИ РЕДАКТИРОВАНИЯ ===================
+const EDIT_PAGES_KEY = 'editPagesEnabled';
+const EDIT_WORKOUT_KEY = 'editWorkoutEnabled';
+
+function loadEditSettings() {
+    const pagesEnabled = localStorage.getItem(EDIT_PAGES_KEY) !== 'false';
+    updateEditPagesUI(pagesEnabled);
+
+    const workoutEnabled = localStorage.getItem(EDIT_WORKOUT_KEY) !== 'false';
+    updateEditWorkoutUI(workoutEnabled);
+}
+
+function updateEditPagesUI(enabled) {
+    const statusEl = document.getElementById('editPagesStatus');
+    if (statusEl) statusEl.textContent = enabled ? 'Включено' : 'Выключено';
+
+    const editStatsBtn = document.getElementById('editStatsBtn');
+    const editWorkoutsBtn = document.getElementById('editWorkoutsBtn');
+    if (editStatsBtn) editStatsBtn.style.display = enabled ? 'block' : 'none';
+    if (editWorkoutsBtn) editWorkoutsBtn.style.display = enabled ? 'block' : 'none';
+}
+
+function updateEditWorkoutUI(enabled) {
+    const statusEl = document.getElementById('editWorkoutStatus');
+    if (statusEl) statusEl.textContent = enabled ? 'Включено' : 'Выключено';
+    
+    const editWorkoutBtn = document.getElementById('editWorkoutBtn');
+    if (editWorkoutBtn) {
+        const pageWorkoutDetail = document.getElementById('page-workout-detail');
+        if (pageWorkoutDetail && pageWorkoutDetail.classList.contains('active')) {
+            const isPremium = window._currentIsPremium || false;
+            if (!enabled || isPremium) {
+                editWorkoutBtn.style.display = 'none';
+            } else {
+                editWorkoutBtn.style.display = 'block';
+            }
+        }
+    }
+}
+
+function toggleEditPages() {
+    const current = localStorage.getItem(EDIT_PAGES_KEY) !== 'false';
+    const newState = !current;
+    showConfirmModal(
+        newState ? 'Включить редактирование страниц?' : 'Выключить редактирование страниц?',
+        newState
+            ? 'Кнопки "Редактировать страницу" снова появятся в статистике и тренировках.'
+            : 'Кнопки "Редактировать страницу" будут скрыты в статистике и тренировках.',
+        function() {
+            localStorage.setItem(EDIT_PAGES_KEY, String(newState));
+            updateEditPagesUI(newState);
+            showToast(`✅ Редактирование страниц ${newState ? 'включено' : 'выключено'}`);
+        },
+        newState ? 'Включить' : 'Выключить'
+    );
+}
+
+function toggleEditWorkout() {
+    const current = localStorage.getItem(EDIT_WORKOUT_KEY) !== 'false';
+    const newState = !current;
+    showConfirmModal(
+        newState ? 'Включить редактирование тренировок?' : 'Выключить редактирование тренировок?',
+        newState
+            ? 'Кнопка "Редактировать тренировку" снова появится на странице деталей тренировки.'
+            : 'Кнопка "Редактировать тренировку" будет скрыта на странице деталей тренировки.',
+        function() {
+            localStorage.setItem(EDIT_WORKOUT_KEY, String(newState));
+            updateEditWorkoutUI(newState);
+            showToast(`✅ Редактирование тренировок ${newState ? 'включено' : 'выключено'}`);
+        },
+        newState ? 'Включить' : 'Выключить'
+    );
+}
+
 // ===================ИНИЦИАЛИЗАЦИЯ ===================
 document.addEventListener('DOMContentLoaded', function() {
     console.log('SportApp загружен!');
@@ -3633,6 +4073,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     const currentColor = localStorage.getItem('themeColor') || 'red';
     updateColorStatus(currentColor);
+    
+    loadEditSettings(); // <-- ДОБАВИТЬ ЭТУ СТРОКУ
 });
 
 // ===================МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ С ПАРОЛЕМ ===================
@@ -3825,3 +4267,341 @@ await firebase.auth().signOut();
         }
     }
 }
+
+// =================== УНИВЕРСАЛЬНАЯ СИСТЕМА РЕДАКТИРОВАНИЯ СТРАНИЦ ===================
+class PageEditor {
+    constructor(config) {
+        this.pageId = config.pageId;
+        this.storageKey = config.storageKey;
+        this.defaultLayout = config.defaultLayout || {};
+        this.containers = config.containers || [];
+        this.isEditing = false;
+        this.sortableInstances = [];
+        this.backupLayout = null;
+        this.blockedClickHandler = null;
+        
+        this.editBtn = document.getElementById(config.editBtnId);
+        this.saveBtn = document.getElementById(config.saveBtnId);
+        this.cancelBtn = document.getElementById(config.cancelBtnId);
+        this.resetBtn = document.getElementById(config.resetBtnId);
+        this.actionsContainer = document.getElementById(config.actionsId);
+        
+        this.init();
+    }
+    
+    init() {
+        this.loadLayout();
+        this.bindEvents();
+    }
+    
+    bindEvents() {
+        if (this.editBtn) this.editBtn.addEventListener('click', () => this.enableEdit());
+        if (this.saveBtn) this.saveBtn.addEventListener('click', () => this.save());
+        if (this.cancelBtn) this.cancelBtn.addEventListener('click', () => this.cancel());
+        if (this.resetBtn) this.resetBtn.addEventListener('click', () => this.reset());
+    }
+    
+    loadLayout() {
+        const saved = localStorage.getItem(this.storageKey);
+        if (saved) {
+            try {
+                const layout = JSON.parse(saved);
+                this.applyLayout(layout);
+                return;
+            } catch (e) {}
+        }
+        this.applyLayout(this.defaultLayout);
+    }
+    
+    applyLayout(layout) {
+        this.containers.forEach(container => {
+            const element = document.getElementById(container.id);
+            if (!element) return;
+            
+            const items = layout[container.id] || [];
+            if (items.length === 0) return;
+            
+            const childMap = {};
+            Array.from(element.children).forEach(child => {
+                const id = child.dataset[container.dataAttr];
+                if (id) childMap[id] = child;
+            });
+            
+            items.forEach(id => {
+                if (childMap[id]) {
+                    element.appendChild(childMap[id]);
+                }
+            });
+        });
+    }
+    
+    getCurrentLayout() {
+        const layout = {};
+        this.containers.forEach(container => {
+            const element = document.getElementById(container.id);
+            if (!element) return;
+            
+            const items = [];
+            Array.from(element.children).forEach(child => {
+                const id = child.dataset[container.dataAttr];
+                if (id) items.push(id);
+            });
+            layout[container.id] = items;
+        });
+        return layout;
+    }
+    
+    enableEdit() {
+        this.isEditing = true;
+        this.backupLayout = this.getCurrentLayout();
+        
+        const page = document.getElementById(this.pageId);
+        page.classList.add('editing');
+        
+        this.editBtn.style.display = 'none';
+        this.actionsContainer.style.display = 'flex';
+        
+        this.blockNavigation();
+        this.initSortables();
+        
+        showToast('✏️ Режим редактирования включен');
+    }
+    
+    disableEdit(save = false) {
+        this.isEditing = false;
+        
+        const page = document.getElementById(this.pageId);
+        page.classList.remove('editing');
+        
+        this.editBtn.style.display = 'block';
+        this.actionsContainer.style.display = 'none';
+        
+        this.unblockNavigation();
+        this.destroySortables();
+        
+        if (!save && this.backupLayout) {
+            this.applyLayout(this.backupLayout);
+            this.backupLayout = null;
+            showToast('↩️ Изменения отменены');
+        }
+    }
+    
+    save() {
+        const layout = this.getCurrentLayout();
+        localStorage.setItem(this.storageKey, JSON.stringify(layout));
+        this.backupLayout = null;
+        this.disableEdit(true);
+        showToast('✅ Порядок сохранён');
+    }
+    
+    cancel() {
+        this.disableEdit(false);
+    }
+    
+reset() {
+    showConfirmModal(
+        'Сбросить порядок?',
+        'Вернуть стандартный порядок элементов?',
+        () => {
+            localStorage.removeItem(this.storageKey);
+            showToast('🔄 Порядок сброшен к стандартному');
+            setTimeout(() => {
+                window.location.reload();
+            }, 300);
+        },
+        'Сбросить'
+    );
+}
+    
+blockNavigation() {
+    // Убираем .category-card из блокировки
+    const selectors = [
+        '.nav-item', '.tab-btn', '.level-card', 
+        '.custom-workout .btn-primary', '.btn-primary', '.btn-secondary', 
+        '.btn-primary-center', '.friend-delete-btn', '.friend-result-item .btn-sm',
+        '.workout-delete', '#editProfileBtn', '.settings-item'
+    ];
+    
+    document.querySelectorAll(selectors.join(',')).forEach(el => {
+        if (el.closest('#statsEditActions') || 
+            el.closest('#workoutsEditActions') || 
+            el.id === 'editStatsBtn' || 
+            el.id === 'editWorkoutsBtn') {
+            return;
+        }
+        el.style.pointerEvents = 'none';
+    });
+    
+    // В обработчике кликов убираем проверку на .category-card
+    document.addEventListener('click', this.blockedClickHandler = (e) => {
+        if (e.target.closest('#statsEditActions') || 
+            e.target.closest('#workoutsEditActions') || 
+            e.target.closest('#editStatsBtn') || 
+            e.target.closest('#editWorkoutsBtn')) {
+            return;
+        }
+        if (e.target.closest('.drag-handle') || 
+            e.target.closest('.sortable-ghost') || 
+            e.target.closest('#statsEditActions') || 
+            e.target.closest('#workoutsEditActions')) {
+            return;
+        }
+        // Проверяем только навигационные элементы, но не карточки
+        if (e.target.closest('.nav-item') || 
+            e.target.closest('.tab-btn') || 
+            e.target.closest('.level-card') || 
+            e.target.closest('.custom-workout .btn-primary') ||
+            e.target.closest('.btn-primary') ||
+            e.target.closest('.btn-secondary') ||
+            e.target.closest('.btn-primary-center') ||
+            e.target.closest('.friend-delete-btn') ||
+            e.target.closest('.workout-delete') ||
+            e.target.closest('#editProfileBtn') ||
+            e.target.closest('.settings-item')) {
+            e.preventDefault();
+            e.stopPropagation();
+            showToast('⚠️ Сначала завершите редактирование страницы');
+            return false;
+        }
+    }, true);
+}
+    
+    unblockNavigation() {
+        const selectors = [
+            '.nav-item', '.category-card', '.tab-btn', '.level-card', 
+            '.custom-workout .btn-primary', '.btn-primary', '.btn-secondary', 
+            '.btn-primary-center', '.friend-delete-btn', '.friend-result-item .btn-sm',
+            '.workout-delete', '#editProfileBtn', '.settings-item'
+        ];
+        
+        document.querySelectorAll(selectors.join(',')).forEach(el => {
+            el.style.pointerEvents = '';
+        });
+        
+        if (this.blockedClickHandler) {
+            document.removeEventListener('click', this.blockedClickHandler, true);
+            this.blockedClickHandler = null;
+        }
+    }
+    
+initSortables() {
+    this.containers.forEach(container => {
+        const element = document.getElementById(container.id);
+        if (!element) return;
+        
+        const workoutContainers = ['catalogGridStrength', 'catalogGridFitness', 'catalogGridPremium', 'myWorkoutsList'];
+        let handle = container.handle || null;
+        if (workoutContainers.includes(container.id)) {
+            handle = null; // перетаскивание за всю карточку
+        }
+        
+        const s = new Sortable(element, {
+            animation: 150,
+            handle: handle,
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            forceFallback: true,
+            filter: '.workout-delete',
+            preventOnFilter: false,
+            delay: 200,
+            delayOnTouchOnly: true
+        });
+        this.sortableInstances.push(s);
+    });
+}
+    
+    destroySortables() {
+        this.sortableInstances.forEach(s => s.destroy());
+        this.sortableInstances = [];
+    }
+}
+
+// =================== НАСТРОЙКА РЕДАКТОРОВ СТРАНИЦ ===================
+
+// 1. Редактор статистики
+window.statsEditor = new PageEditor({
+    pageId: 'page-stats',
+    storageKey: 'statsLayout',
+    editBtnId: 'editStatsBtn',
+    saveBtnId: 'saveStatsBtn',
+    cancelBtnId: 'cancelStatsBtn',
+    resetBtnId: 'resetStatsBtn',
+    actionsId: 'statsEditActions',
+    containers: [
+        { id: 'statsSummary', dataAttr: 'statId', handle: '.stat-big-card' },
+        { id: 'statsBlocksContainer', dataAttr: 'blockId', handle: '.drag-handle' },
+        { id: 'exerciseMuscleStats', dataAttr: 'muscleName', handle: '.stat-muscle-item' },
+        { id: 'categoriesStats', dataAttr: 'categoryName', handle: '.stat-muscle-item' }
+    ],
+    defaultLayout: {
+        statsSummary: ['workouts', 'minutes', 'exercises'],
+        statsBlocksContainer: ['muscles', 'categories', 'calendar', 'history'],
+        exerciseMuscleStats: ['Руки', 'Плечи', 'Пресс', 'Грудь', 'Спина', 'Ноги', 'Ягодицы'],
+        categoriesStats: ['Руки', 'Плечи', 'Пресс', 'Грудь', 'Спина', 'Ноги', 'Ягодицы', 'Кардио', 'Гибкость', 'Всё тело']
+    }
+});
+
+// 2. Редактор тренировок
+window.workoutsEditor = new PageEditor({
+    pageId: 'page-workouts',
+    storageKey: 'workoutsLayout',
+    editBtnId: 'editWorkoutsBtn',
+    saveBtnId: 'saveWorkoutsBtn',
+    cancelBtnId: 'cancelWorkoutsBtn',
+    resetBtnId: 'resetWorkoutsBtn',
+    actionsId: 'workoutsEditActions',
+    containers: [
+        // Блоки (Силовые, Фитнес, PREMIUM)
+        { id: 'workoutsBlocksContainer', dataAttr: 'blockId', handle: '.drag-handle' },
+        // Тренировки внутри блоков
+        { id: 'catalogGridStrength', dataAttr: 'category' },
+        { id: 'catalogGridFitness', dataAttr: 'category' },
+        { id: 'catalogGridPremium', dataAttr: 'category' },
+        // Личные тренировки
+        { id: 'myWorkoutsList', dataAttr: 'workoutId' }
+    ],
+    defaultLayout: {
+        workoutsBlocksContainer: ['strength', 'fitness', 'premium'],
+        catalogGridStrength: ['Руки', 'Плечи', 'Пресс', 'Грудь', 'Спина', 'Ноги', 'Всё тело'],
+        catalogGridFitness: ['Зарядка', 'Кардио', 'Пилатес', 'Растяжка'],
+        catalogGridPremium: ['Кроссфит', 'Мужская сила', 'Женское счастье'],
+        myWorkoutsList: []
+    }
+});
+
+document.getElementById('resetWorkoutsBtn')?.addEventListener('click', function() {
+    showConfirmModal(
+        'Сбросить порядок?',
+        'Вернуть стандартный порядок элементов на странице тренировок?',
+        function() {
+            const defaultLayout = getDefaultWorkoutsLayout();
+            saveWorkoutsLayout(defaultLayout);
+            applySavedWorkoutsOrder();
+            // Пересоздаём Sortable
+            if (window.workoutsEditor) {
+                window.workoutsEditor.destroySortables();
+                window.workoutsEditor.initSortables();
+            }
+            showToast('🔄 Порядок сброшен к стандартному');
+        },
+        'Сбросить'
+    );
+});
+
+document.getElementById('resetStatsBtn')?.addEventListener('click', function() {
+    showConfirmModal(
+        'Сбросить порядок?',
+        'Вернуть стандартный порядок элементов на странице статистики?',
+        function() {
+            const defaultLayout = getDefaultStatsLayout();
+            saveStatsLayout(defaultLayout);
+            applySavedStatsOrder();
+            if (window.statsEditor) {
+                window.statsEditor.destroySortables();
+                window.statsEditor.initSortables();
+            }
+            showToast('🔄 Порядок сброшен к стандартному');
+        },
+        'Сбросить'
+    );
+});

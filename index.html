@@ -18,116 +18,140 @@
         <i class="fa-solid fa-spinner fa-spin"></i> Обновление...
     </div>
 
-    <!-- СТРАНИЦА: ТРЕНИРОВКИ (ГЛАВНАЯ) -->
-    <div id="page-workouts" class="page">
-        <main class="dashboard-container">
-            <header class="dashboard-header">
-                <h1>ТРЕНИРОВКИ</h1>
-            </header>
+<!-- СТРАНИЦА: ТРЕНИРОВКИ (ГЛАВНАЯ) -->
+<div id="page-workouts" class="page">
+    <main class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>ТРЕНИРОВКИ</h1>
+        </header>
 
-            <div class="tabs-container">
-                <button class="tab-btn active" data-tab="ready">Готовые</button>
-                <button class="tab-btn" data-tab="my">Личные</button>
+        <div class="tabs-container">
+            <button class="tab-btn active" data-tab="ready">Готовые</button>
+            <button class="tab-btn" data-tab="my">Личные</button>
+        </div>
+
+        <div id="tab-ready" class="tab-content active">
+            <div id="workoutsBlocksContainer">
+                <!-- Блок: Силовые -->
+                <div class="editable-block" data-block-id="strength">
+                    <div class="block-header">
+                        <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); margin: 0.5rem 0;">Силовые</h2>
+                        <span class="drag-handle"><i class="fa-solid fa-grip-lines"></i></span>
+                    </div>
+                    <div class="catalog-grid" id="catalogGridStrength">
+                        <div class="category-card" data-category="Руки">
+                            <div class="category-icon"><img src="images/bodybuilding.png"></div>
+                            <div class="category-info"><h3>Руки</h3><p>Бицепс · Трицепс · Плечи</p></div>
+                        </div>
+                        <div class="category-card" data-category="Плечи">
+                            <div class="category-icon"><img src="images/shoulder.png"></div>
+                            <div class="category-info"><h3>Плечи</h3><p>Дельты · Жим · Разводка</p></div>
+                        </div>
+                        <div class="category-card" data-category="Пресс">
+                            <div class="category-icon"><img src="images/press.png"></div>
+                            <div class="category-info"><h3>Пресс</h3><p>Куб · Планка · Скручивания</p></div>
+                        </div>
+                        <div class="category-card" data-category="Грудь">
+                            <div class="category-icon"><img src="images/breast.png"></div>
+                            <div class="category-info"><h3>Грудь</h3><p>Жим · Отжимания · Разводка</p></div>
+                        </div>
+                        <div class="category-card" data-category="Спина">
+                            <div class="category-icon"><img src="images/back.png"></div>
+                            <div class="category-info"><h3>Спина</h3><p>Тяга · Подтягивания · Гиперэкстензия</p></div>
+                        </div>
+                        <div class="category-card" data-category="Ноги">
+                            <div class="category-icon"><img src="images/legs.png"></div>
+                            <div class="category-info"><h3>Ноги</h3><p>Присед · Выпады · Мостик</p></div>
+                        </div>
+                        <div class="category-card" data-category="Всё тело">
+                            <div class="category-icon"><img src="images/WholeBody.png"></div>
+                            <div class="category-info"><h3>Всё тело</h3><p>Комплекс · Все мышцы · Тонус</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Блок: Фитнес -->
+                <div class="editable-block" data-block-id="fitness">
+                    <div class="block-header">
+                        <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); margin: 0.5rem 0;">Фитнес</h2>
+                        <span class="drag-handle"><i class="fa-solid fa-grip-lines"></i></span>
+                    </div>
+                    <div class="catalog-grid" id="catalogGridFitness">
+                        <div class="category-card" data-category="Зарядка">
+                            <div class="category-icon"><img src="images/charging.png"></div>
+                            <div class="category-info"><h3>Зарядка</h3><p>Разминка · Тонус · Энергия</p></div>
+                        </div>
+                        <div class="category-card" data-category="Кардио">
+                            <div class="category-icon"><img src="images/cardio.png"></div>
+                            <div class="category-info"><h3>Кардио</h3><p>Бег · Прыжки · Бёрпи</p></div>
+                        </div>
+                        <div class="category-card" data-category="Пилатес">
+                            <div class="category-icon"><img src="images/Pilates.png"></div>
+                            <div class="category-info"><h3>Пилатес</h3><p>Контроль · Баланс · Кор</p></div>
+                        </div>
+                        <div class="category-card" data-category="Растяжка">
+                            <div class="category-icon"><img src="images/stretching.png"></div>
+                            <div class="category-info"><h3>Растяжка</h3><p>Гибкость · Шпагат · Наклоны</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Блок: PREMIUM -->
+                <div class="editable-block" data-block-id="premium">
+                    <div class="block-header">
+                        <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); margin: 0.5rem 0;">PREMIUM</h2>
+                        <span class="drag-handle"><i class="fa-solid fa-grip-lines"></i></span>
+                    </div>
+                    <div class="catalog-grid" id="catalogGridPremium">
+                        <div class="category-card premium-card" data-category="Кроссфит" onclick="checkPremiumAndNavigate('Кроссфит')">
+                            <div class="category-icon"><img src="images/crossfit.png"></div>
+                            <div class="category-info"><h3>Кроссфит</h3><p>Интенсив · Функциональность · Мощь</p></div>
+                        </div>
+                        <div class="category-card premium-card" data-category="Мужская сила" onclick="checkPremiumAndNavigate('Мужская сила')">
+                            <div class="category-icon"><img src="images/men.png"></div>
+                            <div class="category-info"><h3>Мужская сила</h3><p>Сила · Мощь · Выносливость</p></div>
+                        </div>
+                        <div class="category-card premium-card" data-category="Женское счастье" onclick="checkPremiumAndNavigate('Женское счастье')">
+                            <div class="category-icon"><img src="images/woman.png"></div>
+                            <div class="category-info"><h3>Женское счастье</h3><p>Грация · Тонус · Гармония</p></div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <div id="tab-ready" class="tab-content active">
-                <!-- СИЛОВЫЕ -->
-                <div style="margin-bottom: 0.5rem;">
-                    <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); padding-left: 0.3rem;">Силовые</h2>
+        <div id="tab-my" class="tab-content">
+            <div class="editable-block" data-block-id="my-workouts">
+                <div class="block-header">
+                    <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); margin: 0.5rem 0;">Ваши тренировки</h2>
+                    <span class="drag-handle"><i class="fa-solid fa-grip-lines"></i></span>
                 </div>
-                <div class="catalog-grid" id="catalogGridStrength">
-                    <div class="category-card" data-category="Руки" data-parent="Силовые">
-                        <div class="category-icon"><img src="images/bodybuilding.png"></div>
-                        <div class="category-info"><h3>Руки</h3><p>Бицепс · Трицепс · Плечи</p></div>
-                    </div>
-                    <div class="category-card" data-category="Плечи" data-parent="Силовые">
-                        <div class="category-icon"><img src="images/shoulder.png"></div>
-                        <div class="category-info"><h3>Плечи</h3><p>Дельты · Жим · Разводка</p></div>
-                    </div>
-                    <div class="category-card" data-category="Пресс" data-parent="Силовые">
-                        <div class="category-icon"><img src="images/press.png"></div>
-                        <div class="category-info"><h3>Пресс</h3><p>Куб · Планка · Скручивания</p></div>
-                    </div>
-                    <div class="category-card" data-category="Грудь" data-parent="Силовые">
-                        <div class="category-icon"><img src="images/breast.png"></div>
-                        <div class="category-info"><h3>Грудь</h3><p>Жим · Отжимания · Разводка</p></div>
-                    </div>
-                    <div class="category-card" data-category="Спина" data-parent="Силовые">
-                        <div class="category-icon"><img src="images/back.png"></div>
-                        <div class="category-info"><h3>Спина</h3><p>Тяга · Подтягивания · Гиперэкстензия</p></div>
-                    </div>
-                    <div class="category-card" data-category="Ноги" data-parent="Силовые">
-                        <div class="category-icon"><img src="images/legs.png"></div>
-                        <div class="category-info"><h3>Ноги</h3><p>Присед · Выпады · Мостик</p></div>
-                    </div>
-                    <div class="category-card" data-category="Всё тело" data-parent="Силовые">
-                        <div class="category-icon"><img src="images/WholeBody.png"></div>
-                        <div class="category-info"><h3>Всё тело</h3><p>Комплекс · Все мышцы · Тонус</p></div>
-                    </div>
-                </div>
-
-                <!-- ФИТНЕС -->
-                <div style="margin: 1.5rem 0 0.5rem;">
-                    <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); padding-left: 0.3rem;">Фитнес</h2>
-                </div>
-                <div class="catalog-grid" id="catalogGridFitness">
-                    <div class="category-card" data-category="Зарядка" data-parent="Фитнес">
-                        <div class="category-icon"><img src="images/charging.png"></div>
-                        <div class="category-info"><h3>Зарядка</h3><p>Разминка · Тонус · Энергия</p></div>
-                    </div>
-                    <div class="category-card" data-category="Кардио" data-parent="Фитнес">
-                        <div class="category-icon"><img src="images/cardio.png"></div>
-                        <div class="category-info"><h3>Кардио</h3><p>Бег · Прыжки · Бёрпи</p></div>
-                    </div>
-                    <div class="category-card" data-category="Пилатес" data-parent="Фитнес">
-                        <div class="category-icon"><img src="images/Pilates.png"></div>
-                        <div class="category-info"><h3>Пилатес</h3><p>Контроль · Баланс · Кор</p></div>
-                    </div>
-                    <div class="category-card" data-category="Растяжка" data-parent="Фитнес">
-                        <div class="category-icon"><img src="images/stretching.png"></div>
-                        <div class="category-info"><h3>Растяжка</h3><p>Гибкость · Шпагат · Наклоны</p></div>
-                    </div>
-                </div>
-
-                <!-- ОСОБЫЕ (PREMIUM) -->
-                <div class="premium-title-container" style="margin: 1.5rem 0 0.5rem; display: flex; justify-content: space-between; align-items: center; padding-left: 0.3rem; padding-right: 0.3rem;">
-                    <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); margin: 0;">PREMIUM</h2>
-                </div>
-                <div class="catalog-grid" id="catalogGridPremium">
-                    <div class="category-card premium-card" data-category="Кроссфит" data-parent="Особые" data-premium="true" onclick="checkPremiumAndNavigate('Кроссфит')">
-                        <div class="category-icon"><img src="images/crossfit.png"></div>
-                        <div class="category-info">
-                            <h3>Кроссфит</h3>
-                            <p>Интенсив · Функциональность · Мощь</p>
-                        </div>
-                    </div>
-                    <div class="category-card premium-card" data-category="Мужская сила" data-parent="Особые" data-premium="true" onclick="checkPremiumAndNavigate('Мужская сила')">
-                        <div class="category-icon"><img src="images/men.png"></div>
-                        <div class="category-info">
-                            <h3>Мужская сила</h3>
-                            <p>Сила · Мощь · Выносливость</p>
-                        </div>
-                    </div>
-                    <div class="category-card premium-card" data-category="Женское счастье" data-parent="Особые" data-premium="true" onclick="checkPremiumAndNavigate('Женское счастье')">
-                        <div class="category-icon"><img src="images/woman.png"></div>
-                        <div class="category-info">
-                            <h3>Женское счастье</h3>
-                            <p>Грация · Тонус · Гармония</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-my" class="tab-content">
                 <div id="myWorkoutsList" class="workout-list"></div>
-                <div class="custom-workout">
-                    <button class="btn-primary" onclick="createNewWorkout()">
-                        <i class="fa-solid fa-plus"></i> Создать тренировку
-                    </button>
-                </div>
             </div>
-        </main>
+            <div class="custom-workout">
+                <button class="btn-primary" onclick="createNewWorkout()">
+                    <i class="fa-solid fa-plus"></i> Создать тренировку
+                </button>
+            </div>
+        </div>
+
+<!-- Кнопки редактирования -->
+<div id="workoutsEditButtons" style="margin-top: 1.5rem; width: 100%;">
+    <button id="editWorkoutsBtn" class="btn-primary-center" style="width: 100%;">
+        <i class="fa-regular fa-pen-to-square"></i> Редактировать страницу
+    </button>
+    <div id="workoutsEditActions" style="display: none; flex-direction: column; width: 100%; margin-top: 0.8rem;">
+        <button id="resetWorkoutsBtn" class="btn-secondary" style="width: 100%; color: #EF4444; border-color: #EF4444; margin-bottom: 0.8rem;">
+            <i class="fa-solid fa-arrow-rotate-left"></i> Сбросить страницу
+        </button>
+        <div style="display: flex; gap: 0.8rem; width: 100%;">
+            <button id="saveWorkoutsBtn" class="btn-primary" style="flex: 1;">Сохранить</button>
+            <button id="cancelWorkoutsBtn" class="btn-secondary" style="flex: 1;">Отмена</button>
+        </div>
     </div>
+</div>
+    </main>
+</div>
 
     <!-- СТРАНИЦА: ДЕТАЛИ ТРЕНИРОВКИ -->
     <div id="page-workout-detail" class="page">
@@ -308,50 +332,96 @@
             </div>
 
             <!-- Личная статистика -->
-            <div id="stats-personal" class="stats-tab-content active">
-                <div class="stats-summary">
-                    <div class="stat-big-card">
-                        <span class="stat-big-label">Тренировок</span>
-                        <span class="stat-big-number" id="totalWorkouts">0</span>
-                    </div>
-                    <div class="stat-big-card">
-                        <span class="stat-big-label">Минут</span>
-                        <span class="stat-big-number" id="totalMinutes">0</span>
-                    </div>
-                    <div class="stat-big-card">
-                        <span class="stat-big-label">Упражнений</span>
-                        <span class="stat-big-number" id="totalExercises">0</span>
-                    </div>
-                </div>
+<div id="stats-personal" class="stats-tab-content active">
+    <!-- Верхние карточки (перетаскиваемые) -->
+    <div class="stats-summary" id="statsSummary">
+        <div class="stat-big-card" data-stat-id="workouts">
+            <span class="stat-big-label">Тренировок</span>
+            <span class="stat-big-number" id="totalWorkouts">0</span>
+        </div>
+        <div class="stat-big-card" data-stat-id="minutes">
+            <span class="stat-big-label">Минут</span>
+            <span class="stat-big-number" id="totalMinutes">0</span>
+        </div>
+        <div class="stat-big-card" data-stat-id="exercises">
+            <span class="stat-big-label">Упражнений</span>
+            <span class="stat-big-number" id="totalExercises">0</span>
+        </div>
+    </div>
 
+    <!-- Контейнер для перетаскиваемых блоков -->
+    <div id="statsBlocksContainer">
+        <!-- Блок: Упражнения по группам мышц -->
+        <div class="editable-block" data-block-id="muscles">
+            <div class="block-header">
                 <h2>Упражнения по группам мышц</h2>
-                <div class="stats-muscles" id="exerciseMuscleStats"></div>
-                <h2>Тренировки по категориям</h2>
-                <div class="stats-muscles" id="categoriesStats"></div>
+                <span class="drag-handle"><i class="fa-solid fa-grip-lines"></i></span>
+            </div>
+            <div class="stats-muscles" id="exerciseMuscleStats"></div>
+        </div>
 
+        <!-- Блок: Тренировки по категориям -->
+        <div class="editable-block" data-block-id="categories">
+            <div class="block-header">
+                <h2>Тренировки по категориям</h2>
+                <span class="drag-handle"><i class="fa-solid fa-grip-lines"></i></span>
+            </div>
+            <div class="stats-muscles" id="categoriesStats"></div>
+        </div>
+
+        <!-- Блок: Календарь -->
+        <div class="editable-block" data-block-id="calendar">
+            <div class="block-header">
                 <h2>Календарь тренировок</h2>
-                <div class="calendar-container">
-                    <div class="calendar-nav">
-                        <button id="prevMonth" class="btn-calendar-nav"><i class="fa-solid fa-chevron-left"></i></button>
-                        <span id="currentMonthYear">Август 2026</span>
-                        <button id="nextMonth" class="btn-calendar-nav"><i class="fa-solid fa-chevron-right"></i></button>
-                    </div>
-                    <div class="calendar-grid">
-                        <div class="calendar-weekday">Пн</div>
-                        <div class="calendar-weekday">Вт</div>
-                        <div class="calendar-weekday">Ср</div>
-                        <div class="calendar-weekday">Чт</div>
-                        <div class="calendar-weekday">Пт</div>
-                        <div class="calendar-weekday">Сб</div>
-                        <div class="calendar-weekday">Вс</div>
-                        <div id="calendarDays"></div>
-                    </div>
+                <span class="drag-handle"><i class="fa-solid fa-grip-lines"></i></span>
+            </div>
+            <div class="calendar-container" id="calendarContainer">
+                <div class="calendar-nav">
+                    <button id="prevMonth" class="btn-calendar-nav"><i class="fa-solid fa-chevron-left"></i></button>
+                    <span id="currentMonthYear">Август 2026</span>
+                    <button id="nextMonth" class="btn-calendar-nav"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>
-                <h2>История тренировок</h2>
-                <div class="history-scroll-wrapper" id="workoutHistoryWrapper">
-                    <div id="workoutHistory"></div>
+                <div class="calendar-grid">
+                    <div class="calendar-weekday">Пн</div>
+                    <div class="calendar-weekday">Вт</div>
+                    <div class="calendar-weekday">Ср</div>
+                    <div class="calendar-weekday">Чт</div>
+                    <div class="calendar-weekday">Пт</div>
+                    <div class="calendar-weekday">Сб</div>
+                    <div class="calendar-weekday">Вс</div>
+                    <div id="calendarDays"></div>
                 </div>
             </div>
+        </div>
+
+        <!-- Блок: История -->
+        <div class="editable-block" data-block-id="history">
+            <div class="block-header">
+                <h2>История тренировок</h2>
+                <span class="drag-handle"><i class="fa-solid fa-grip-lines"></i></span>
+            </div>
+            <div class="history-scroll-wrapper" id="workoutHistoryWrapper">
+                <div id="workoutHistory"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Кнопки редактирования страницы -->
+    <div id="statsEditButtons" style="margin-top: 1.5rem; width: 100%;">
+        <button id="editStatsBtn" class="btn-primary-center" style="width: 100%;">
+            <i class="fa-regular fa-pen-to-square"></i> Редактировать страницу
+        </button>
+        <div id="statsEditActions" style="display: none; flex-direction: column; width: 100%; margin-top: 0.8rem;">
+            <button id="resetStatsBtn" class="btn-secondary" style="width: 100%; color: #EF4444; border-color: #EF4444; margin-bottom: 0.8rem;">
+                <i class="fa-solid fa-arrow-rotate-left"></i> Сбросить
+            </button>
+            <div style="display: flex; gap: 0.8rem; width: 100%;">
+                <button id="saveStatsBtn" class="btn-primary" style="flex: 1;">Сохранить</button>
+                <button id="cancelStatsBtn" class="btn-secondary" style="flex: 1;">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
         </main>
     </div>
 
@@ -431,19 +501,18 @@
 <div class="settings-section">
     <h2 class="settings-title">Дополнительные настройки</h2>
     <div class="settings-block settings-block-main">
-<div class="settings-item" onclick="handlePremiumClick()">
-    <div class="settings-item-icon">
-        <i class="fa-solid fa-crown"></i>
-    </div>
-    <div class="settings-item-info">
-        <div class="settings-item-title">PREMIUM</div>
-        <div class="settings-item-desc" id="premiumStatus">Откройте все особые тренировки</div>
-    </div>
-    <div class="settings-item-arrow">
-        <i class="fa-solid fa-chevron-right"></i>
-    </div>
-</div>
-
+        <div class="settings-item" onclick="handlePremiumClick()">
+            <div class="settings-item-icon">
+                <i class="fa-solid fa-crown"></i>
+            </div>
+            <div class="settings-item-info">
+                <div class="settings-item-title">PREMIUM</div>
+                <div class="settings-item-desc" id="premiumStatus">Откройте все особые тренировки</div>
+            </div>
+            <div class="settings-item-arrow">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
                     <div class="settings-item" onclick="openColorModal()">
                         <div class="settings-item-icon">
                             <i class="fa-solid fa-palette"></i>
@@ -469,8 +538,33 @@
                             <i class="fa-solid fa-chevron-right"></i>
                         </div>
                     </div>
-                </div>
+        <div class="settings-item" onclick="toggleEditPages()">
+            <div class="settings-item-icon">
+                <i class="fa-solid fa-pen-to-square"></i>
             </div>
+            <div class="settings-item-info">
+                <div class="settings-item-title">Редактирование страниц</div>
+                <div class="settings-item-desc" id="editPagesStatus">Включено</div>
+            </div>
+            <div class="settings-item-arrow">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <div class="settings-item" onclick="toggleEditWorkout()">
+            <div class="settings-item-icon">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </div>
+            <div class="settings-item-info">
+                <div class="settings-item-title">Редактирование тренировок</div>
+                <div class="settings-item-desc" id="editWorkoutStatus">Включено</div>
+            </div>
+            <div class="settings-item-arrow">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- РАЗДЕЛ: НЕВОЗВРАТНЫЕ НАСТРОЙКИ -->
 <div class="settings-section">
     <h2 class="settings-title">Невозвратные настройки</h2>
@@ -481,7 +575,7 @@
             </div>
             <div class="settings-item-info">
                 <div class="settings-item-title">Сбросить прогресс</div>
-                <div class="settings-item-desc">Удалит все тренировки и обнулит XP. Профиль, настройки и PREMIUM сохранятся.</div>
+                <div class="settings-item-desc">Удалит статистику тренировок и обнулит прогресс.</div>
             </div>
             <div class="settings-item-arrow">
                 <i class="fa-solid fa-chevron-right"></i>
@@ -493,7 +587,7 @@
             </div>
             <div class="settings-item-info">
                 <div class="settings-item-title">Удалить аккаунт</div>
-                <div class="settings-item-desc">Безвозвратно удалит ваш профиль, все данные и историю тренировок из Firebase.</div>
+                <div class="settings-item-desc">Удалит ваш профиль и все данные.</div>
             </div>
             <div class="settings-item-arrow">
                 <i class="fa-solid fa-chevron-right"></i>
@@ -786,6 +880,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="firebase-config.js"></script>
     <script src="app.js"></script>
 </body>

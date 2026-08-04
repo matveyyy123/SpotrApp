@@ -1866,3 +1866,110 @@ textarea.error {
 .quick-edit-btn:active {
     opacity: 0.4;
 }
+
+/* =================== УНИВЕРСАЛЬНЫЕ СТИЛИ РЕДАКТИРОВАНИЯ =================== */
+.editable-block .block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+.editable-block .block-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dark);
+}
+
+.editable-block {
+    margin-bottom: 1.5rem;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+/* Ручка для блоков */
+.drag-handle {
+    display: none !important;
+    cursor: grab;
+    font-size: 1.2rem;
+    color: var(--slate);
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+.drag-handle:hover {
+    background: var(--accent-light);
+}
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+/* В режиме редактирования */
+.editing .drag-handle {
+    display: inline-block !important;
+}
+.editing .drag-handle-workout {
+    display: inline-block !important;
+}
+.editing .editable-block {
+    border: 2px dashed transparent;
+    padding: 0.5rem;
+    border-radius: 12px;
+    transition: border-color 0.2s;
+}
+.editing .editable-block:hover {
+    border-color: var(--accent);
+}
+.editing .category-card {
+    cursor: grab;
+    border: 2px solid transparent;
+}
+.editing .category-card:hover {
+    border-color: var(--accent);
+}
+.editing .category-card:active {
+    cursor: grabbing;
+}
+.editing .stat-big-card {
+    cursor: grab;
+    border: 2px solid transparent;
+}
+.editing .stat-big-card:hover {
+    border-color: var(--accent);
+}
+.editing .stat-big-card:active {
+    cursor: grabbing;
+}
+.editing .stat-muscle-item {
+    cursor: grab;
+    border: 1px solid transparent;
+    border-radius: 8px;
+}
+.editing .stat-muscle-item:hover {
+    border-color: var(--accent);
+}
+.editing .stat-muscle-item:active {
+    cursor: grabbing;
+}
+
+.sortable-ghost {
+    opacity: 0.4;
+}
+.sortable-chosen {
+    opacity: 0.8;
+}
+
+/* =================== ТУТОРИАЛ - ПРИНУДИТЕЛЬНАЯ ИНВЕРСИЯ КНОПОК =================== */
+.tutorial-highlight#editStatsBtn,
+.tutorial-highlight#actionButton,
+.tutorial-highlight#editWorkoutBtn,
+.tutorial-highlight.custom-workout .btn-primary {
+    background: var(--white) !important;
+    color: var(--accent) !important;
+}
+
+.tutorial-highlight#editStatsBtn i,
+.tutorial-highlight#actionButton i,
+.tutorial-highlight#editWorkoutBtn i,
+.tutorial-highlight.custom-workout .btn-primary i {
+    color: var(--accent) !important;
+}
