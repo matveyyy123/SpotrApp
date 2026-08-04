@@ -1137,7 +1137,7 @@ body {
     transform: translateX(-50%);
     width: 280px;
     padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.4);
     backdrop-filter: blur(20px);
     border-radius: 50px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
@@ -1512,11 +1512,12 @@ body {
 }
 
 .feature span {
-    font-size: 0.8rem;
+    font-size: clamp(0.5rem, 1.8vw, 0.8rem);
     color: var(--slate);
     font-weight: 500;
     display: block;
-    word-break: break-word;
+    word-break: keep-all;
+    white-space: nowrap;
 }
 .hero-buttons {
     display: flex;

@@ -3563,8 +3563,23 @@ function setTutorialCompleted() {
 let currentTutorialStep = 0;
 let tutorialActive = false;
 
+// =================== СОХРАНЕНИЕ СОСТОЯНИЙ НАСТРОЕК ДЛЯ ТУТОРИАЛА ===================
+let _savedEditPagesState = true;
+let _savedEditWorkoutState = true;
+
 function startTutorial() {
     if (document.getElementById('tutorialOverlay')) return;
+    
+    // Сохраняем текущие состояния настроек
+    _savedEditPagesState = localStorage.getItem(EDIT_PAGES_KEY) !== 'false';
+    _savedEditWorkoutState = localStorage.getItem(EDIT_WORKOUT_KEY) !== 'false';
+    
+    // Принудительно включаем отображение кнопок редактирования
+    localStorage.setItem(EDIT_PAGES_KEY, 'true');
+    localStorage.setItem(EDIT_WORKOUT_KEY, 'true');
+    updateEditPagesUI(true);
+    updateEditWorkoutUI(true);
+    
     tutorialActive = true;
     document.addEventListener('click', blockClicksDuringTutorial, true);
     showTutorialStep(0);
@@ -3622,7 +3637,6 @@ function createTutorialOverlay(step) {
             setTimeout(() => scrollToElement(highlightElements[0]), 300);
         }
     }
-    setTimeout(() => overlay.classList.add('active'), 50);
     
     let dotsHtml = '';
     for (let i = 0; i < tutorialSteps.length; i++) {
@@ -3635,17 +3649,14 @@ function createTutorialOverlay(step) {
     tooltip.className = 'tutorial-tooltip';
     tooltip.id = 'tutorialTooltip';
     
-    // ========== ПОЗИЦИЯ СНИЗУ С ИНДИВИДУАЛЬНЫМ ОТСТУПОМ ==========
     tooltip.style.position = 'fixed';
     tooltip.style.left = '50%';
     tooltip.style.transform = 'translateX(-50%)';
     tooltip.style.zIndex = '10001';
     tooltip.style.maxWidth = '500px';
     tooltip.style.width = '90%';
-    
-    // Отступ от низа: если есть bottomOffset — используем его, иначе 30px
-    const bottomOffset = step.bottomOffset || 30;
-    tooltip.style.bottom = bottomOffset + 'px';
+    // Начальная позиция по умолчанию – снизу
+    tooltip.style.bottom = '30px';
     tooltip.style.top = 'auto';
     
     tooltip.innerHTML = `
@@ -3657,7 +3668,49 @@ function createTutorialOverlay(step) {
     `;
     document.body.appendChild(tooltip);
     
-    setTimeout(() => tooltip.classList.add('active'), 200);
+    // Определяем, нужна ли автопозиция
+    const autoSteps = [1, 5, 9, 11];
+    const isAuto = autoSteps.includes(step.id) && highlightElements.length > 0;
+    
+    if (isAuto) {
+        const targetEl = highlightElements[0];
+        // Прокручиваем к элементу
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Ждём завершения скролла, затем вычисляем позицию и показываем тултип
+        setTimeout(() => {
+            const tooltipRect = tooltip.getBoundingClientRect();
+            const tooltipHeight = tooltipRect.height;
+            const rect = targetEl.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+            
+            const isVisible = rect.top >= 0 && rect.bottom <= viewportHeight;
+            if (!isVisible) {
+                // Если элемент не виден (редкий случай), оставляем снизу
+                tooltip.style.bottom = '30px';
+                tooltip.style.top = 'auto';
+            } else {
+                let topPosition = rect.top - tooltipHeight - 30;
+                let fitsAbove = topPosition >= 10;
+                if (fitsAbove) {
+                    tooltip.style.top = topPosition + 'px';
+                    tooltip.style.bottom = 'auto';
+                } else {
+                    tooltip.style.bottom = '30px';
+                    tooltip.style.top = 'auto';
+                }
+            }
+            // Теперь, когда позиция установлена, показываем тултип с анимацией
+            tooltip.classList.add('active');
+        }, 500);
+    } else {
+        // Для обычных шагов – позиция уже установлена (bottom:30px), показываем через небольшую задержку
+        setTimeout(() => {
+            tooltip.classList.add('active');
+        }, 200);
+    }
+    
+    // Показываем оверлей
+    setTimeout(() => overlay.classList.add('active'), 50);
 }
 
 function removeTutorialOverlay() {
@@ -3704,7 +3757,12 @@ async function finishTutorial() {
     if (user) await updateUserProfile(user.uid, { tutorialCompleted: true });
     tutorialActive = false;
     document.removeEventListener('click', blockClicksDuringTutorial, true);
-    // Навигация уже видна, ничего не меняем
+    
+    // Восстанавливаем состояния настроек
+    localStorage.setItem(EDIT_PAGES_KEY, String(_savedEditPagesState));
+    localStorage.setItem(EDIT_WORKOUT_KEY, String(_savedEditWorkoutState));
+    updateEditPagesUI(_savedEditPagesState);
+    updateEditWorkoutUI(_savedEditWorkoutState);
 }
 
 const tutorialSteps = [
@@ -3713,7 +3771,6 @@ const tutorialSteps = [
         page: 'workouts', 
         highlight: '#bottomNav', 
         text: 'Это главное меню.\nЗдесь есть три раздела: статистика, тренировки и профиль.',
-        bottomOffset: 110
     },
     { 
         id: 2, 
@@ -3740,7 +3797,6 @@ const tutorialSteps = [
         page: 'stats', 
         highlight: '#editStatsBtn', 
         text: 'Также вы можете редактировать страницы.\nВы можете как передвигать местами сами разделы, так и содержание этих разделов.\nТакже это доступно на странице тренировок.',
-        bottomOffset: 180
     },
     { 
         id: 6, 
@@ -3772,7 +3828,6 @@ const tutorialSteps = [
         page: 'workout-detail', 
         highlight: '#actionButton', 
         text: 'После выбора уровня вы переходите в саму тренировку,\nгде видите полный список упражнений для этой тренировки.\nСнизу нажимаете "Начать тренировку" и начинаете тренироваться.',
-        bottomOffset: 30,
         action: () => { 
             window.navigateTo('workout-detail', { 
                 category: 'Руки', 
@@ -3799,7 +3854,6 @@ const tutorialSteps = [
         page: 'workout-detail', 
         highlight: '#editWorkoutBtn', 
         text: 'Также вы можете редактировать тренировку.\nМенять название, добавлять и удалять упражнения.',
-        bottomOffset: 30,
         action: () => {
             // ПОЛНОСТЬЮ ЗАВЕРШАЕМ ТРЕНИРОВКУ
             if (isWorkoutActive || document.querySelector('.check-box[style*="display: flex"]')) {
