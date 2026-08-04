@@ -1487,26 +1487,34 @@ body {
 .hero-features {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    margin: 3rem 0;
+    gap: 0.8rem;
+    margin: 2.5rem 0;
 }
+
 .feature {
     background: var(--white);
-    padding: 1.5rem 1rem;
+    padding: 1rem 0.5rem;
     border-radius: 16px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
     border: 1px solid rgba(220, 20, 60, 0.05);
+    text-align: center;
+    min-width: 0;
+    overflow: hidden;
 }
+
 .feature i {
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: var(--accent);
     display: block;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
 }
+
 .feature span {
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     color: var(--slate);
     font-weight: 500;
+    display: block;
+    word-break: break-word;
 }
 .hero-buttons {
     display: flex;
