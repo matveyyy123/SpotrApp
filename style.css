@@ -1535,7 +1535,7 @@ body {
     font-weight: 500;
     display: block;
     word-break: keep-all;      /* ← НЕ РАЗРЫВАЕТ СЛОВА */
-    white-space: nowrap;        /* ← ЗАПРЕЩАЕТ ПЕРЕНОС НА ДРУГУЮ СТРОКУ */
+    white-space: normal;        /* ← ЗАПРЕЩАЕТ ПЕРЕНОС НА ДРУГУЮ СТРОКУ */
     overflow: hidden;
     text-overflow: ellipsis;    /* ← ЕСЛИ НЕ ВЛЕЗАЕТ, СТАВИТ ... */
 }
