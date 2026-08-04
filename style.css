@@ -1431,7 +1431,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 0rem;
     margin: 0;
 }
 #page-hero .hero-content,
