@@ -1085,6 +1085,24 @@ body {
     border-color: var(--accent);
 }
 
+/* ===================ФОРМЫ Регистрации и Входа==================== */
+/* Уменьшаем отступы между полями ввода на страницах авторизации */
+#page-login .auth-card .form-group,
+#page-register .auth-card .form-group {
+    margin-bottom: 0rem; /* было 1.25rem */
+}
+
+/* При необходимости можно также уменьшить отступ заголовка и кнопок */
+#page-login .auth-card h2,
+#page-register .auth-card h2 {
+    margin-bottom: 1rem; /* было 2rem */
+}
+
+#page-login .auth-switch,
+#page-register .auth-switch {
+    margin-top: 1rem; /* было 1.8rem */
+}
+
 /* ===================ЦВЕТОВЫЕ КНОПКИ ==================== */
 .color-picker {
     display: flex;
@@ -1512,12 +1530,14 @@ body {
 }
 
 .feature span {
-    font-size: clamp(0.5rem, 1.8vw, 0.8rem);
+    font-size: 0.8rem;
     color: var(--slate);
     font-weight: 500;
     display: block;
-    word-break: keep-all;
-    white-space: nowrap;
+    word-break: keep-all;      /* ← НЕ РАЗРЫВАЕТ СЛОВА */
+    white-space: nowrap;        /* ← ЗАПРЕЩАЕТ ПЕРЕНОС НА ДРУГУЮ СТРОКУ */
+    overflow: hidden;
+    text-overflow: ellipsis;    /* ← ЕСЛИ НЕ ВЛЕЗАЕТ, СТАВИТ ... */
 }
 .hero-buttons {
     display: flex;
