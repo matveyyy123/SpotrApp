@@ -172,8 +172,7 @@
                 <h1 id="workoutDetailTitle">ТРЕНИРОВКА - РУКИ</h1>
             </header>
             <div class="workout-levels" id="exercisesContainer"></div>
-            <div id="timerDisplay">00:00</div>
-            <button class="btn-primary" id="actionButton">Начать тренировку</button>
+            <button class="btn-primary" style="margin-top: 1rem;" id="actionButton">Начать тренировку</button>
             <button class="btn-primary-center" id="editWorkoutBtn" style="margin-top:1rem;">
                 <i class="fa-regular fa-pen-to-square"></i> Редактировать тренировку
             </button>
@@ -189,6 +188,108 @@
             <div class="workout-levels" id="levelsContainer"></div>
         </main>
     </div>
+
+<!-- СТРАНИЦА: ТРЕНИРОВКА СЕССИЯ -->
+<div id="page-training-session" class="page">
+    <main class="training-session-container">
+        <!-- Заголовок -->
+        <header class="session-header">
+            <h1 id="trainingSessionTitle">РУКИ 2 LVL</h1>
+        </header>
+
+        <!-- Верхний блок (3/5) -->
+        <div class="session-top">
+            <!-- Линия прогресса -->
+            <div class="session-progress-row">
+                <div class="session-progress" id="sessionProgress"></div>
+            </div>
+            <!-- Фон с крестиком и таймером поверх -->
+            <div class="session-bg">
+                <span class="session-bg-text">фото будет добавлено позже</span>
+                <button class="session-close-btn" id="sessionCloseBtn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div class="session-timer" id="sessionTimer">00:00</div>
+            </div>
+        </div>
+
+        <!-- Нижний блок (2/5) -->
+        <div class="session-bottom">
+            <div class="session-exercise-info">
+                <h2 id="sessionExerciseName">Жим лёжа</h2>
+                <p id="sessionExerciseDetails">3 × 12</p>
+            </div>
+
+            <div class="session-controls">
+                <button class="session-btn session-btn-prev" id="sessionPrevBtn">
+                    <i class="fa-solid fa-angle-left"></i>
+                </button>
+                <button class="session-btn session-btn-main" id="sessionMainBtn">ГОТОВО</button>
+                <button class="session-btn session-btn-next" id="sessionNextBtn">
+                    <i class="fa-solid fa-angle-right"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- СТРАНИЦА: ФИНИШ ТРЕНИРОВКИ -->
+<div id="page-finish" class="page">
+    <main class="finish-container">
+        <div class="finish-content">
+            <h1 class="finish-title">ТРЕНИРОВКА ЗАВЕРШЕНА!</h1>
+            <div class="finish-trophy">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+<div class="finish-stats">
+    <div class="finish-stat-item">
+        <span class="finish-stat-label">Упражнений</span>
+        <span class="finish-stat-value" id="finishExercises">0/10</span>
+    </div>
+    <div class="finish-stat-item">
+        <span class="finish-stat-label">Минут</span>
+        <span class="finish-stat-value" id="finishMinutes">00:00</span>
+    </div>
+    <div class="finish-stat-item">
+        <span class="finish-stat-label">Прогресс</span>
+        <span class="finish-stat-value" id="finishXp">+0 XP</span>
+    </div>
+</div>
+            <div class="finish-rating">
+                <p class="finish-rating-label">Как себя чувствуете?</p>
+                <div class="finish-stars" id="finishStars">
+                    <i class="fa-regular fa-star" data-value="1"></i>
+                    <i class="fa-regular fa-star" data-value="2"></i>
+                    <i class="fa-regular fa-star" data-value="3"></i>
+                    <i class="fa-regular fa-star" data-value="4"></i>
+                    <i class="fa-regular fa-star" data-value="5"></i>
+                </div>
+            </div>
+            <button class="btn-primary finish-btn" id="finishDoneBtn">Закончить</button>
+        </div>
+    </main>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО ОКОНЧАНИЯ ТРЕНИРОВКИ -->
+<div id="sessionExitModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <div class="modal-title" id="sessionExitTitle">РУКИ 2 LVL</div>
+        <div class="modal-stats">
+            <div class="modal-stat">
+                <div class="modal-stat-label">Упражнений</div>
+                <div class="modal-stat-value" id="exitExercises">1/10</div>
+            </div>
+            <div class="modal-stat">
+                <div class="modal-stat-label">Минут</div>
+                <div class="modal-stat-value" id="exitMinutes">00:00</div>
+            </div>
+        </div>
+            <div class="modal-buttons">
+                <button class="btn-primary" id="exitContinueBtn">Продолжить</button>
+                <button class="btn-secondary" id="exitFinishBtn">Выйти</button>
+            </div>
+    </div>
+</div>
 
     <!-- СТРАНИЦА: РЕДАКТИРОВАНИЕ ТРЕНИРОВКИ -->
     <div id="page-workout-edit" class="page">
@@ -502,10 +603,6 @@
                         <span>Дата регистрации: <strong id="profileDate">—</strong></span>
                     </div>
 
-                    <button class="btn-secondary" onclick="logout()" style="width:100%; margin-top:1rem;">
-                        <i class="fa-solid fa-sign-out-alt"></i> Выйти из аккаунта
-                    </button>
-
                     <div class="form-actions" style="display:flex; gap:0.8rem; margin-top:1rem;">
                         <button class="btn-primary" id="saveProfileBtn" style="flex:1;">Сохранить</button>
                         <button class="btn-secondary" id="cancelProfileEditBtn" style="flex:1;">Отмена</button>
@@ -607,6 +704,7 @@
         <span class="accordion-toggle block-toggle"><i class="fa-solid fa-chevron-right"></i></span>
     </div>
     <div class="settings-block accordion-content block-body">
+        <!-- СБРОСИТЬ ПРОГРЕСС -->
         <div class="settings-item" onclick="confirmResetProgress()">
             <div class="settings-item-icon danger-icon">
                 <i class="fa-solid fa-arrow-rotate-left"></i>
@@ -619,6 +717,22 @@
                 <i class="fa-solid fa-chevron-right"></i>
             </div>
         </div>
+
+        <!-- ВЫЙТИ ИЗ АККАУНТА (НОВЫЙ ПУНКТ) -->
+        <div class="settings-item" onclick="logout()" style="border-top:1px solid #E2E8F0;">
+            <div class="settings-item-icon" style="background: #FEE2E2 !important; color: #EF4444 !important;">
+                <i class="fa-solid fa-sign-out-alt"></i>
+            </div>
+            <div class="settings-item-info">
+                <div class="settings-item-title">Выйти из аккаунта</div>
+                <div class="settings-item-desc">Перейти на страницу входа.</div>
+            </div>
+            <div class="settings-item-arrow">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <!-- УДАЛИТЬ АККАУНТ -->
         <div class="settings-item" onclick="confirmDeleteAccount()" style="border-top:1px solid #E2E8F0;">
             <div class="settings-item-icon danger-icon">
                 <i class="fa-solid fa-user-slash"></i>

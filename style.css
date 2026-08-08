@@ -685,7 +685,7 @@ body {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
     max-height: 340px;
     overflow-y: auto;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     scroll-behavior: smooth;
     border: 10px solid var(--white);
 }
@@ -728,9 +728,9 @@ body {
 .calendar-container {
     background: var(--light);
     border-radius: 16px;
-    padding: 1.2rem 1rem;
+    padding: 1rem 1rem;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 .calendar-nav {
     display: flex;
@@ -1205,15 +1205,6 @@ body {
 .nav-item.active { color: var(--accent); }
 .nav-item:active { opacity: 0.6; }
 .nav-item i { font-size: 22px; }
-
-/* ===================ТАЙМЕР ==================== */
-#timerDisplay {
-    text-align: center;
-    margin-top: 1.5rem;
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--accent);
-}
 
 /* ===================ПУСТОЕ СОСТОЯНИЕ ==================== */
 .empty-state {
@@ -2233,4 +2224,383 @@ textarea.error {
 
 .block-base-training.accordion-open .block-toggle {
     transform: rotate(90deg);
+}
+
+/* =================== СТРАНИЦА ТРЕНИРОВКИ СЕССИЯ =================== */
+.training-session-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 0 1.2rem 0rem; /* нижний отступ для кнопок */
+    background: #f8fafc;
+}
+
+/* Заголовок */
+.session-header {
+    padding: 1rem 0 0.5rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.session-header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 0;
+    word-break: break-word;
+}
+
+/* Верхний блок (3/5) */
+.session-top {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin-bottom: 0.8rem;
+    position: relative;
+}
+
+/* Линия прогресса */
+.session-progress-row {
+    flex-shrink: 0;
+    padding: 0.2rem 0 0.5rem;
+}
+
+.session-progress {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    height: 6px;
+}
+
+.session-progress .progress-dash {
+    flex: 1;
+    height: 100%;
+    border-radius: 4px;
+    background: #E2E8F0;
+    transition: background 0.3s ease;
+}
+
+.session-progress .progress-dash.active {
+    background: var(--accent);
+}
+
+/* Фон с крестиком и таймером */
+.session-bg {
+    flex: 1;
+    background: var(--light);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--slate);
+    font-size: 0.9rem;
+    position: relative;
+    min-height: 120px;
+    overflow: hidden;
+}
+
+.session-bg-text {
+    opacity: 0.6;
+    font-style: italic;
+}
+
+/* Крестик (слева снизу) */
+.session-close-btn {
+    position: absolute;
+    top: 0.8rem;
+    left: 0.8rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    color: var(--slate);
+    font-size: 1.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+/* Таймер (справа снизу) */
+.session-timer {
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark);
+    font-variant-numeric: tabular-nums;
+    backdrop-filter: blur(4px);
+    padding: 0.2rem 0.8rem;
+    border-radius: 12px;
+    z-index: 2;
+    color: var(--dark);
+}
+
+/* Нижний блок (2/5) */
+.session-bottom {
+    flex: 2;
+    background: var(--white);
+    border-radius: 20px 20px 0px 0px;
+    padding: 1rem 1rem 3rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 0;
+}
+
+.session-exercise-info {
+    text-align: center;
+}
+
+.session-exercise-info h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 0 0 0.3rem;
+    word-break: break-word;
+}
+
+.session-exercise-info p {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin: 0;
+}
+
+/* Кнопки управления — сетка 3 колонки */
+.session-controls {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 0.8rem;
+}
+
+.session-btn {
+    border: none;
+    border-radius: 12px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.session-btn:active {
+    transform: scale(0.92);
+}
+
+/* Левая и правая кнопки */
+.session-btn-prev,
+.session-btn-next {
+    background: var(--accent-light);
+    color: var(--dark);
+    justify-self: center;
+}
+
+.session-btn-prev:disabled,
+.session-btn-next:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.session-btn-prev:disabled:active,
+.session-btn-next:disabled:active {
+    transform: none;
+}
+
+/* Если левая кнопка скрыта, правая остаётся на месте */
+.session-btn-prev[style*="display: none"] + .session-btn-main {
+    grid-column: 2 / 3; /* центр */
+}
+
+.session-btn-next[style*="display: none"] {
+    grid-column: 3 / 4;
+}
+
+/* Главная кнопка — всегда по центру */
+.session-btn-main {
+    background: var(--accent);
+    color: var(--white);
+    border-radius: 12px;
+    padding: 0 2rem;
+    width: auto;
+    height: 48px;
+    font-size: 1rem;
+    font-weight: 600;
+    grid-column: 2 / 3;
+    justify-self: center;
+}
+
+.session-btn-main:active {
+    opacity: 0.8;
+}
+
+/* Модалка окончания тренировки */
+#sessionExitModal .modal-content {
+    max-width: 380px;
+}
+
+#sessionExitModal .modal-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin: 1rem 0 1.5rem;
+}
+
+#sessionExitModal .modal-stat {
+    text-align: center;
+    background: var(--light);
+    border-radius: 12px;
+    padding: 0.8rem 0.5rem;
+}
+
+#sessionExitModal .modal-stat-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--slate);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+#sessionExitModal .modal-stat-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--dark);
+}
+
+#sessionExitModal .modal-buttons {
+    display: flex;
+    gap: 0.8rem;
+}
+
+#sessionExitModal .modal-buttons .btn-primary {
+    flex: 1;
+}
+
+#sessionExitModal .modal-buttons .btn-secondary {
+    flex: 1;
+    text-align: center;
+}
+
+/* =================== СТРАНИЦА ФИНИШ =================== */
+.finish-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    background: #f8fafc;
+}
+
+.finish-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--white);
+    border-radius: 24px;
+    padding: 2.5rem 1.5rem 1.5rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+.finish-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark);
+    text-align: center;
+    letter-spacing: 0.3px;
+}
+
+.finish-trophy {
+    font-size: 6rem;
+    color: #F7C948;
+    margin-bottom: 3rem;
+    margin-top: 3rem;
+}
+
+.finish-trophy i {
+    display: block;
+}
+
+.finish-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;  /* было 1fr 1fr */
+    gap: 0.8rem;
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+
+.finish-stat-item {
+    background: var(--light);
+    border-radius: 14px;
+    padding: 0.8rem 0.5rem;
+    text-align: center;
+}
+
+.finish-stat-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--slate);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.finish-stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark);
+}
+
+.finish-rating {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.finish-rating-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--dark);
+    margin: 0 0 0.5rem;
+}
+
+.finish-stars {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.finish-stars i {
+    font-size: 2rem;
+    color: #E2E8F0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.finish-stars i.active {
+    color: #F7C948;
+}
+
+.finish-stars i:active {
+    transform: scale(0.9);
+}
+
+.finish-btn {
+    width: 100%;
+    margin-top: 0.5rem;
 }
