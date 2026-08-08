@@ -2488,6 +2488,7 @@ async function loadStats() {
             }).join('');
         }
     }
+    initAccordion();
 }
 
 // ===================КАЛЕНДАРЬ ===================
@@ -2567,6 +2568,7 @@ async function loadProfile() {
     document.getElementById('levelProgressText').textContent = progressText;
     document.getElementById('levelFill').style.width = progress + '%';
     await renderFriendsInProfile();
+    initProfileBlocks();
 }
 
 // ===================ПРОФИЛЬ - РЕДАКТИРОВАНИЕ ===================
@@ -2665,6 +2667,7 @@ firebase.auth().onAuthStateChanged(async (user) => {
             renderMyWorkouts();
             await renderCalendar(currentMonth, currentYear);
             updatePremiumUI();
+            initProfileBlocks();
             
             // Сохраняем флаг, нужно ли обучение
             window._tutorialNeeded = profile && profile.tutorialCompleted === false;
@@ -4129,6 +4132,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateColorStatus(currentColor);
     
     loadEditSettings(); // <-- ДОБАВИТЬ ЭТУ СТРОКУ
+    initAccordion();
 });
 
 // ===================МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ С ПАРОЛЕМ ===================
@@ -4658,4 +4662,112 @@ document.getElementById('resetStatsBtn')?.addEventListener('click', function() {
         },
         'Сбросить'
     );
+});
+
+// =================== АККОРДЕОН ===================
+function initAccordion() {
+    // 1. Обрабатываем блоки с классом accordion-wrapper (профиль)
+    document.querySelectorAll('.accordion-wrapper').forEach(wrapper => {
+        const header = wrapper.querySelector('.block-header');
+        if (!header) return;
+        
+        if (header._accordionHandler) {
+            header.removeEventListener('click', header._accordionHandler);
+        }
+        
+        const handler = function(e) {
+            if (e.target.closest('.drag-handle')) return;
+            wrapper.classList.toggle('accordion-open');
+        };
+        
+        header._accordionHandler = handler;
+        header.addEventListener('click', handler);
+    });
+
+    // 2. Обрабатываем блоки editable-block (тренировки и статистика)
+    document.querySelectorAll('.editable-block').forEach(block => {
+        const header = block.querySelector('.block-header');
+        if (!header) return;
+        
+        if (header._accordionHandler) {
+            header.removeEventListener('click', header._accordionHandler);
+        }
+        
+        const handler = function(e) {
+            if (e.target.closest('.drag-handle')) return;
+            block.classList.toggle('accordion-open');
+        };
+        
+        header._accordionHandler = handler;
+        header.addEventListener('click', handler);
+    });
+}
+// =================== ОТКРЫТИЕ ВСЕХ БЛОКОВ ДЛЯ НОВЫХ ПОЛЬЗОВАТЕЛЕЙ ===================
+function initProfileBlocks() {
+    const isNewUser = localStorage.getItem('profileBlocksInitialized') !== 'true';
+    
+    if (isNewUser) {
+        setTimeout(() => {
+            const blocks = document.querySelectorAll('.block-base-training.accordion-wrapper, .block-base.accordion-wrapper');
+            blocks.forEach(block => {
+                block.classList.add('accordion-open');
+            });
+            localStorage.setItem('profileBlocksInitialized', 'true');
+            saveBlocksState();
+        }, 500);
+    } else {
+        // Загружаем сохранённое состояние
+        setTimeout(loadBlocksState, 500);
+    }
+}
+
+// =================== СОХРАНЕНИЕ СОСТОЯНИЯ БЛОКОВ ===================
+function saveBlocksState() {
+    const blocks = document.querySelectorAll('.block-base-training.accordion-wrapper, .block-base.accordion-wrapper');
+    const state = {};
+    blocks.forEach((block, index) => {
+        // Используем data-block-id или index как идентификатор
+        const id = block.dataset.blockId || index;
+        state[id] = block.classList.contains('accordion-open');
+    });
+    localStorage.setItem('blocksState', JSON.stringify(state));
+}
+
+function loadBlocksState() {
+    const saved = localStorage.getItem('blocksState');
+    if (!saved) return;
+    
+    try {
+        const state = JSON.parse(saved);
+        const blocks = document.querySelectorAll('.block-base-training.accordion-wrapper, .block-base.accordion-wrapper');
+        blocks.forEach((block, index) => {
+            const id = block.dataset.blockId || index;
+            if (state[id] === true) {
+                block.classList.add('accordion-open');
+            }
+        });
+    } catch (e) {}
+}
+
+// Сохраняем состояние при клике на заголовок блока
+document.addEventListener('click', function(e) {
+    const header = e.target.closest('.block-header');
+    if (header) {
+        const block = header.closest('.block-base-training, .block-base');
+        if (block) {
+            // Сохраняем состояние после изменения
+            setTimeout(saveBlocksState, 100);
+        }
+    }
+});
+
+// Загружаем состояние, когда DOM полностью готов
+document.addEventListener('DOMContentLoaded', function() {
+    // Ждём, пока все блоки появятся
+    setTimeout(loadBlocksState, 1000);
+});
+
+// Также загружаем после полной загрузки страницы
+window.addEventListener('load', function() {
+    setTimeout(loadBlocksState, 500);
 });

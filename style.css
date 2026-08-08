@@ -100,7 +100,7 @@ body {
 
 .btn-primary-center {
     display: block;
-    margin: 1.5rem auto 0;
+    margin: 1rem auto 0;
     width: 100%;
     padding: 0.8rem 2rem;
     background: var(--accent);
@@ -409,7 +409,7 @@ body {
 .tabs-container {
     display: flex;
     gap: 0.5rem;
-    margin-bottom: 0rem;
+    margin-bottom: 1rem;
     background: var(--light);
     padding: 0.4rem;
     border-radius: 14px;
@@ -438,8 +438,8 @@ body {
 
 /* ===================МОИ ТРЕНИРОВКИ ==================== */
 .custom-workout {
-    margin-bottom: 1.5rem;
-    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
 }
 .workout-list {
     display: flex;
@@ -610,7 +610,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 0.8rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 .stat-big-card {
     background: var(--white);
@@ -646,7 +646,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    background: var(--white);
+    background: var(--light);
     padding: 0.6rem 1rem;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
@@ -715,7 +715,7 @@ body {
     padding-right: 0.3rem;
 }
 #workoutHistory > div {
-    background: color-mix(in srgb, var(--accent) 5%, transparent);
+    background: var(--light);
     padding: 0.8rem 1rem;
     border-radius: 12px;
     border-left: 4px solid var(--accent);
@@ -726,7 +726,7 @@ body {
 
 /* ===================КАЛЕНДАРЬ ==================== */
 .calendar-container {
-    background: var(--white);
+    background: var(--light);
     border-radius: 16px;
     padding: 1.2rem 1rem;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
@@ -794,8 +794,9 @@ body {
 .profile-block {
     background: var(--white);
     border-radius: 16px;
-    padding: 1.5rem 1.2rem;
+    padding: 1rem 1rem;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    margin-bottom: 1rem;
 }
 .profile-avatar {
     width: 80px;
@@ -922,38 +923,42 @@ body {
     transition: width 0.6s ease;
 }
 
-/* ===================ДРУЗЬЯ ==================== */
-.friends-section { margin-top: 1.5rem; }
+/* =================== БЛОК ДРУЗЬЯ =================== */
 .friends-title {
     font-size: 1.2rem;
     font-weight: 700;
     color: var(--dark);
     margin-bottom: 0.8rem;
 }
+
 .friends-block {
     background: var(--white);
     border-radius: 16px;
-    padding: 1rem 1.2rem;
+    padding: 1rem 1rem;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
+
 .search-container {
     display: flex;
     gap: 0.5rem;
     align-items: center;
 }
+
 .search-container input {
     flex: 1;
-    padding: 0.6rem 1rem;
+    padding: 0.6rem 0.8rem;
     border: 1.5px solid #E2E8F0;
     border-radius: 10px;
     font-size: 0.9rem;
     background: var(--light);
     min-width: 0;
 }
+
 .search-container input:focus {
     outline: none;
     border-color: var(--accent);
 }
+
 .search-container .btn-primary {
     padding: 0.6rem 1.2rem;
     font-size: 0.85rem;
@@ -961,6 +966,7 @@ body {
     flex-shrink: 0;
     width: auto;
 }
+
 .friend-result-item,
 .friend-request-item,
 .friend-item {
@@ -972,6 +978,7 @@ body {
     border-radius: 10px;
     margin-bottom: 0.4rem;
 }
+
 .friend-avatar {
     width: 36px;
     height: 36px;
@@ -986,6 +993,7 @@ body {
     flex-shrink: 0;
     text-transform: uppercase;
 }
+
 .friend-result-info,
 .friend-info {
     flex: 1;
@@ -993,6 +1001,7 @@ body {
     flex-direction: column;
     min-width: 0;
 }
+
 .friend-result-info strong,
 .friend-info strong {
     font-size: 0.9rem;
@@ -1000,12 +1009,14 @@ body {
     color: var(--dark);
     word-break: break-word;
 }
+
 .friend-result-info span,
 .friend-info span {
     font-size: 0.75rem;
     color: var(--slate);
     word-break: break-all;
 }
+
 .friend-result-item .btn-sm,
 .friend-request-item .btn-sm {
     padding: 0.2rem 0.8rem;
@@ -1013,31 +1024,39 @@ body {
     border-radius: 8px;
     flex-shrink: 0;
 }
+
 .friend-result-item .btn-secondary.btn-sm,
 .friend-request-item .btn-secondary.btn-sm {
     border: 2px solid var(--accent);
     color: var(--accent);
     background: transparent;
 }
+
 .friend-request-item .btn-primary.btn-sm {
     background: var(--accent);
     color: var(--white);
     border: none;
 }
+
 .friend-result-item .btn-sm:disabled {
     opacity: 0.6;
     cursor: default;
     pointer-events: none;
 }
+
 .friends-subtitle {
     font-weight: 600;
     font-size: 0.9rem;
     margin: 0.8rem 0 0.4rem 0;
     color: var(--dark);
 }
+
 #friendRequests,
 #friendsList,
-#searchResults { margin-top: 0.8rem; }
+#searchResults {
+    margin-top: 0.8rem;
+}
+
 .friend-delete-btn {
     width: 32px;
     height: 32px;
@@ -1053,8 +1072,10 @@ body {
     flex-shrink: 0;
     transition: none;
 }
+
 .friend-delete-btn:active { opacity: 0.6; }
 .friend-delete-btn:hover { color: #EF4444; }
+
 .friends-block .empty-state {
     text-align: center;
     padding: 1rem 0;
@@ -1581,12 +1602,18 @@ input::placeholder { font-style: italic; }
 .leaderboard-item {
     display: flex;
     align-items: center;
-    background: var(--white);
+    background: var(--light);  /* ← МЕНЯЕМ ЭТОТ ФОН */
     border-radius: 16px;
-    padding: 0.8rem 1.2rem;
+    padding: 0.5rem 0.5rem;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
     gap: 1rem;
     border: 2px solid transparent;
+}
+.world-leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
 }
 .leaderboard-item:active { opacity: 0.8; }
 .leaderboard-position {
@@ -1618,7 +1645,7 @@ input::placeholder { font-style: italic; }
     display: flex;
     gap: 0.4rem;
     flex-wrap: wrap;
-    margin-top: 0.1rem;
+    margin-top: 0.2rem;
     align-items: center;
 }
 .leaderboard-details i { color: var(--slate); }
@@ -1786,14 +1813,14 @@ input::placeholder { font-style: italic; }
     color: var(--accent) !important;
 }
 
-/* ===================ДОПОЛНИТЕЛЬНЫЕ НАСТРОЙКИ ==================== */
-.settings-section { margin-top: 1.5rem; }
+/* =================== ДОПОЛНИТЕЛЬНЫЕ НАСТРОЙКИ =================== */
 .settings-title {
     font-size: 1.2rem;
     font-weight: 700;
     color: var(--dark);
     margin-bottom: 0.8rem;
 }
+
 .settings-block {
     background: var(--white);
     border-radius: 16px;
@@ -1801,6 +1828,7 @@ input::placeholder { font-style: italic; }
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
     overflow: hidden;
 }
+
 .settings-item {
     display: flex;
     align-items: center;
@@ -1810,8 +1838,15 @@ input::placeholder { font-style: italic; }
     transition: none;
     border-bottom: 1px solid #E2E8F0 !important;
 }
-.settings-item:last-child { border-bottom: none !important; }
-.settings-item:active { opacity: 0.7; }
+
+.settings-item:last-child {
+    border-bottom: none !important;
+}
+
+.settings-item:active {
+    opacity: 0.7;
+}
+
 .settings-item-icon {
     width: 40px;
     height: 40px;
@@ -1824,25 +1859,41 @@ input::placeholder { font-style: italic; }
     color: var(--accent);
     font-size: 1.2rem;
 }
-.settings-item-icon i.fa-crown { color: #F7C948; }
-.settings-item-icon i.fa-check-circle { color: #2ECC71; }
+
+.settings-item-icon i.fa-crown {
+    color: #F7C948;
+}
+
+.settings-item-icon i.fa-check-circle {
+    color: #2ECC71;
+}
+
 .settings-item-info {
     flex: 1;
     min-width: 0;
 }
+
 .settings-item-title {
     font-size: 0.95rem;
     font-weight: 600;
     color: var(--dark);
 }
+
 .settings-item-desc {
     font-size: 0.8rem;
     color: var(--slate);
     margin-top: 0.1rem;
 }
+
 .settings-item-arrow {
     color: var(--slate);
     font-size: 0.9rem;
+}
+
+/* =================== НЕВОЗВРАТНЫЕ НАСТРОЙКИ =================== */
+.settings-item .danger-icon {
+    background: #FEE2E2 !important;
+    color: #EF4444 !important;
 }
 
 /* ===================PULL-TO-REFRESH ==================== */
@@ -1865,11 +1916,6 @@ input.error,
 textarea.error {
     border-color: #EF4444 !important;
     box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important;
-}
-/* ===================НЕВОЗВРАТНЫЕ НАСТРОЙКИ =================== */
-.settings-item .danger-icon {
-    background: #FEE2E2 !important;
-    color: #EF4444 !important;
 }
 
 /* Дополнительный стиль для опасной кнопки в модалках */
@@ -2007,4 +2053,184 @@ textarea.error {
 .tutorial-highlight#editWorkoutBtn i,
 .tutorial-highlight.custom-workout .btn-primary i {
     color: var(--accent) !important;
+}
+
+/* =================== УНИВЕРСАЛЬНЫЙ БЛОК =================== */
+.block-base {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 0.8rem 1rem 0rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.block-base .block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+    gap: 0.8rem;
+}
+
+.block-base .block-header .block-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dark);
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+}
+
+.block-base .block-header .block-toggle {
+    flex-shrink: 0;
+    font-size: 1.2rem;
+    color: var(--slate);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    pointer-events: none;
+}
+
+.block-base .block-header .drag-handle {
+    flex-shrink: 0;
+    font-size: 1.2rem;
+    color: var(--slate);
+    cursor: grab;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    display: none !important;
+    transition: background 0.2s;
+}
+
+.block-base .block-header .drag-handle:hover {
+    background: var(--accent-light);
+}
+.block-base .block-header .drag-handle:active {
+    cursor: grabbing;
+}
+
+/* Содержимое блока */
+.block-base .block-body {
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
+}
+
+/* =================== АККОРДЕОН =================== */
+.block-base .block-body,
+.block-base-training .block-body {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.3s ease-out,
+                opacity 0.25s ease-out,
+                margin 0.3s ease-out;
+}
+
+.block-base .block-toggle,
+.block-base-training .block-toggle {
+    transition: transform 0.3s ease-out;
+}
+
+.block-base.accordion-open .block-toggle,
+.block-base-training.accordion-open .block-toggle {
+    transform: rotate(90deg);
+}
+
+.block-base:not(.accordion-open) .block-body,
+.block-base-training:not(.accordion-open) .block-body {
+    max-height: 0 !important;
+    opacity: 0;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.block-base:not(.accordion-open) .block-body *,
+.block-base-training:not(.accordion-open) .block-body * {
+    display: none;
+}
+
+.block-base.accordion-open .block-body,
+.block-base-training.accordion-open .block-body {
+    max-height: 3000px;
+    opacity: 1;
+    margin-top: 0.5rem;
+}
+
+/* =================== РЕЖИМ РЕДАКТИРОВАНИЯ =================== */
+.editing .block-base {
+    border: 2px dashed transparent;
+    padding: 1rem 1rem 0.6rem;
+    transition: border-color 0.2s;
+}
+
+.editing .block-base:hover {
+    border-color: var(--accent);
+}
+
+.editing .block-base .drag-handle {
+    display: inline-block !important;
+}
+
+/* =================== ОБЩИЙ СТИЛЬ ДЛЯ БЛОКОВ В ПРОФИЛЕ =================== */
+.block-base-training {
+    background: var(--light);
+    border-radius: 16px;
+    padding: 0rem 0.2rem 0rem;
+    margin-bottom: 0.6rem;
+}
+
+.block-base-training .block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0rem;
+    gap: 0.8rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.block-base-training .block-header .block-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dark);
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+}
+
+.block-base-training .block-header .block-toggle {
+    flex-shrink: 0;
+    font-size: 1.2rem;
+    color: var(--slate);
+    transition: transform 0.3s ease;
+    pointer-events: none;
+}
+
+.block-base-training .block-body {
+    overflow: hidden;
+    transition: max-height 0.3s ease-out,
+                opacity 0.25s ease-out,
+                margin 0.3s ease-out;
+}
+
+.block-base-training:not(.accordion-open) .block-body {
+    max-height: 0 !important;
+    opacity: 0;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.block-base-training:not(.accordion-open) .block-body * {
+    display: none;
+}
+
+.block-base-training.accordion-open .block-body {
+    max-height: 3000px;
+    opacity: 1;
+    margin-top: 0.5rem;
+}
+
+.block-base-training.accordion-open .block-toggle {
+    transform: rotate(90deg);
 }
